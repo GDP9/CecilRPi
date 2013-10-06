@@ -1,0 +1,15 @@
+11May07, 07:30:
+Should have sorted this out before...
+Have now completed a basic conversion of the original Delphi code to Java.
+Some jobs that need doing:
+*Get the layout right so the memdump can be used
+*Get the LED display(s) working
+*Things like the video output aren't set up properly so the screen wraps
+*None of the special locations are working (e.g. keyboard buffer)
+*getkey isn't implemented
+*Interrupts aren't implemented
+*Do I want to include a storemx command?
+*What about load and save?
+*Help needs sorting out
+*Can I get colour display working?
+And there needs to be a general bug-finding sweep done.
