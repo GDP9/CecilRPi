@@ -14,16 +14,13 @@ public class parser {
 			static	String	spcStr = " ";
 			static	char	newline = '\n';
 	
-	public static void main(String[] args) 
-	{
-		// TODO Auto-generated method stub
-	}
 	static	void replaceTabs() 
 	/*this replaces tabs with spaces within program*/
 	{
  		progText = progText.replace(tabChar, terminator);
  		return;
  	}
+
 	public static	void replaceNewLines() 
 	/*this replaces new line chars with spaces within program*/
 	{
