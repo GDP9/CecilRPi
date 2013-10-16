@@ -1,0 +1,22 @@
+program simple
+author david argles
+date 30/01/97
+
+; This is a simple program to add
+; two numbers together which are
+; held in data1 and data2 and print
+; out the answer to the screen
+;
+;--- program starts here---
+;
+.start load data1
+        add data2
+      print
+       stop
+;
+;--- now the data follows---
+;
+.data1 insert 3
+.data2 insert 4
+;
+;---end of source code---
