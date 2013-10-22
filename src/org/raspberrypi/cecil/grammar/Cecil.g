@@ -90,39 +90,27 @@ options {
         CommandList.put("insert", 51); //This one is quirky - it's not an instruction!
         CommandList.put("halt", 52);
        }
+        static String parserError = "";
 }
 
 /**
  * Rules
  * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
- * Reserved Keywords: program, author, date, all-instructions
- * Date-format : dd/mm/yy or dd.mm.yy
- * TOASK: insert???
+ * Reserved Keywords: all-instructions
  */
 program 
-  : header instruction*
-  ;
-
-header  : 'program' NAME+ 'author' NAME+ 'date' dateformat;
-
-dateformat 
-  : DAY ('.'|'/') MONTH ('.'|'/') DIGIT DIGIT
-  ;
-
-MONTH 
-  : ('0' DIGIT | '1' '1' | '1' |'0' | '1' '2')
-  ; 
-
-DAY 
-  : ('0' DIGIT | '1' DIGIT | '2' DIGIT | '3' ('0' | '1'))
+  : instruction*
   ;
 
 instruction 
-  : ('.'labelfield)? instructiondata
-  {
-    if(!($labelfield.text).equals("start") && !labelfield.containsKey($labelfield.text))
-     labelfield.put(($labelfield.text),pointer);
+  : ('.' labelfield  
+  { /* if label already does not exist or isn't start then add to the hash */
+    if(labelfield.containsKey($labelfield.text)) parserError = "label already exists!";
+    else labelfield.put(($labelfield.text),pointer);
   }
+  )? instructiondata
+  
+  
   ;  
   
 labelfield 
@@ -130,11 +118,21 @@ labelfield
   ;
 
 instructiondata 
-  : ((binaryinstruction datafield) 
-  | unaryinstruction )
-  {
-    datafield.put($datafield.text,pointer++);
-  }
+  : (binaryinstruction datafield {
+      /* if instruction is insert and data is integer then add value to memory */
+        if(($binaryinstruction.text).equals("insert") && ($datafield.text).matches("^[0-9]+$"))
+          memory[pointer++] = Integer.parseInt($datafield.text);
+      /* else reference instruction */  
+        else {
+          memory[pointer++] = CommandList.get($binaryinstruction.text); 
+          if(($datafield.text).matches("^[0-9]+$"))
+            memory[pointer++] = Integer.parseInt($datafield.text);
+          else 
+            datafield.put($datafield.text,pointer++);
+         } 
+     }) 
+       
+  | unaryinstruction {memory[pointer++] = CommandList.get($unaryinstruction.text);}
   ;
 
 unaryinstruction

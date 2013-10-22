@@ -22,4 +22,10 @@ public class CecilController implements CecilControllerInterface {
 		
 	}
 
+	@Override
+	public String instructionHovered(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
