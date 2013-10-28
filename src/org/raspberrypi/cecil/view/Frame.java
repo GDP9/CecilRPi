@@ -153,6 +153,9 @@ public class Frame extends JFrame {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
 			btnFile.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
+			btnFile.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
@@ -166,6 +169,9 @@ public class Frame extends JFrame {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
 			btnCompile.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
+			btnCompile.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
@@ -176,6 +182,9 @@ public class Frame extends JFrame {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
 			btnRun.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-play-colour.png"));
+			btnRun.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
@@ -186,6 +195,9 @@ public class Frame extends JFrame {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
 			btnStepThrough.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-step-colour.png"));
+			btnStepThrough.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
@@ -199,6 +211,9 @@ public class Frame extends JFrame {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
 			btnSettings.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
+			btnSettings.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
