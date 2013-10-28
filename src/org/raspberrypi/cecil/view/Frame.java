@@ -5,12 +5,14 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.ItemSelectable;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -58,9 +60,12 @@ import javax.swing.JLabel;
 import javax.swing.JToggleButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.FlowLayout;
 import java.awt.CardLayout;
+import java.io.IOException;
+
 import javax.swing.BoxLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollBar;
@@ -135,30 +140,68 @@ public class Frame extends JFrame {
 		gbc_south.weighty = 0.2;
 		getContentPane().add(southPanel, gbc_south);
 		
+		/*
+		 * Setup north panel and all the buttons
+		 */
 		northPanel.setLayout(new GridLayout(1,3));
 		
 		JPanel topLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		northPanel.add(topLeft);
 		
 		JButton btnFile = new JButton("File");
+		btnFile.setToolTipText("File");
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
+			btnFile.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		topLeft.add(btnFile);
 		
 		JPanel topCentre = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		northPanel.add(topCentre);
 		
-		JButton btnRun = new JButton("Run");
-		topCentre.add(btnRun);
-		
-		JButton btnCompile = new JButton("Compile");
+		JButton btnCompile = new JButton();
+		btnCompile.setToolTipText("Compile");
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
+			btnCompile.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		topCentre.add(btnCompile);
 		
-		JButton btnStepThrough = new JButton("Step through");
+		JButton btnRun = new JButton();
+		btnRun.setToolTipText("Run");
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
+			btnRun.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		topCentre.add(btnRun);
+		
+		JButton btnStepThrough = new JButton();
+		btnStepThrough.setToolTipText("Step through");
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
+			btnStepThrough.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		topCentre.add(btnStepThrough);
 		
 		JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		northPanel.add(topRight);
 		
 		JButton btnSettings = new JButton("Settings");
+		btnSettings.setToolTipText("Settings");
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
+			btnSettings.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		topRight.add(btnSettings);
 		
 		southPanel.setLayout(new GridLayout(1,1));
@@ -293,13 +336,20 @@ public class Frame extends JFrame {
 		table_1.getColumnModel().getColumn(2).setPreferredWidth(150);
 		table_1.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode()==KeyEvent.VK_ENTER) {			
-				if(table_1.getSelectedRow()+1 == (table_1.getRowCount())){		
-				
-			model.addRow(new Object[]{"", "",""}); } }
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (table_1.getSelectedRow() + 1 == (table_1.getRowCount())) {
+
+						model.addRow(new Object[] { "", "", "" });
+					}
+				}
 			}
-			public void keyReleased(KeyEvent e) { }
-			public void keyTyped(KeyEvent e) { } } );
+
+			public void keyReleased(KeyEvent e) {
+			}
+
+			public void keyTyped(KeyEvent e) {
+			}
+		});
 
 		scrollPane = new JScrollPane(table_1);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
