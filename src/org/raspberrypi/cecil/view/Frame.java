@@ -85,18 +85,19 @@ public class Frame extends JFrame {
 	public Frame() {
 		getContentPane().setBackground(Color.GREEN);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(900, 900);
+		setSize(1000, 700);
 		getContentPane().setLayout(new GridBagLayout());
 		JPanel northPanel = new JPanel();
 		northPanel.setBackground(Color.CYAN);
 		JPanel centerPanel = new JPanel();
 		JPanel centerleftPanel = new JPanel();
 		centerleftPanel.setBackground(Color.MAGENTA);
+//		centerleftPanel.setBorder(BorderFactory.createTitledBorder("Input Editor"));
 		centerleftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		JPanel centerrightPanel = new JPanel();
 		centerrightPanel.setBackground(Color.BLUE);
 		JPanel southPanel = new JPanel();
-		southPanel.setBorder(new TitledBorder(null, "Memory Allocation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		southPanel.setBorder(new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		southPanel.setLayout(new GridLayout(1,1));
 		
 		
@@ -121,7 +122,7 @@ public class Frame extends JFrame {
 		gbc_center.gridy = 1;
 		gbc_center.weightx = 1;
 		gbc_center.weighty = 0.75;
-		getContentPane().add(centerPanel, gbc_center);
+		getContentPane().add(centerPanel, gbc_center);		
 		
 		GridBagConstraints gbc_south = new GridBagConstraints();
 		//gbc_register.anchor = GridBagConstraints.WEST;
@@ -134,17 +135,32 @@ public class Frame extends JFrame {
 		gbc_south.weighty = 0.2;
 		getContentPane().add(southPanel, gbc_south);
 		
+		northPanel.setLayout(new GridLayout(1,3));
 		
+		JPanel topLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		northPanel.add(topLeft);
 		
-	
+		JButton btnFile = new JButton("File");
+		topLeft.add(btnFile);
+		
+		JPanel topCentre = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		northPanel.add(topCentre);
+		
 		JButton btnRun = new JButton("Run");
-		northPanel.add(btnRun);
+		topCentre.add(btnRun);
 		
 		JButton btnCompile = new JButton("Compile");
-		northPanel.add(btnCompile);
+		topCentre.add(btnCompile);
 		
 		JButton btnStepThrough = new JButton("Step through");
-		northPanel.add(btnStepThrough);
+		topCentre.add(btnStepThrough);
+		
+		JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		northPanel.add(topRight);
+		
+		JButton btnSettings = new JButton("Settings");
+		topRight.add(btnSettings);
+		
 		southPanel.setLayout(new GridLayout(1,1));
 	
 		centerPanel.setLayout(new GridLayout(1,2));
@@ -160,7 +176,7 @@ public class Frame extends JFrame {
 		/*Registers view*/
 		JPanel registerpanel = new JPanel();
 		registerpanel.setBackground(Color.GREEN);
-		registerpanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		registerpanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_register = new GridBagConstraints();
 		//gbc_register.anchor = GridBagConstraints.WEST;
 		gbc_register.fill = GridBagConstraints.BOTH;
@@ -182,7 +198,7 @@ public class Frame extends JFrame {
 			xregister.setDisabledTextColor(Color.YELLOW);
 			 Color color=new Color(255,0,0); 
 			xregister.setBackground(color);
-			xregister.setBorder(new TitledBorder(null, "X", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			xregister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 			xregister.setLineWrap(true);
 			xregister.setText("           X");
 			JTextArea yregister = new JTextArea();
@@ -190,17 +206,17 @@ public class Frame extends JFrame {
 			yregister.setText("     Y\r\n");
 			yregister.setLineWrap(true);
 			yregister.setToolTipText("");
-			yregister.setBorder(new TitledBorder(null, "Y", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			yregister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 			JTextArea accumulator = new JTextArea();
 			accumulator.setBackground(Color.BLUE);
-			accumulator.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			accumulator.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 			accumulator.setText("          A");
 			registerpanel.add(xregister);
 			registerpanel.add(yregister);
 			registerpanel.add(accumulator);
 			
 			JPanel flagpanel = new JPanel();
-			flagpanel.setBorder(new TitledBorder(null, "Flags", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+			flagpanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			flagpanel.setLayout(new FlowLayout());
 			GridBagConstraints gbc_flagpanel = new GridBagConstraints();
 			gbc_flagpanel.fill = GridBagConstraints.BOTH;
@@ -254,7 +270,7 @@ public class Frame extends JFrame {
 				
 		/*Input editor view*/
 		model = new DefaultTableModel();
-		model.addColumn("Lable");
+		model.addColumn("Label");
 		model.addColumn("Instruction");
 		model.addColumn("Data");
 		model.addRow(new Object[]{"","",""});
