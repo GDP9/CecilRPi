@@ -651,19 +651,20 @@ public class Frame extends JFrame {
 		 * Launch the application.
 		 */
 		public static void main(String[] args) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+//			SwingUtilities.invokeLater(new Runnable() {
+//				public void run() {
 					try {
 						//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
 						UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
 						Frame frame = new Frame();
+						UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
+						SwingUtilities.updateComponentTreeUI(frame);
 						frame.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
-			});
+//				}
+//			});
 		}
 }
 
