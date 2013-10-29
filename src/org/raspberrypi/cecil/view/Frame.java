@@ -315,7 +315,7 @@ public class Frame extends JFrame {
 					gbl_panel_1.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 					consolepanel.setLayout(gbl_panel_1);
 					
-					JTextArea textArea = new JTextArea();
+					JTextPane textArea = new JTextPane();
 					textArea.setBackground(Color.red);
 					JScrollPane scrollPane_1 = new JScrollPane(textArea);
 					GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -328,11 +328,12 @@ public class Frame extends JFrame {
 				
 		/*Input editor view*/
 		model = new DefaultTableModel();
+		model.addColumn("#");
 		model.addColumn("Label");
 		model.addColumn("Instruction");
 		model.addColumn("Data");
-		model.addRow(new Object[]{"","",""});
-		model.setRowCount(10);		
+		model.addRow(new Object[]{1,"","",""});
+		//model.setRowCount(10);		
 		GridBagLayout gbl_centerleftPanel = new GridBagLayout();
 		gbl_centerleftPanel.columnWidths = new int[]{142, 0, 0, 0, 0};
 		gbl_centerleftPanel.rowHeights = new int[]{242, 0, 0, 0, 0, 0, 0, 0};
@@ -344,17 +345,23 @@ public class Frame extends JFrame {
 		
 		//table_1.setRowSelectionAllowed(false);
 	
-		setUpSportColumn(table_1, table_1.getColumnModel().getColumn(1));
+
+		setUpSportColumn(table_1, table_1.getColumnModel().getColumn(2));
 		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
+		aligncenter.setHorizontalAlignment( JLabel.CENTER );
+		table_1.getColumnModel().getColumn(0).setCellRenderer( aligncenter );
 		//table_1.setBounds(15, 15, 365, 200);		
 		table_1.setRowHeight(25);		
 		table_1.getColumnModel().getColumn(2).setPreferredWidth(150);
+		table_1.getColumnModel().getColumn(0).setPreferredWidth(5);
 		table_1.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (table_1.getSelectedRow() + 1 == (table_1.getRowCount())) {
 
-						model.addRow(new Object[] { "", "", "" });
+						model.addRow(new Object[] {table_1.getSelectedRow()+2, "", "", "" });
+						//System.out.println(table_1.getValueAt(table_1.getSelectedRow()+1, 0));
 					}
 				}
 			}
@@ -365,6 +372,7 @@ public class Frame extends JFrame {
 			public void keyTyped(KeyEvent e) {
 			}
 		});
+
 
 		scrollPane = new JScrollPane(table_1);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
