@@ -93,8 +93,7 @@ public class Frame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 700);
 		getContentPane().setLayout(new GridBagLayout());
-		JPanel northPanel = new JPanel();
-		northPanel.setBackground(Color.CYAN);
+		JPanel northPanel = new JPanel();		
 		JPanel centerPanel = new JPanel();
 		JPanel centerleftPanel = new JPanel();
 		centerleftPanel.setBackground(new Color(255, 255, 102));
@@ -103,6 +102,7 @@ public class Frame extends JFrame {
 		JPanel centerrightPanel = new JPanel();
 		centerrightPanel.setBackground(Color.BLUE);
 		JPanel southPanel = new JPanel();
+		southPanel.setBackground(new Color(204,229,255));
 		southPanel.setBorder(new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		southPanel.setLayout(new GridLayout(1,1));
 		
@@ -147,9 +147,11 @@ public class Frame extends JFrame {
 		northPanel.setLayout(new GridLayout(1,3));
 		
 		JPanel topLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		topLeft.setBackground(new Color(204,229,255));
 		northPanel.add(topLeft);
 		
 		JButton btnFile = new JButton("File");
+		//btnFile.setBackground(new Color(204,229,255));
 		btnFile.setToolTipText("File");
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
@@ -163,9 +165,11 @@ public class Frame extends JFrame {
 		topLeft.add(btnFile);
 		
 		JPanel topCentre = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		topCentre.setBackground(new Color(204,229,255));
 		northPanel.add(topCentre);
 		
 		JButton btnCompile = new JButton();
+	//	btnCompile.setBackground(new Color(204,229,255));
 		btnCompile.setToolTipText("Compile");
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
@@ -179,6 +183,7 @@ public class Frame extends JFrame {
 		topCentre.add(btnCompile);
 		
 		JButton btnRun = new JButton();
+		//btnRun.setBackground(new Color(204,229,255));
 		btnRun.setToolTipText("Run");
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
@@ -192,6 +197,7 @@ public class Frame extends JFrame {
 		topCentre.add(btnRun);
 		
 		JButton btnStepThrough = new JButton();
+		//btnStepThrough.setBackground(new Color(204,229,255));
 		btnStepThrough.setToolTipText("Step through");
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
@@ -205,9 +211,11 @@ public class Frame extends JFrame {
 		topCentre.add(btnStepThrough);
 		
 		JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		topRight.setBackground(new Color(204,229,255));
 		northPanel.add(topRight);
 		
 		JButton btnSettings = new JButton("Settings");
+		//btnSettings.setBackground(new Color(204,229,255));
 		btnSettings.setToolTipText("Settings");
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
@@ -234,7 +242,7 @@ public class Frame extends JFrame {
 		
 		/*Registers view*/
 		JPanel registerpanel = new JPanel();
-		registerpanel.setBackground(Color.GREEN);
+		registerpanel.setBackground(new Color(226,255,147));
 		registerpanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_register = new GridBagConstraints();
 		//gbc_register.anchor = GridBagConstraints.WEST;
@@ -250,24 +258,23 @@ public class Frame extends JFrame {
 	
 			
 			registerpanel.setLayout(new GridLayout(1,3));
-			JTextArea xregister = new JTextArea();
-			xregister.setSelectionColor(Color.MAGENTA);
+			JTextPane xregister = new JTextPane();
+			xregister.setBackground(new Color(255,204,178));
+			/*xregister.setSelectionColor(Color.MAGENTA);
 			xregister.setSelectedTextColor(Color.YELLOW);
 			xregister.setForeground(Color.PINK);
-			xregister.setDisabledTextColor(Color.YELLOW);
-			 Color color=new Color(255,0,0); 
-			xregister.setBackground(color);
+			xregister.setDisabledTextColor(Color.YELLOW);*/
 			xregister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			xregister.setLineWrap(true);
+			//xregister.setLineWrap(true);
 			xregister.setText("           X");
-			JTextArea yregister = new JTextArea();
-			yregister.setBackground(Color.BLUE);
+			JTextPane yregister = new JTextPane();
+			yregister.setBackground(new Color(182,252,207));
 			yregister.setText("     Y\r\n");
-			yregister.setLineWrap(true);
+			//yregister.setLineWrap(true);
 			yregister.setToolTipText("");
 			yregister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			JTextArea accumulator = new JTextArea();
-			accumulator.setBackground(Color.BLUE);
+			JTextPane accumulator = new JTextPane();
+			accumulator.setBackground(new Color(229,204,255));
 			accumulator.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 			accumulator.setText("          A");
 			registerpanel.add(xregister);
@@ -276,6 +283,7 @@ public class Frame extends JFrame {
 			
 			JPanel flagpanel = new JPanel();
 			flagpanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			flagpanel.setBackground(new Color(226,255,147));
 			flagpanel.setLayout(new FlowLayout());
 			GridBagConstraints gbc_flagpanel = new GridBagConstraints();
 			gbc_flagpanel.fill = GridBagConstraints.BOTH;
@@ -286,6 +294,7 @@ public class Frame extends JFrame {
 			centerrighttopPanel.add(flagpanel, gbc_flagpanel);
 			
 			JButton btnCarry = new JButton("Carry");
+			btnCarry.setBackground(new Color(255,255,204));
 			try {
 				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 				btnCarry.setIcon(new ImageIcon(img));
@@ -298,6 +307,7 @@ public class Frame extends JFrame {
 			flagpanel.add(btnCarry);
 			
 			JButton btnZero = new JButton("Zero");
+			btnZero.setBackground(new Color(255,255,204));
 			try {
 				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
 				btnZero.setIcon(new ImageIcon(img));
@@ -310,6 +320,7 @@ public class Frame extends JFrame {
 			flagpanel.add(btnZero);
 			
 			JButton btnNegative = new JButton("Negative");
+			btnNegative.setBackground(new Color(255,255,204));
 			try {
 				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 				btnNegative.setIcon(new ImageIcon(img));
@@ -342,9 +353,10 @@ public class Frame extends JFrame {
 					gbl_panel_1.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 					gbl_panel_1.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 					consolepanel.setLayout(gbl_panel_1);
+					consolepanel.setBackground(new Color(226,255,147));
 					
 					JTextPane textArea = new JTextPane();
-					textArea.setBackground(new Color(255,255,204));
+					textArea.setBackground(new Color(226,255,147));
 					JScrollPane scrollPane_1 = new JScrollPane(textArea);
 					GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 					gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
@@ -419,9 +431,12 @@ public class Frame extends JFrame {
 	model_1 = new DefaultTableModel();
 	model_1.setColumnCount(100);
 	JTable memory = new JTable(model_1);
+	memory.setBackground(new Color(204,229,255));
+	memory.setFillsViewportHeight(true);
 
 
 	JScrollPane memoryscroll = new JScrollPane(memory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	memoryscroll.setBackground(new Color(204,229,255));
 	memory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	southPanel.add(memoryscroll);
 	
