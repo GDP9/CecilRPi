@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JMenuBar;
@@ -285,12 +286,39 @@ public class Frame extends JFrame {
 			centerrighttopPanel.add(flagpanel, gbc_flagpanel);
 			
 			JButton btnCarry = new JButton("Carry");
+			try {
+				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				btnCarry.setIcon(new ImageIcon(img));
+				
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				btnCarry.setRolloverIcon(new ImageIcon(img));
+			} catch (IOException e) {
+				System.out.println("Error creating buttons: could not set button icon");
+			}
 			flagpanel.add(btnCarry);
 			
 			JButton btnZero = new JButton("Zero");
+			try {
+				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				btnZero.setIcon(new ImageIcon(img));
+				
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				btnZero.setRolloverIcon(new ImageIcon(img));
+			} catch (IOException e) {
+				System.out.println("Error creating buttons: could not set button icon");
+			}
 			flagpanel.add(btnZero);
 			
 			JButton btnNegative = new JButton("Negative");
+			try {
+				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				btnNegative.setIcon(new ImageIcon(img));
+				
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				btnNegative.setRolloverIcon(new ImageIcon(img));
+			} catch (IOException e) {
+				System.out.println("Error creating buttons: could not set button icon");
+			}
 			flagpanel.add(btnNegative);
 			
 			JPanel consolepanel = new JPanel();
