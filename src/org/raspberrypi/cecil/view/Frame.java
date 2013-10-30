@@ -97,7 +97,7 @@ public class Frame extends JFrame {
 		northPanel.setBackground(Color.CYAN);
 		JPanel centerPanel = new JPanel();
 		JPanel centerleftPanel = new JPanel();
-		centerleftPanel.setBackground(Color.MAGENTA);
+		centerleftPanel.setBackground(new Color(255, 255, 102));
 //		centerleftPanel.setBorder(BorderFactory.createTitledBorder("Input Editor"));
 		centerleftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		JPanel centerrightPanel = new JPanel();
@@ -344,7 +344,7 @@ public class Frame extends JFrame {
 					consolepanel.setLayout(gbl_panel_1);
 					
 					JTextPane textArea = new JTextPane();
-					textArea.setBackground(Color.red);
+					textArea.setBackground(new Color(255,255,204));
 					JScrollPane scrollPane_1 = new JScrollPane(textArea);
 					GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 					gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
@@ -369,7 +369,7 @@ public class Frame extends JFrame {
 		gbl_centerleftPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		centerleftPanel.setLayout(gbl_centerleftPanel);
 		table_1 = new JTable(model);
-		table_1.setBackground(Color.YELLOW);
+		table_1.setBackground(new Color(255, 255, 102));
 		
 		//table_1.setRowSelectionAllowed(false);
 	
@@ -402,11 +402,13 @@ public class Frame extends JFrame {
 		});
 
 
+		table_1.setFillsViewportHeight(true);
 		scrollPane = new JScrollPane(table_1);
+		scrollPane.setBackground(new Color(255, 255, 102));
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridheight = 7;
 		gbc_scrollPane.gridwidth = 4;
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		//gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
