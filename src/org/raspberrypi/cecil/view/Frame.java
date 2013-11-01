@@ -1,47 +1,41 @@
 package org.raspberrypi.cecil.view;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JMenuBar;
 import javax.swing.JList;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.Color;
-import javax.swing.JRadioButton;
-import javax.swing.border.LineBorder;
-import javax.swing.JMenuItem;
 import java.awt.Component;
 
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.JComboBox;
-
-
 
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -52,125 +46,448 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.GridLayout;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JLabel;
-import javax.swing.JToggleButton;
+
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.FlowLayout;
-import java.awt.CardLayout;
+import java.io.File;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
 import javax.swing.border.TitledBorder;
-import javax.swing.JScrollBar;
-import javax.swing.SwingConstants;
 
+public class Frame extends JFrame implements CecilViewInterface {
+	private static final int WIDTH = 1000;
+	private static final int HEIGHT = 700;
+	private Font schoolbellFont = null;
+	
+	private DefaultTableModel mdlInput;
+	String[] tooltips = { "American", "Japanese ", "Latin ", "English"};
+	private ArrayList<String> instructionSet;
+	
+	private JPanel northPanel;
+	private JPanel centerRightPanel;
+	private JPanel centerLeftPanel;
+	private JPanel southPanel;
+	private JPanel consolePanel;
+	private JPanel registerPanel;
+	private JPanel flagPanel;
+	
+	private JTextPane xRegister;
+	private JTextPane yRegister;
+	private JTextPane accRegister;
+	private JTextPane txtConsole;
+	
+	private JTable tblInput;
+	private JTable tblMemory;
+	
+	private JButton btnFile;
+	private JButton btnCompile;
+	private JButton btnRun;
+	private JButton btnStepThrough;
+	private JButton btnSettings;
+	private JButton btnHelp;
+	private JButton btnCarry;
+	private JButton btnZero;
+	private JButton btnNegative;
 
-
-public class Frame extends JFrame {
-
-	private JPanel contentPane;
-	private JTable table_1;
-	DefaultTableModel model;
-	DefaultTableModel model_1;
-	private	JScrollPane scrollPane;
-
-	  String[] tooltips = { "American", "Japanese ", "Latin ", "English"};
-
-
+	private JSeparator flagSep1;
+	private JSeparator flagSep2;
+	
 	/**
 	 * Create the frame.
 	 */
 	public Frame() {
-		getContentPane().setBackground(Color.GREEN);
+		setupDefaultFrame();
+		setupColours();
+		setupButtonIcons();
+		setupFlagIcons();
+		setupFonts();
+	}
+
+	private void setupDefaultFrame() {
+		try {
+			schoolbellFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/Schoolbell.ttf"));
+		} catch (FontFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		/*
+		 * Setup main frame and panels
+		 */
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1000, 700);
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().setLayout(new GridBagLayout());
-		JPanel northPanel = new JPanel();		
+		
+		if (instructionSet == null) {
+			//Default instructions
+			instructionSet = new ArrayList<String>();
+			instructionSet.add("Instruction 1");
+			instructionSet.add("Instruction 2");
+			instructionSet.add("Instruction 3");
+		}
+		
+		northPanel = new JPanel();	
+		northPanel.setLayout(new GridLayout(1,3));
+		
+		centerLeftPanel = new JPanel();
+		centerLeftPanel.setLayout(new GridLayout(1,1));
+		centerLeftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
+		centerRightPanel = new JPanel();
+		centerRightPanel.setLayout(new GridLayout(2,1));
+		
 		JPanel centerPanel = new JPanel();
-		JPanel centerleftPanel = new JPanel();
-		centerleftPanel.setBackground(new Color(255, 255, 102));
-//		centerleftPanel.setBorder(BorderFactory.createTitledBorder("Input Editor"));
-		centerleftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		JPanel centerrightPanel = new JPanel();
-		centerrightPanel.setBackground(Color.BLUE);
-		JPanel southPanel = new JPanel();
-		southPanel.setBackground(new Color(204,229,255));
+		centerPanel.setLayout(new GridLayout(1,2));
+		centerPanel.add(centerLeftPanel);
+		centerPanel.add(centerRightPanel);
+		
+		southPanel = new JPanel();
 		southPanel.setBorder(new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		southPanel.setLayout(new GridLayout(1,1));
 		
-		
+		/*
+		 * Add north panel
+		 */
 		GridBagConstraints gbc_north = new GridBagConstraints();
-		//gbc_register.anchor = GridBagConstraints.WEST;
 		gbc_north.fill = GridBagConstraints.BOTH;
-		//gbc_register.insets = new Insets(0, 0, 5, 5);
-		//gbc_register.insets = new Insets(0, 0, 0, 5);
 		gbc_north.gridx = 0;
 		gbc_north.gridy = 0;
 		gbc_north.weightx = 1;
 		gbc_north.weighty = 0.05;
 		getContentPane().add(northPanel, gbc_north);
 		
+		/*
+		 * Add centre panel
+		 */
+		GridBagConstraints gbc_centre = new GridBagConstraints();
+		gbc_centre.fill = GridBagConstraints.BOTH;
+		gbc_centre.gridx = 0;
+		gbc_centre.gridy = 1;
+		gbc_centre.weightx = 1;
+		gbc_centre.weighty = 0.55;
+		getContentPane().add(centerPanel, gbc_centre);		
 		
-		GridBagConstraints gbc_center = new GridBagConstraints();
-		//gbc_register.anchor = GridBagConstraints.WEST;
-		gbc_center.fill = GridBagConstraints.BOTH;
-		//gbc_register.insets = new Insets(0, 0, 5, 5);
-		//gbc_register.insets = new Insets(0, 0, 0, 5);
-		gbc_center.gridx = 0;
-		gbc_center.gridy = 1;
-		gbc_center.weightx = 1;
-		gbc_center.weighty = 0.75;
-		getContentPane().add(centerPanel, gbc_center);		
-		
+		/*
+		 * Add south panel
+		 */
 		GridBagConstraints gbc_south = new GridBagConstraints();
-		//gbc_register.anchor = GridBagConstraints.WEST;
 		gbc_south.fill = GridBagConstraints.BOTH;
-		//gbc_register.insets = new Insets(0, 0, 5, 5);
-		//gbc_register.insets = new Insets(0, 0, 0, 5);
 		gbc_south.gridx = 0;
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
-		gbc_south.weighty = 0.2;
+		gbc_south.weighty = 0.4;
 		getContentPane().add(southPanel, gbc_south);
 		
 		/*
-		 * Setup north panel and all the buttons
+		 * Setup north panel subpanels
 		 */
-		northPanel.setLayout(new GridLayout(1,3));
-		
 		JPanel topLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		topLeft.setBackground(new Color(204,229,255));
+		topLeft.setOpaque(false);
 		northPanel.add(topLeft);
 		
-		JButton btnFile = new JButton("File");
-		//btnFile.setBackground(new Color(204,229,255));
+		JPanel topCentre = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		topCentre.setOpaque(false);
+		northPanel.add(topCentre);
+		
+		JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		topRight.setOpaque(false);
+		northPanel.add(topRight);
+		
+		/*
+		 * Setup north panel buttons
+		 */
+		btnFile = new JButton("File");
 		btnFile.setToolTipText("File");
+		topLeft.add(btnFile);
+		
+		btnCompile = new JButton();
+		btnCompile.setToolTipText("Compile");
+		topCentre.add(btnCompile);
+		
+		btnRun = new JButton();
+		btnRun.setToolTipText("Run");
+		topCentre.add(btnRun);
+		
+		btnStepThrough = new JButton();
+		btnStepThrough.setToolTipText("Step through");
+		topCentre.add(btnStepThrough);
+		
+		btnSettings = new JButton("Settings");
+		btnSettings.setToolTipText("Settings");
+		topRight.add(btnSettings);
+		
+		btnHelp = new JButton("Help");
+		btnHelp.setToolTipText("Help");
+		topRight.add(btnHelp);
+		
+		/*
+		 * Registers
+		 */
+		JPanel centerRightTopPanel = new JPanel();
+		centerRightTopPanel.setLayout(new GridBagLayout());
+		centerRightPanel.add(centerRightTopPanel);
+		
+		registerPanel = new JPanel();
+		registerPanel.setLayout(new GridLayout(1,3));
+		registerPanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
+		GridBagConstraints gbc_register = new GridBagConstraints();
+		gbc_register.fill = GridBagConstraints.BOTH;
+		gbc_register.gridx = 0;
+		gbc_register.gridy = 0;
+		gbc_register.weightx = 1;
+		gbc_register.weighty = 0.9;
+		centerRightTopPanel.add(registerPanel, gbc_register);
+		
+		/*
+		 * X register
+		 */
+		xRegister = new JTextPane();
+		xRegister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		xRegister.setText("0");
+		//Center the text
+		StyledDocument doc = xRegister.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		/*
+		 * Y register
+		 */
+		yRegister = new JTextPane();
+		yRegister.setText("0");
+		yRegister.setToolTipText("Y register");
+		yRegister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		doc = yRegister.getStyledDocument();
+		center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		/*
+		 * Acc register
+		 */
+		accRegister = new JTextPane();
+		accRegister.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		accRegister.setText("0");
+		doc = accRegister.getStyledDocument();
+		center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		/*
+		 * Add the register panes
+		 */
+		registerPanel.add(xRegister);
+		registerPanel.add(yRegister);
+		registerPanel.add(accRegister);
+		
+		/*
+		 * Flags
+		 */
+		flagPanel = new JPanel();
+		flagPanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		flagPanel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 0;
+		gbc_flagpanel.gridy = 1;
+		gbc_flagpanel.weightx = 1;
+		gbc_flagpanel.weighty = 0.1;
+		centerRightTopPanel.add(flagPanel, gbc_flagpanel);
+		
+		btnCarry = new JButton("Carry");
+		btnCarry.setFocusable(false);
+		btnCarry.setBorderPainted(false);
+//		btnCarry.setOpaque(false);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 0;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnCarry, gbc_flagpanel);
+		
+		flagSep1 = new JSeparator(JSeparator.VERTICAL);
+		flagSep1.setOpaque(true);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 1;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.05;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(flagSep1, gbc_flagpanel);
+		
+		btnZero = new JButton("Zero");
+		btnZero.setFocusable(false);
+		btnZero.setBorderPainted(false);
+//		btnZero.setOpaque(false);
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 2;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnZero, gbc_flagpanel);
+		
+		flagSep2 = new JSeparator(JSeparator.VERTICAL);
+		flagSep2.setOpaque(true);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 3;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.05;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(flagSep2, gbc_flagpanel);
+		
+		btnNegative = new JButton("Negative");
+		btnNegative.setFocusable(false);
+		btnNegative.setBorderPainted(false);
+//		btnNegative.setOpaque(false);
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 4;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnNegative, gbc_flagpanel);
+		
+		/*
+		 * Console
+		 */		
+		consolePanel = new JPanel();
+		consolePanel.setLayout(new GridLayout(1,1));
+		consolePanel.setBorder(new TitledBorder(null, "Output console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		centerRightPanel.add(consolePanel);
+					
+		txtConsole = new JTextPane();
+		consolePanel.add(new JScrollPane(txtConsole));
+		
+		/*
+		 * Input editor
+		 */
+		mdlInput = new DefaultTableModel();
+		mdlInput.addColumn("#");
+		mdlInput.addColumn("Label");
+		mdlInput.addColumn("Instruction");
+		mdlInput.addColumn("Data");
+		mdlInput.addRow(new Object[]{1,"","",""});
+		
+		tblInput = new JTable(mdlInput);	
+
+		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
+//		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
+		aligncenter.setHorizontalAlignment(JLabel.CENTER);
+		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
+		tblInput.setRowHeight(25);		
+		tblInput.getColumnModel().getColumn(2).setPreferredWidth(150);
+		tblInput.getColumnModel().getColumn(0).setPreferredWidth(5);
+		tblInput.setFillsViewportHeight(true);
+		tblInput.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (tblInput.getSelectedRow() + 1 == (tblInput.getRowCount())) {
+
+						mdlInput.addRow(new Object[] {tblInput.getSelectedRow()+2, "", "", "" });
+						//System.out.println(table_1.getValueAt(table_1.getSelectedRow()+1, 0));
+					}
+				}
+			}
+
+			public void keyReleased(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {}
+		});
+		
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.gridheight = 7;
+		gbc_scrollPane.gridwidth = 4;
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 0;
+		centerLeftPanel.add(new JScrollPane(tblInput), gbc_scrollPane);
+		
+		DefaultTableModel mdlMemory = new DefaultTableModel();
+		mdlMemory.setColumnCount(100);
+		
+		tblMemory = new JTable(mdlMemory);
+		tblMemory.setFillsViewportHeight(true);
+
+		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		southPanel.add(new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+	}
+	
+//	private void setupColours() {
+//		northPanel.setBackground(new Color(204,229,255));
+//		centerLeftPanel.setBackground(new Color(255, 255, 102));
+//		southPanel.setBackground(new Color(204,229,255));
+//		
+//		registerPanel.setBackground(new Color(226,255,147));
+//		xRegister.setBackground(new Color(255,204,178));
+//		yRegister.setBackground(new Color(182,252,207));
+//		accRegister.setBackground(new Color(229,204,255));
+//		
+//		flagPanel.setBackground(new Color(226,255,147));
+//		btnCarry.setBackground(new Color(255,255,204));
+//		btnZero.setBackground(new Color(255,255,204));
+//		btnNegative.setBackground(new Color(255,255,204));
+//		
+//		consolePanel.setBackground(new Color(226,255,147));
+//		txtConsole.setBackground(new Color(226,255,147));
+//		
+//		tblInput.setBackground(new Color(255, 255, 102));
+//		tblMemory.setBackground(new Color(204,229,255));
+//	}
+	
+	private void setupColours() {
+		northPanel.setBackground(new Color(204, 229, 255));
+		centerLeftPanel.setBackground(new Color(255, 255, 102));
+		southPanel.setBackground(new Color(204, 229, 255));
+
+		registerPanel.setBackground(new Color(255, 243, 66));
+		xRegister.setBackground(new Color(246, 238, 10));
+		yRegister.setBackground(new Color(255, 251, 105));
+		accRegister.setBackground(new Color(255, 255, 0));
+
+		flagPanel.setBackground(new Color(255, 243, 66));
+		btnCarry.setBackground(new Color(255, 255, 204));
+		flagSep1.setBackground(new Color(255, 255, 204));
+		btnZero.setBackground(new Color(255, 255, 204));
+		flagSep2.setBackground(new Color(255, 255, 204));
+		btnNegative.setBackground(new Color(255, 255, 204));
+
+		consolePanel.setBackground(new Color(255, 243, 66));
+		txtConsole.setBackground(new Color(255, 243, 66));
+
+		tblInput.setBackground(new Color(255, 243, 93));
+		// tblInput.setBackground(new Color(255, 255, 102));
+		tblMemory.setBackground(new Color(204, 229, 255));
+	}
+	
+	private void setupButtonIcons() {
+		//File
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
 			btnFile.setIcon(new ImageIcon(img));
 			
 			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
 			btnFile.setRolloverIcon(new ImageIcon(img));
+			
+			
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		topLeft.add(btnFile);
 		
-		JPanel topCentre = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		topCentre.setBackground(new Color(204,229,255));
-		northPanel.add(topCentre);
-		
-		JButton btnCompile = new JButton();
-	//	btnCompile.setBackground(new Color(204,229,255));
-		btnCompile.setToolTipText("Compile");
+		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
 			btnCompile.setIcon(new ImageIcon(img));
@@ -180,11 +497,8 @@ public class Frame extends JFrame {
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		topCentre.add(btnCompile);
 		
-		JButton btnRun = new JButton();
-		//btnRun.setBackground(new Color(204,229,255));
-		btnRun.setToolTipText("Run");
+		//Run
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
 			btnRun.setIcon(new ImageIcon(img));
@@ -194,11 +508,8 @@ public class Frame extends JFrame {
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		topCentre.add(btnRun);
 		
-		JButton btnStepThrough = new JButton();
-		//btnStepThrough.setBackground(new Color(204,229,255));
-		btnStepThrough.setToolTipText("Step through");
+		//Step through
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
 			btnStepThrough.setIcon(new ImageIcon(img));
@@ -208,15 +519,8 @@ public class Frame extends JFrame {
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		topCentre.add(btnStepThrough);
 		
-		JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		topRight.setBackground(new Color(204,229,255));
-		northPanel.add(topRight);
-		
-		JButton btnSettings = new JButton("Settings");
-		//btnSettings.setBackground(new Color(204,229,255));
-		btnSettings.setToolTipText("Settings");
+		//Settings
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
 			btnSettings.setIcon(new ImageIcon(img));
@@ -226,514 +530,409 @@ public class Frame extends JFrame {
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		topRight.add(btnSettings);
 		
-		southPanel.setLayout(new GridLayout(1,1));
+		//Help
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
+			btnHelp.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
+			btnHelp.setRolloverIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+	}
 	
-		centerPanel.setLayout(new GridLayout(1,2));
-		centerPanel.add(centerleftPanel);
-		centerPanel.add(centerrightPanel);
-		centerrightPanel.setLayout(new GridLayout(2,1));
-
+	private void setupFlagIcons() {
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+			btnCarry.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		
-		JPanel centerrighttopPanel = new JPanel();
-		centerrighttopPanel.setLayout(new GridBagLayout());
-		centerrightPanel.add(centerrighttopPanel);
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+			btnZero.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 		
-		/*Registers view*/
-		JPanel registerpanel = new JPanel();
-		registerpanel.setBackground(new Color(226,255,147));
-		registerpanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		GridBagConstraints gbc_register = new GridBagConstraints();
-		//gbc_register.anchor = GridBagConstraints.WEST;
-		gbc_register.fill = GridBagConstraints.BOTH;
-		//gbc_register.insets = new Insets(0, 0, 5, 5);
-		//gbc_register.insets = new Insets(0, 0, 0, 5);
-		gbc_register.gridx = 0;
-		gbc_register.gridy = 0;
-		gbc_register.weightx = 1;
-		gbc_register.weighty = 0.75;
-		centerrighttopPanel.add(registerpanel, gbc_register);
-		
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			btnNegative.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+	}
 	
-			
-			registerpanel.setLayout(new GridLayout(1,3));
-			JTextPane xregister = new JTextPane();
-			xregister.setBackground(new Color(255,204,178));
-			/*xregister.setSelectionColor(Color.MAGENTA);
-			xregister.setSelectedTextColor(Color.YELLOW);
-			xregister.setForeground(Color.PINK);
-			xregister.setDisabledTextColor(Color.YELLOW);*/
-			xregister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			//xregister.setLineWrap(true);
-			xregister.setText("           X");
-			JTextPane yregister = new JTextPane();
-			yregister.setBackground(new Color(182,252,207));
-			yregister.setText("     Y\r\n");
-			//yregister.setLineWrap(true);
-			yregister.setToolTipText("");
-			yregister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			JTextPane accumulator = new JTextPane();
-			accumulator.setBackground(new Color(229,204,255));
-			accumulator.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			accumulator.setText("          A");
-			registerpanel.add(xregister);
-			registerpanel.add(yregister);
-			registerpanel.add(accumulator);
-			
-			JPanel flagpanel = new JPanel();
-			flagpanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			flagpanel.setBackground(new Color(226,255,147));
-			flagpanel.setLayout(new FlowLayout());
-			GridBagConstraints gbc_flagpanel = new GridBagConstraints();
-			gbc_flagpanel.fill = GridBagConstraints.BOTH;
-			gbc_flagpanel.gridx = 0;
-			gbc_flagpanel.gridy = 1;
-			gbc_flagpanel.weightx = 1;
-			gbc_register.weighty = 0.25;
-			centerrighttopPanel.add(flagpanel, gbc_flagpanel);
-			
-			JButton btnCarry = new JButton("Carry");
-			btnCarry.setBackground(new Color(255,255,204));
-			try {
-				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				btnCarry.setIcon(new ImageIcon(img));
-				
-				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				btnCarry.setRolloverIcon(new ImageIcon(img));
-			} catch (IOException e) {
-				System.out.println("Error creating buttons: could not set button icon");
-			}
-			flagpanel.add(btnCarry);
-			
-			JButton btnZero = new JButton("Zero");
-			btnZero.setBackground(new Color(255,255,204));
-			try {
-				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				btnZero.setIcon(new ImageIcon(img));
-				
-				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				btnZero.setRolloverIcon(new ImageIcon(img));
-			} catch (IOException e) {
-				System.out.println("Error creating buttons: could not set button icon");
-			}
-			flagpanel.add(btnZero);
-			
-			JButton btnNegative = new JButton("Negative");
-			btnNegative.setBackground(new Color(255,255,204));
-			try {
-				Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				btnNegative.setIcon(new ImageIcon(img));
-				
-				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				btnNegative.setRolloverIcon(new ImageIcon(img));
-			} catch (IOException e) {
-				System.out.println("Error creating buttons: could not set button icon");
-			}
-			flagpanel.add(btnNegative);
-			
-			JPanel consolepanel = new JPanel();
-			GridBagConstraints gbc_consolepanel = new GridBagConstraints();
-			gbc_consolepanel.gridwidth = 12;
-			gbc_consolepanel.insets = new Insets(0, 0, 0, 5);
-			gbc_consolepanel.fill = GridBagConstraints.BOTH;
-			gbc_consolepanel.gridx = 0;
-			gbc_consolepanel.gridy = 7;
-			centerrightPanel.add(consolepanel, gbc_consolepanel);
-					
-					/*Console view*/
-					
-					
-				
-					consolepanel.setBorder(new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-					consolepanel.setForeground(Color.WHITE);
-					GridBagLayout gbl_panel_1 = new GridBagLayout();
-					gbl_panel_1.columnWidths = new int[]{287, 0};
-					gbl_panel_1.rowHeights = new int[]{151, 1, 0};
-					gbl_panel_1.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-					gbl_panel_1.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-					consolepanel.setLayout(gbl_panel_1);
-					consolepanel.setBackground(new Color(226,255,147));
-					
-					JTextPane textArea = new JTextPane();
-					textArea.setBackground(new Color(226,255,147));
-					JScrollPane scrollPane_1 = new JScrollPane(textArea);
-					GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-					gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
-					gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
-					gbc_scrollPane_1.gridx = 0;
-					gbc_scrollPane_1.gridy = 0;
-					consolepanel.add(scrollPane_1, gbc_scrollPane_1);
-					
-				
-		/*Input editor view*/
-		model = new DefaultTableModel();
-		model.addColumn("#");
-		model.addColumn("Label");
-		model.addColumn("Instruction");
-		model.addColumn("Data");
-		model.addRow(new Object[]{1,"","",""});
-		//model.setRowCount(10);		
-		GridBagLayout gbl_centerleftPanel = new GridBagLayout();
-		gbl_centerleftPanel.columnWidths = new int[]{142, 0, 0, 0, 0};
-		gbl_centerleftPanel.rowHeights = new int[]{242, 0, 0, 0, 0, 0, 0, 0};
-		gbl_centerleftPanel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_centerleftPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		centerleftPanel.setLayout(gbl_centerleftPanel);
-		table_1 = new JTable(model);
-		table_1.setBackground(new Color(255, 255, 102));
+	private void setupFonts() {
+		schoolbellFont = schoolbellFont.deriveFont(20f);
+		UIManager.put("ToolTip.font", new FontUIResource(schoolbellFont));
 		
-		//table_1.setRowSelectionAllowed(false);
+		btnFile.setFont(schoolbellFont);
+		btnCompile.setFont(schoolbellFont);
+		btnRun.setFont(schoolbellFont);
+		btnStepThrough.setFont(schoolbellFont);
+		btnSettings.setFont(schoolbellFont);
+		btnHelp.setFont(schoolbellFont);
+		((TitledBorder) flagPanel.getBorder()).setTitleFont(schoolbellFont);
+		btnCarry.setFont(schoolbellFont);
+		btnZero.setFont(schoolbellFont);
+		btnNegative.setFont(schoolbellFont);
+		((TitledBorder) registerPanel.getBorder()).setTitleFont(schoolbellFont);
+		xRegister.setFont(schoolbellFont);
+		((TitledBorder) xRegister.getBorder()).setTitleFont(schoolbellFont);
+		yRegister.setFont(schoolbellFont);
+		((TitledBorder) yRegister.getBorder()).setTitleFont(schoolbellFont);
+		accRegister.setFont(schoolbellFont);
+		((TitledBorder) accRegister.getBorder()).setTitleFont(schoolbellFont);
+		((TitledBorder) consolePanel.getBorder()).setTitleFont(schoolbellFont);
+		txtConsole.setFont(schoolbellFont);
+		((TitledBorder) centerLeftPanel.getBorder()).setTitleFont(schoolbellFont);
+		tblInput.getTableHeader().setFont(schoolbellFont);
+		tblInput.setRowHeight(40);
+		tblInput.setFont(schoolbellFont);
+		((TitledBorder) southPanel.getBorder()).setTitleFont(schoolbellFont);
+		tblMemory.getTableHeader().setFont(schoolbellFont);
+		tblMemory.setFont(schoolbellFont);
+		tblMemory.setRowHeight(40);
+		
+//		for (int i = 0; i < tblInput.getColumnCount(); i ++) {
+//		    TableColumn col = tblInput.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
+//		
+//		for (int i = 0; i < tblMemory.getColumnCount(); i ++) {
+//		    TableColumn col = tblMemory.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
+	}
 	
+//	public class MyTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+//	    JComponent component = new JTextField();
+//	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
+//	        ((JTextField)component).setText((String)value);
+//	        ((JTextField)component).setFont(schoolbellFont);
+//	        return component;
+//	    }
+//		@Override
+//		public Object getCellEditorValue() {
+//			return null;
+//		}
+//	}
+	
+	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
+		Java2sAutoComboBox comboBox = new Java2sAutoComboBox(instructionSet);
+		comboBox.setEditable(true);
+		ActionListener actionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				ItemSelectable is = (ItemSelectable)actionEvent.getSource();
+				System.out.println(", Selected: " + selectedString(is));
+			}
+		};
+		comboBox.addActionListener(actionListener);
+		comboBox.setRenderer(new MyComboBoxRenderer());
+		instructionColumn.setCellEditor(new DefaultCellEditor(comboBox));
+	}
+	
+	static private String selectedString(ItemSelectable is) {
+		Object selected[] = is.getSelectedObjects();
+		return ((selected.length == 0) ? "null" : (String)selected[0]);
+	} 
+	 
+	class MyComboBoxRenderer extends BasicComboBoxRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			if (isSelected) {	
+				setBackground(list.getSelectionBackground());
+				setForeground(Color.BLUE);
+				if (-1 < index) {
+					list.setToolTipText(tooltips[index]);//get the tooltip according the selected item's index
+				}
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+			setFont(list.getFont());
+			setText((value == null) ? "" : value.toString());
+			setBorder(getBorder());
+			return this;
+		}
+	}
+	
+	public class Java2sAutoTextField extends JTextField {
+		class AutoDocument extends PlainDocument {
+			public void replace(int i, int j, String s, AttributeSet attributeset) throws BadLocationException {
+				super.remove(i, j);
+				insertString(i, s, attributeset);
+			}
 
-		setUpSportColumn(table_1, table_1.getColumnModel().getColumn(2));
-		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
-		aligncenter.setHorizontalAlignment( JLabel.CENTER );
-		table_1.getColumnModel().getColumn(0).setCellRenderer( aligncenter );
-		//table_1.setBounds(15, 15, 365, 200);		
-		table_1.setRowHeight(25);		
-		table_1.getColumnModel().getColumn(2).setPreferredWidth(150);
-		table_1.getColumnModel().getColumn(0).setPreferredWidth(5);
-		table_1.addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (table_1.getSelectedRow() + 1 == (table_1.getRowCount())) {
+			public void insertString(int i, String s, AttributeSet attributeset) throws BadLocationException {
+				if (s == null || "".equals(s))
+					return;
+				String s1 = getText(0, i);
+				String s2 = getMatch(s1 + s);
+				int j = (i + s.length()) - 1;
+				if (isStrict && s2 == null) {
+					s2 = getMatch(s1);
+					j--;
+				} else if (!isStrict && s2 == null) {
+					super.insertString(i, s, attributeset);
+					return;
+				}
+				if (autoComboBox != null && s2 != null)
+					autoComboBox.setSelectedValue(s2);
+				super.remove(0, getLength());
+				super.insertString(0, s2, attributeset);
+				setSelectionStart(j + 1);
+				setSelectionEnd(getLength());
+			}
 
-						model.addRow(new Object[] {table_1.getSelectedRow()+2, "", "", "" });
-						//System.out.println(table_1.getValueAt(table_1.getSelectedRow()+1, 0));
-					}
+			public void remove(int i, int j) throws BadLocationException {
+				int k = getSelectionStart();
+				if (k > 0)
+					k--;
+				String s = getMatch(getText(0, k));
+				if (!isStrict && s == null) {
+					super.remove(i, j);
+				} else {
+					super.remove(0, getLength());
+					super.insertString(0, s, null);
+				}
+				if (autoComboBox != null && s != null)
+					autoComboBox.setSelectedValue(s);
+				try {
+					setSelectionStart(k);
+					setSelectionEnd(getLength());
+				} catch (Exception exception) {
+				}
+			}
+		}
+
+		public Java2sAutoTextField(List list) {
+			isCaseSensitive = false;
+			isStrict = true;
+			autoComboBox = null;
+			if (list == null) {
+				throw new IllegalArgumentException("values can not be null");
+			} else {
+				dataList = list;
+				init();
+				return;
+			}
+		}
+
+		Java2sAutoTextField(List list, Java2sAutoComboBox b) {
+			isCaseSensitive = false;
+			isStrict = true;
+			autoComboBox = null;
+		    if (list == null) {
+		    	throw new IllegalArgumentException("values can not be null");
+		    } else {
+		    	dataList = list;
+		    	autoComboBox = b;
+		    	init();
+		    	return;
+		    }
+		}
+
+		private void init() {
+			setDocument(new AutoDocument());
+			if (isStrict && dataList.size() > 0)
+				setText(dataList.get(0).toString());
+		}
+
+		private String getMatch(String s) {
+			for (int i = 0; i < dataList.size(); i++) {
+				String s1 = dataList.get(i).toString();
+				if (s1 != null) {
+					if (!isCaseSensitive && s1.toLowerCase().startsWith(s.toLowerCase()))
+						return s1;
+					if (isCaseSensitive && s1.startsWith(s))
+						return s1;
 				}
 			}
 
-			public void keyReleased(KeyEvent e) {
-			}
-
-			public void keyTyped(KeyEvent e) {
-			}
-		});
-
-
-		table_1.setFillsViewportHeight(true);
-		scrollPane = new JScrollPane(table_1);
-		scrollPane.setBackground(new Color(255, 255, 102));
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridheight = 7;
-		gbc_scrollPane.gridwidth = 4;
-		//gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
-		centerleftPanel.add( scrollPane, gbc_scrollPane );
-		
-		
-		
-	model_1 = new DefaultTableModel();
-	model_1.setColumnCount(100);
-	JTable memory = new JTable(model_1);
-	memory.setBackground(new Color(204,229,255));
-	memory.setFillsViewportHeight(true);
-
-
-	JScrollPane memoryscroll = new JScrollPane(memory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	memoryscroll.setBackground(new Color(204,229,255));
-	memory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	southPanel.add(memoryscroll);
-	
-	
-		
-
-		
-		
-			
-	}
-
-	
-
-	 public void setUpSportColumn(JTable table,TableColumn sportColumn) {
-		 ArrayList<String> listSomeString = new ArrayList<String>();        
-	        listSomeString.add("LOAD");
-	        listSomeString.add("JUMP");
-	        listSomeString.add("Interrup");
-	        listSomeString.add("None");
-	        Java2sAutoComboBox comboBox = new Java2sAutoComboBox(listSomeString);
-	        comboBox.setEditable(true);
-	        ActionListener actionListener = new ActionListener() {
-	            public void actionPerformed(ActionEvent actionEvent) {
-	              ItemSelectable is = (ItemSelectable)actionEvent.getSource();
-	              System.out.println(", Selected: " + selectedString(is));
-	            }
-	          };
-	          comboBox.addActionListener(actionListener);
-	       	  comboBox.setRenderer(new MyComboBoxRenderer());
-	        sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-
-			
-			
-
-}
-	  static private String selectedString(ItemSelectable is) {
-		    Object selected[] = is.getSelectedObjects();
-		    return ((selected.length == 0) ? "null" : (String)selected[0]);
-		  } 
-	 
-	 class MyComboBoxRenderer extends BasicComboBoxRenderer {
-		    public Component getListCellRendererComponent(JList list, Object value,
-		        int index, boolean isSelected, boolean cellHasFocus) {
-		      if (isSelected) {	
-		        setBackground(list.getSelectionBackground());
-		        setForeground(Color.BLUE);
-		       if (-1 < index) {
-		          list.setToolTipText(tooltips[index]);//get the tooltip according the selected item's index
-		          
-		        }
-		      } else {
-		        setBackground(list.getBackground());
-		        setForeground(list.getForeground());
-		      }
-		      setFont(list.getFont());
-		      setText((value == null) ? "" : value.toString());
-		      setBorder(getBorder());
-		      return this;
-		    }
-		  }
-	 public class Java2sAutoTextField extends JTextField {
-		  class AutoDocument extends PlainDocument {
-
-		    public void replace(int i, int j, String s, AttributeSet attributeset)
-		        throws BadLocationException {
-		      super.remove(i, j);
-		      insertString(i, s, attributeset);
-		    }
-
-		    public void insertString(int i, String s, AttributeSet attributeset)
-		        throws BadLocationException {
-		      if (s == null || "".equals(s))
-		        return;
-		      String s1 = getText(0, i);
-		      String s2 = getMatch(s1 + s);
-		      int j = (i + s.length()) - 1;
-		      if (isStrict && s2 == null) {
-		        s2 = getMatch(s1);
-		        j--;
-		      } else if (!isStrict && s2 == null) {
-		        super.insertString(i, s, attributeset);
-		        return;
-		      }
-		      if (autoComboBox != null && s2 != null)
-		        autoComboBox.setSelectedValue(s2);
-		      super.remove(0, getLength());
-		      super.insertString(0, s2, attributeset);
-		      setSelectionStart(j + 1);
-		      setSelectionEnd(getLength());
-		    }
-
-		    public void remove(int i, int j) throws BadLocationException {
-		      int k = getSelectionStart();
-		      if (k > 0)
-		        k--;
-		      String s = getMatch(getText(0, k));
-		      if (!isStrict && s == null) {
-		        super.remove(i, j);
-		      } else {
-		        super.remove(0, getLength());
-		        super.insertString(0, s, null);
-		      }
-		      if (autoComboBox != null && s != null)
-		        autoComboBox.setSelectedValue(s);
-		      try {
-		        setSelectionStart(k);
-		        setSelectionEnd(getLength());
-		      } catch (Exception exception) {
-		      }
-		    }
-
-		  }
-
-		  public Java2sAutoTextField(List list) {
-		    isCaseSensitive = false;
-		    isStrict = true;
-		    autoComboBox = null;
-		    if (list == null) {
-		      throw new IllegalArgumentException("values can not be null");
-		    } else {
-		      dataList = list;
-		      init();
-		      return;
-		    }
-		  }
-
-		  Java2sAutoTextField(List list, Java2sAutoComboBox b) {
-		    isCaseSensitive = false;
-		    isStrict = true;
-		    autoComboBox = null;
-		    if (list == null) {
-		      throw new IllegalArgumentException("values can not be null");
-		    } else {
-		      dataList = list;
-		      autoComboBox = b;
-		      init();
-		      return;
-		    }
-		  }
-
-		  private void init() {
-		    setDocument(new AutoDocument());
-		    if (isStrict && dataList.size() > 0)
-		      setText(dataList.get(0).toString());
-		  }
-
-		  private String getMatch(String s) {
-		    for (int i = 0; i < dataList.size(); i++) {
-		      String s1 = dataList.get(i).toString();
-		      if (s1 != null) {
-		        if (!isCaseSensitive
-		            && s1.toLowerCase().startsWith(s.toLowerCase()))
-		          return s1;
-		        if (isCaseSensitive && s1.startsWith(s))
-		          return s1;
-		      }
-		    }
-
-		    return null;
-		  }
-
-		  
-
-		  public boolean isCaseSensitive() {
-		    return isCaseSensitive;
-		  }
-
-		  public void setCaseSensitive(boolean flag) {
-		    isCaseSensitive = flag;
-		  }
-
-		  public boolean isStrict() {
-		    return isStrict;
-		  }
-
-		  public void setStrict(boolean flag) {
-		    isStrict = flag;
-		  }
-
-		  public List getDataList() {
-		    return dataList;
-		  }
-
-		  public void setDataList(List list) {
-		    if (list == null) {
-		      throw new IllegalArgumentException("values can not be null");
-		    } else {
-		      dataList = list;
-		      return;
-		    }
-		  }
-
-		  private List dataList;
-
-		  private boolean isCaseSensitive;
-
-		  private boolean isStrict;
-
-		  private Java2sAutoComboBox autoComboBox;
+			return null;
 		}
+		
+		public boolean isCaseSensitive() {
+			return isCaseSensitive;
+		}
+
+		public void setCaseSensitive(boolean flag) {
+			isCaseSensitive = flag;
+		}
+
+		public boolean isStrict() {
+			return isStrict;
+		}
+
+		public void setStrict(boolean flag) {
+			isStrict = flag;
+		}
+
+		public List getDataList() {
+			return dataList;
+		}
+
+		public void setDataList(List list) {
+			if (list == null) {
+				throw new IllegalArgumentException("values can not be null");
+			} else {
+				dataList = list;
+				return;
+			}
+		}
+
+		private List dataList;
+		private boolean isCaseSensitive;
+		private boolean isStrict;
+		private Java2sAutoComboBox autoComboBox;
+	}
+	
 	 /*JComboBox auto-complete*/
-	 public class Java2sAutoComboBox extends JComboBox {
-		  private class AutoTextFieldEditor extends BasicComboBoxEditor {
+	public class Java2sAutoComboBox extends JComboBox {
+		private class AutoTextFieldEditor extends BasicComboBoxEditor {
+			private Java2sAutoTextField getAutoTextFieldEditor() {
+				return (Java2sAutoTextField) editor;
+			}
 
-		    private Java2sAutoTextField getAutoTextFieldEditor() {
-		      return (Java2sAutoTextField) editor;
-		    }
+			AutoTextFieldEditor(java.util.List list) {
+				editor = new Java2sAutoTextField(list, Java2sAutoComboBox.this);
+			}
+		}
 
-		    AutoTextFieldEditor(java.util.List list) {
-		      editor = new Java2sAutoTextField(list, Java2sAutoComboBox.this);
-		      
-		       }
-		  }
+		public Java2sAutoComboBox(java.util.List list) {
+			isFired = false;
+			autoTextFieldEditor = new AutoTextFieldEditor(list);
+			setEditable(true);
+			setModel(new DefaultComboBoxModel(list.toArray()) {
+				protected void fireContentsChanged(Object obj, int i, int j) {
+					if (!isFired)
+						super.fireContentsChanged(obj, i, j);
+				}
+			});
+			setEditor(autoTextFieldEditor);
+		}
 
-		  public Java2sAutoComboBox(java.util.List list) {
-		    isFired = false;
-		    autoTextFieldEditor = new AutoTextFieldEditor(list);
-		    setEditable(true);
-		    setModel(new DefaultComboBoxModel(list.toArray()) {
+		public boolean isCaseSensitive() {
+			return autoTextFieldEditor.getAutoTextFieldEditor().isCaseSensitive();
+		}
 
-		      protected void fireContentsChanged(Object obj, int i, int j) {
-		        if (!isFired)
-		          super.fireContentsChanged(obj, i, j);
-		      }
+		public void setCaseSensitive(boolean flag) {
+			autoTextFieldEditor.getAutoTextFieldEditor().setCaseSensitive(flag);
+		}
 
-		    });
-		    setEditor(autoTextFieldEditor);
-		  }
-
-		  public boolean isCaseSensitive() {
-		    return autoTextFieldEditor.getAutoTextFieldEditor().isCaseSensitive();
-		  }
-
-		  public void setCaseSensitive(boolean flag) {
-		    autoTextFieldEditor.getAutoTextFieldEditor().setCaseSensitive(flag);
-		  }
-
-		  public boolean isStrict() {
-		    return autoTextFieldEditor.getAutoTextFieldEditor().isStrict();
-		  }
+		public boolean isStrict() {
+			return autoTextFieldEditor.getAutoTextFieldEditor().isStrict();
+		}
 
 		  /*public void setStrict(boolean flag) {
 		    autoTextFieldEditor.getAutoTextFieldEditor().setStrict(flag);
 		  }*/
 
-		  public java.util.List getDataList() {
-		    return autoTextFieldEditor.getAutoTextFieldEditor().getDataList();
-		  }
-
-		  public void setDataList(java.util.List list) {
-		    autoTextFieldEditor.getAutoTextFieldEditor().setDataList(list);
-		    setModel(new DefaultComboBoxModel(list.toArray()));
-		  }
-
-		  void setSelectedValue(Object obj) {
-		    if (isFired) {
-		      return;
-		    } else {
-		      isFired = true;
-		      setSelectedItem(obj);
-		      fireItemStateChanged(new ItemEvent(this, 701, selectedItemReminder,
-		          1));
-		      isFired = false;
-		      return;
-		    }
-		  }
-
-		  protected void fireActionEvent() {
-		    if (!isFired)
-		      super.fireActionEvent();
-		  }
-
-		  private AutoTextFieldEditor autoTextFieldEditor;
-
-		  private boolean isFired;
-
+		public java.util.List getDataList() {
+			return autoTextFieldEditor.getAutoTextFieldEditor().getDataList();
 		}
+
+		public void setDataList(java.util.List list) {
+			autoTextFieldEditor.getAutoTextFieldEditor().setDataList(list);
+			setModel(new DefaultComboBoxModel(list.toArray()));
+		}
+
+		void setSelectedValue(Object obj) {
+			if (isFired) {
+				return;
+			} else {
+				isFired = true;
+				setSelectedItem(obj);
+				fireItemStateChanged(new ItemEvent(this, 701, selectedItemReminder, 1));
+				isFired = false;
+				return;
+			}
+		}
+
+		protected void fireActionEvent() {
+			if (!isFired)
+				super.fireActionEvent();
+		}
+
+		private AutoTextFieldEditor autoTextFieldEditor;
+		private boolean isFired;
+
+	}
 	 
-		/**
-		 * Launch the application.
-		 */
-		public static void main(String[] args) {
-//			SwingUtilities.invokeLater(new Runnable() {
-//				public void run() {
-					try {
-						//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
-						Frame frame = new Frame();
-						UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
-						SwingUtilities.updateComponentTreeUI(frame);
-						frame.setVisible(true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-//				}
-//			});
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
+			Frame frame = new Frame();
+			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
+			SwingUtilities.updateComponentTreeUI(frame);
+			frame.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+	/*
+	 * Interface methods
+	 * 
+	 */
+	@Override
+	public void setInstructionList(ArrayList<String> instructions) {
+		instructionSet = instructions;
+	}
+
+	@Override
+	public void setAccStack(ArrayList<String> values) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setXStack(ArrayList<String> values) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setYStack(ArrayList<String> values) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCarryFlag(boolean flagIsOn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setZeroFlag(boolean flagIsOn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNegativeFlag(boolean flagIsOn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setConsoleText(ArrayList<String> text) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMemoryAllocation(ArrayList<String> values) {
+		// TODO Auto-generated method stub
+		
+	}
 }
-
-
