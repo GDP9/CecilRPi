@@ -4,6 +4,7 @@ import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +12,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -95,6 +97,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JButton btnCarry;
 	private JButton btnZero;
 	private JButton btnNegative;
+
+	private JSeparator flagSep1;
+	private JSeparator flagSep2;
 	
 	/**
 	 * Create the frame.
@@ -204,7 +209,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		btnFile = new JButton("File");
 		btnFile.setToolTipText("File");
-		System.out.println(UIManager.getDefaults().getFont("Button.font").getFontName());
 		topLeft.add(btnFile);
 		
 		btnCompile = new JButton();
@@ -293,7 +297,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		flagPanel = new JPanel();
 		flagPanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		flagPanel.setLayout(new FlowLayout());
+		flagPanel.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
@@ -305,16 +309,57 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		btnCarry = new JButton("Carry");
 		btnCarry.setFocusable(false);
+		btnCarry.setBorderPainted(false);
+//		btnCarry.setOpaque(false);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 0;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnCarry, gbc_flagpanel);
+		
+		flagSep1 = new JSeparator(JSeparator.VERTICAL);
+		flagSep1.setOpaque(true);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 1;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.05;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(flagSep1, gbc_flagpanel);
 		
 		btnZero = new JButton("Zero");
 		btnZero.setFocusable(false);
+		btnZero.setBorderPainted(false);
+//		btnZero.setOpaque(false);
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 2;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnZero, gbc_flagpanel);
+		
+		flagSep2 = new JSeparator(JSeparator.VERTICAL);
+		flagSep2.setOpaque(true);
+		gbc_flagpanel = new GridBagConstraints();
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 3;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.05;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(flagSep2, gbc_flagpanel);
 		
 		btnNegative = new JButton("Negative");
 		btnNegative.setFocusable(false);
-		
-		flagPanel.add(btnCarry);
-		flagPanel.add(btnZero);
-		flagPanel.add(btnNegative);
+		btnNegative.setBorderPainted(false);
+//		btnNegative.setOpaque(false);
+		gbc_flagpanel.fill = GridBagConstraints.BOTH;
+		gbc_flagpanel.gridx = 4;
+		gbc_flagpanel.gridy = 0;
+		gbc_flagpanel.weightx = 0.3;
+		gbc_flagpanel.weighty = 1;
+		flagPanel.add(btnNegative, gbc_flagpanel);
 		
 		/*
 		 * Console
@@ -415,7 +460,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 
 		flagPanel.setBackground(new Color(255, 243, 66));
 		btnCarry.setBackground(new Color(255, 255, 204));
+		flagSep1.setBackground(new Color(255, 255, 204));
 		btnZero.setBackground(new Color(255, 255, 204));
+		flagSep2.setBackground(new Color(255, 255, 204));
 		btnNegative.setBackground(new Color(255, 255, 204));
 
 		consolePanel.setBackground(new Color(255, 243, 66));
