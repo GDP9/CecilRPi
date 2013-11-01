@@ -1,22 +1,22 @@
-// $ANTLR 3.5.1 C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\grammar\\Cecil.g 2013-10-31 22:30:20
- 
-  package org.raspberrypi.cecil.grammar;
-  import java.util.HashMap;
-  import java.util.ArrayList;
-
-
+package org.raspberrypi.cecil.grammar;
+import java.util.HashMap;
+import java.util.ArrayList;
 import org.antlr.runtime.*;
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * CECIL assembly language grammar definition
+ * CECIL assembly language Parser
  * 
- * Authors Shreeprabha Aggarwal, Carolina Ferreira 
- * Version 1.0
- * Date 19/10/2013
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
  */
+ 
 @SuppressWarnings("all")
 public class CecilParser extends Parser {
 	public static final String[] tokenNames = new String[] {

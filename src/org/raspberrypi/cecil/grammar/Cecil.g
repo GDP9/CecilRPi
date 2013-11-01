@@ -1,10 +1,17 @@
 /**
  * CECIL assembly language grammar definition
+ * This grammar constitutes all the lexer rules employed by CECIL.
+ * It is a version of the CECIL Language originally developed by David Argles.
+ * it contains 39 simple instructions and user input datafields and labelfields.
  * 
- * Authors Shreeprabha Aggarwal, Carolina Ferreira 
- * Version 1.0
- * Date 19/10/2013
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
  */
+ 
 grammar Cecil;
 
 options {

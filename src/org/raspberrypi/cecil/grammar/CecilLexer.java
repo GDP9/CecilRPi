@@ -1,7 +1,15 @@
-// $ANTLR 3.5.1 C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\grammar\\Cecil.g 2013-10-31 22:30:20
+package org.raspberrypi.cecil.grammar;
 
-  package org.raspberrypi.cecil.grammar;
-
+/**
+ * CECIL assembly language Lexer
+ * 
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
+ */
 
 import org.antlr.runtime.*;
 import java.util.Stack;
