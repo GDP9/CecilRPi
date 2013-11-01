@@ -58,6 +58,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
 
@@ -165,6 +166,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_north.gridy = 0;
 		gbc_north.weightx = 1;
 		gbc_north.weighty = 0.05;
+		gbc_north.insets = new Insets(10, 10, 0, 10);
 		getContentPane().add(northPanel, gbc_north);
 		
 		/*
@@ -176,6 +178,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
 		gbc_centre.weighty = 0.55;
+		gbc_centre.insets = new Insets(0, 10, 0, 10);
 		getContentPane().add(centerPanel, gbc_centre);		
 		
 		/*
@@ -187,6 +190,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
 		gbc_south.weighty = 0.4;
+		gbc_south.insets = new Insets(10, 10, 20, 10);
 		getContentPane().add(southPanel, gbc_south);
 		
 		/*
@@ -448,29 +452,57 @@ public class Frame extends JFrame implements CecilViewInterface {
 //		tblMemory.setBackground(new Color(204,229,255));
 //	}
 	
+//	private void setupColours() {
+//		northPanel.setBackground(new Color(204, 229, 255));
+//		centerLeftPanel.setBackground(new Color(255, 255, 102));
+//		southPanel.setBackground(new Color(204, 229, 255));
+//
+//		registerPanel.setBackground(new Color(255, 243, 66));
+//		xRegister.setBackground(new Color(246, 238, 10));
+//		yRegister.setBackground(new Color(255, 251, 105));
+//		accRegister.setBackground(new Color(255, 255, 0));
+//
+//		flagPanel.setBackground(new Color(255, 243, 66));
+//		btnCarry.setBackground(new Color(255, 255, 204));
+//		flagSep1.setBackground(new Color(255, 255, 204));
+//		btnZero.setBackground(new Color(255, 255, 204));
+//		flagSep2.setBackground(new Color(255, 255, 204));
+//		btnNegative.setBackground(new Color(255, 255, 204));
+//
+//		consolePanel.setBackground(new Color(255, 243, 66));
+//		txtConsole.setBackground(new Color(255, 243, 66));
+//
+//		tblInput.setBackground(new Color(255, 243, 93));
+//		// tblInput.setBackground(new Color(255, 255, 102));
+//		tblMemory.setBackground(new Color(204, 229, 255));
+//	}
+	
 	private void setupColours() {
-		northPanel.setBackground(new Color(204, 229, 255));
-		centerLeftPanel.setBackground(new Color(255, 255, 102));
-		southPanel.setBackground(new Color(204, 229, 255));
+		Color cream = new Color(255, 255, 204);
+		getContentPane().setBackground(cream);
+		
+		northPanel.setBackground(cream);
+		centerLeftPanel.setBackground(cream);
+		southPanel.setBackground(cream);
 
-		registerPanel.setBackground(new Color(255, 243, 66));
-		xRegister.setBackground(new Color(246, 238, 10));
-		yRegister.setBackground(new Color(255, 251, 105));
-		accRegister.setBackground(new Color(255, 255, 0));
+		registerPanel.setBackground(cream);
+		xRegister.setBackground(cream);
+		yRegister.setBackground(cream);
+		accRegister.setBackground(cream);
 
-		flagPanel.setBackground(new Color(255, 243, 66));
-		btnCarry.setBackground(new Color(255, 255, 204));
-		flagSep1.setBackground(new Color(255, 255, 204));
-		btnZero.setBackground(new Color(255, 255, 204));
-		flagSep2.setBackground(new Color(255, 255, 204));
-		btnNegative.setBackground(new Color(255, 255, 204));
+		flagPanel.setBackground(cream);
+		btnCarry.setBackground(cream);
+		flagSep1.setBackground(cream);
+		btnZero.setBackground(cream);
+		flagSep2.setBackground(cream);
+		btnNegative.setBackground(cream);
 
-		consolePanel.setBackground(new Color(255, 243, 66));
-		txtConsole.setBackground(new Color(255, 243, 66));
+		consolePanel.setBackground(cream);
+		txtConsole.setBackground(cream);
 
-		tblInput.setBackground(new Color(255, 243, 93));
+		tblInput.setBackground(cream);
 		// tblInput.setBackground(new Color(255, 255, 102));
-		tblMemory.setBackground(new Color(204, 229, 255));
+		tblMemory.setBackground(cream);
 	}
 	
 	private void setupButtonIcons() {
