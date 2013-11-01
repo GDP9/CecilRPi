@@ -3,6 +3,8 @@ package org.raspberrypi.cecil.view;
 import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.DefaultCellEditor;
@@ -16,17 +18,21 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.Color;
-import javax.swing.border.LineBorder;
 import java.awt.Component;
 
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.JComboBox;
 
 import java.awt.event.ItemEvent;
@@ -44,10 +50,13 @@ import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.border.TitledBorder;
@@ -55,6 +64,7 @@ import javax.swing.border.TitledBorder;
 public class Frame extends JFrame implements CecilViewInterface {
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 700;
+	private Font schoolbellFont = null;
 	
 	private DefaultTableModel mdlInput;
 	String[] tooltips = { "American", "Japanese ", "Latin ", "English"};
@@ -94,9 +104,19 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
+		setupFonts();
 	}
 
 	private void setupDefaultFrame() {
+		try {
+			schoolbellFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/Schoolbell.ttf"));
+		} catch (FontFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		/*
 		 * Setup main frame and panels
 		 */
@@ -150,7 +170,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_centre.gridx = 0;
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
-		gbc_centre.weighty = 0.75;
+		gbc_centre.weighty = 0.55;
 		getContentPane().add(centerPanel, gbc_centre);		
 		
 		/*
@@ -161,7 +181,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_south.gridx = 0;
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
-		gbc_south.weighty = 0.2;
+		gbc_south.weighty = 0.4;
 		getContentPane().add(southPanel, gbc_south);
 		
 		/*
@@ -184,6 +204,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		btnFile = new JButton("File");
 		btnFile.setToolTipText("File");
+		System.out.println(UIManager.getDefaults().getFont("Button.font").getFontName());
 		topLeft.add(btnFile);
 		
 		btnCompile = new JButton();
@@ -230,22 +251,35 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		xRegister = new JTextPane();
 		xRegister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		xRegister.setText("X");
+		xRegister.setText("0");
+		//Center the text
+		StyledDocument doc = xRegister.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		/*
 		 * Y register
 		 */
 		yRegister = new JTextPane();
-		yRegister.setText("Y");
+		yRegister.setText("0");
 		yRegister.setToolTipText("Y register");
 		yRegister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		doc = yRegister.getStyledDocument();
+		center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		/*
 		 * Acc register
 		 */
 		accRegister = new JTextPane();
 		accRegister.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		accRegister.setText("A");
+		accRegister.setText("0");
+		doc = accRegister.getStyledDocument();
+		center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		/*
 		 * Add the register panes
@@ -347,26 +381,49 @@ public class Frame extends JFrame implements CecilViewInterface {
 		southPanel.add(new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 	}
 	
+//	private void setupColours() {
+//		northPanel.setBackground(new Color(204,229,255));
+//		centerLeftPanel.setBackground(new Color(255, 255, 102));
+//		southPanel.setBackground(new Color(204,229,255));
+//		
+//		registerPanel.setBackground(new Color(226,255,147));
+//		xRegister.setBackground(new Color(255,204,178));
+//		yRegister.setBackground(new Color(182,252,207));
+//		accRegister.setBackground(new Color(229,204,255));
+//		
+//		flagPanel.setBackground(new Color(226,255,147));
+//		btnCarry.setBackground(new Color(255,255,204));
+//		btnZero.setBackground(new Color(255,255,204));
+//		btnNegative.setBackground(new Color(255,255,204));
+//		
+//		consolePanel.setBackground(new Color(226,255,147));
+//		txtConsole.setBackground(new Color(226,255,147));
+//		
+//		tblInput.setBackground(new Color(255, 255, 102));
+//		tblMemory.setBackground(new Color(204,229,255));
+//	}
+	
 	private void setupColours() {
-		northPanel.setBackground(new Color(204,229,255));
+		northPanel.setBackground(new Color(204, 229, 255));
 		centerLeftPanel.setBackground(new Color(255, 255, 102));
-		southPanel.setBackground(new Color(204,229,255));
-		
-		registerPanel.setBackground(new Color(226,255,147));
-		xRegister.setBackground(new Color(255,204,178));
-		yRegister.setBackground(new Color(182,252,207));
-		accRegister.setBackground(new Color(229,204,255));
-		
-		flagPanel.setBackground(new Color(226,255,147));
-		btnCarry.setBackground(new Color(255,255,204));
-		btnZero.setBackground(new Color(255,255,204));
-		btnNegative.setBackground(new Color(255,255,204));
-		
-		consolePanel.setBackground(new Color(226,255,147));
-		txtConsole.setBackground(new Color(226,255,147));
-		
-		tblInput.setBackground(new Color(255, 255, 102));
-		tblMemory.setBackground(new Color(204,229,255));
+		southPanel.setBackground(new Color(204, 229, 255));
+
+		registerPanel.setBackground(new Color(255, 243, 66));
+		xRegister.setBackground(new Color(246, 238, 10));
+		yRegister.setBackground(new Color(255, 251, 105));
+		accRegister.setBackground(new Color(255, 255, 0));
+
+		flagPanel.setBackground(new Color(255, 243, 66));
+		btnCarry.setBackground(new Color(255, 255, 204));
+		btnZero.setBackground(new Color(255, 255, 204));
+		btnNegative.setBackground(new Color(255, 255, 204));
+
+		consolePanel.setBackground(new Color(255, 243, 66));
+		txtConsole.setBackground(new Color(255, 243, 66));
+
+		tblInput.setBackground(new Color(255, 243, 93));
+		// tblInput.setBackground(new Color(255, 255, 102));
+		tblMemory.setBackground(new Color(204, 229, 255));
 	}
 	
 	private void setupButtonIcons() {
@@ -461,6 +518,62 @@ public class Frame extends JFrame implements CecilViewInterface {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
 	}
+	
+	private void setupFonts() {
+		schoolbellFont = schoolbellFont.deriveFont(20f);
+		UIManager.put("ToolTip.font", new FontUIResource(schoolbellFont));
+		
+		btnFile.setFont(schoolbellFont);
+		btnCompile.setFont(schoolbellFont);
+		btnRun.setFont(schoolbellFont);
+		btnStepThrough.setFont(schoolbellFont);
+		btnSettings.setFont(schoolbellFont);
+		btnHelp.setFont(schoolbellFont);
+		((TitledBorder) flagPanel.getBorder()).setTitleFont(schoolbellFont);
+		btnCarry.setFont(schoolbellFont);
+		btnZero.setFont(schoolbellFont);
+		btnNegative.setFont(schoolbellFont);
+		((TitledBorder) registerPanel.getBorder()).setTitleFont(schoolbellFont);
+		xRegister.setFont(schoolbellFont);
+		((TitledBorder) xRegister.getBorder()).setTitleFont(schoolbellFont);
+		yRegister.setFont(schoolbellFont);
+		((TitledBorder) yRegister.getBorder()).setTitleFont(schoolbellFont);
+		accRegister.setFont(schoolbellFont);
+		((TitledBorder) accRegister.getBorder()).setTitleFont(schoolbellFont);
+		((TitledBorder) consolePanel.getBorder()).setTitleFont(schoolbellFont);
+		txtConsole.setFont(schoolbellFont);
+		((TitledBorder) centerLeftPanel.getBorder()).setTitleFont(schoolbellFont);
+		tblInput.getTableHeader().setFont(schoolbellFont);
+		tblInput.setRowHeight(40);
+		tblInput.setFont(schoolbellFont);
+		((TitledBorder) southPanel.getBorder()).setTitleFont(schoolbellFont);
+		tblMemory.getTableHeader().setFont(schoolbellFont);
+		tblMemory.setFont(schoolbellFont);
+		tblMemory.setRowHeight(40);
+		
+//		for (int i = 0; i < tblInput.getColumnCount(); i ++) {
+//		    TableColumn col = tblInput.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
+//		
+//		for (int i = 0; i < tblMemory.getColumnCount(); i ++) {
+//		    TableColumn col = tblMemory.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
+	}
+	
+//	public class MyTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+//	    JComponent component = new JTextField();
+//	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
+//	        ((JTextField)component).setText((String)value);
+//	        ((JTextField)component).setFont(schoolbellFont);
+//	        return component;
+//	    }
+//		@Override
+//		public Object getCellEditorValue() {
+//			return null;
+//		}
+//	}
 	
 	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
 		Java2sAutoComboBox comboBox = new Java2sAutoComboBox(instructionSet);
