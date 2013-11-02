@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.grammar;
+package org.raspberrypi.cecil.model;
 
 /**
  * CECIL assembly language Memory Model - Static final variables declaration

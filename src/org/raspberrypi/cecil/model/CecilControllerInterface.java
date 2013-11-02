@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.controller;
+package org.raspberrypi.cecil.model;
 
 import java.util.ArrayList;
 
