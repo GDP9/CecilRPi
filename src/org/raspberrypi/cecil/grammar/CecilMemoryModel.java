@@ -1,9 +1,20 @@
 package org.raspberrypi.cecil.grammar;
 
 /**
+ * CECIL assembly language Memory Model - Static final variables declaration
  * 
- * @authors Shreeprabha, Carolina
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
  *
+ *  Memory Model :
+ *
+ *  accumulator : 1026
+ *  x-reg : 1027
+ *  y-reg : 1028
  */
 public class CecilMemoryModel {
 	static final int STATUS_ADDRESS = 1025;

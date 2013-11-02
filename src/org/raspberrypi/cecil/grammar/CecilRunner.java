@@ -11,15 +11,17 @@ import org.antlr.runtime.RecognitionException;
 
 /**
  * 
- * @author sa10g10, cf4g09
+ * CECIL assembly language Runner
+ * 
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
  *
  * NEED TO SEND ERRORS AND INSERT CHARACTERS AND STRINGS
  *
- *	Memory Model :
- *
- *  accumulator : 1026
- *  x-reg : 1027
- *  y-reg : 1028
  */
 public class CecilRunner {
 

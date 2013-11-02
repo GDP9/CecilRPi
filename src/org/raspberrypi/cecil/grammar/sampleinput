@@ -1,3 +1,16 @@
+/**
+ * 
+ * CECIL assembly language sample program input
+ * 
+ * MIT Open Source License
+ * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 01/11/2013
+ *
+ */
+ 
 .start load data1
         add data2
       print
