@@ -1,6 +1,7 @@
 package org.raspberrypi.cecil.pojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  * All the values to be displayed in the "output" views when run or step through is completed.
@@ -13,7 +14,9 @@ public class CecilResult {
 	private boolean carryFlag;
 	private boolean zeroFlag;
 	private boolean negativeFlag;
-	private ArrayList<String> memoryAllocations;
+	private HashMap<Integer, Integer> memoryAllocations;
+	private ArrayList<String> results;
+	private ArrayList<String> errors;
 	
 	public ArrayList<String> getxStack() {
 		return xStack;
@@ -51,10 +54,22 @@ public class CecilResult {
 	public void setNegativeFlag(boolean negativeFlag) {
 		this.negativeFlag = negativeFlag;
 	}
-	public ArrayList<String> getMemoryAllocations() {
+	public HashMap<Integer, Integer> getMemoryAllocations() {
 		return memoryAllocations;
 	}
-	public void setMemoryAllocations(ArrayList<String> memoryAllocations) {
+	public void setMemoryAllocations(HashMap<Integer, Integer> memoryAllocations) {
 		this.memoryAllocations = memoryAllocations;
+	}
+	public ArrayList<String> getResults() {
+		return results;
+	}
+	public void setResults(ArrayList<String> results) {
+		this.results = results;
+	}
+	public ArrayList<String> getErrors() {
+		return errors;
+	}
+	public void setErrors(ArrayList<String> errors) {
+		this.errors = errors;
 	}
 }
