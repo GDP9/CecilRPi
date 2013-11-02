@@ -452,58 +452,59 @@ public class Frame extends JFrame implements CecilViewInterface {
 //		tblMemory.setBackground(new Color(204,229,255));
 //	}
 	
-//	private void setupColours() {
-//		northPanel.setBackground(new Color(204, 229, 255));
-//		centerLeftPanel.setBackground(new Color(255, 255, 102));
-//		southPanel.setBackground(new Color(204, 229, 255));
-//
-//		registerPanel.setBackground(new Color(255, 243, 66));
-//		xRegister.setBackground(new Color(246, 238, 10));
-//		yRegister.setBackground(new Color(255, 251, 105));
-//		accRegister.setBackground(new Color(255, 255, 0));
-//
-//		flagPanel.setBackground(new Color(255, 243, 66));
-//		btnCarry.setBackground(new Color(255, 255, 204));
-//		flagSep1.setBackground(new Color(255, 255, 204));
-//		btnZero.setBackground(new Color(255, 255, 204));
-//		flagSep2.setBackground(new Color(255, 255, 204));
-//		btnNegative.setBackground(new Color(255, 255, 204));
-//
-//		consolePanel.setBackground(new Color(255, 243, 66));
-//		txtConsole.setBackground(new Color(255, 243, 66));
-//
-//		tblInput.setBackground(new Color(255, 243, 93));
-//		// tblInput.setBackground(new Color(255, 255, 102));
-//		tblMemory.setBackground(new Color(204, 229, 255));
-//	}
-	
 	private void setupColours() {
-		Color cream = new Color(255, 255, 204);
-		getContentPane().setBackground(cream);
-		
-		northPanel.setBackground(cream);
-		centerLeftPanel.setBackground(cream);
-		southPanel.setBackground(cream);
+		getContentPane().setBackground(new Color(204, 229, 255));
+		northPanel.setBackground(new Color(204, 229, 255));
+		centerLeftPanel.setBackground(new Color(255, 255, 102));
+		southPanel.setBackground(new Color(204, 229, 255));
 
-		registerPanel.setBackground(cream);
-		xRegister.setBackground(cream);
-		yRegister.setBackground(cream);
-		accRegister.setBackground(cream);
+		registerPanel.setBackground(new Color(255, 243, 66));
+		xRegister.setBackground(new Color(246, 238, 10));
+		yRegister.setBackground(new Color(255, 251, 105));
+		accRegister.setBackground(new Color(255, 255, 0));
 
-		flagPanel.setBackground(cream);
-		btnCarry.setBackground(cream);
-		flagSep1.setBackground(cream);
-		btnZero.setBackground(cream);
-		flagSep2.setBackground(cream);
-		btnNegative.setBackground(cream);
+		flagPanel.setBackground(new Color(255, 243, 66));
+		btnCarry.setBackground(new Color(255, 255, 204));
+		flagSep1.setBackground(new Color(255, 255, 204));
+		btnZero.setBackground(new Color(255, 255, 204));
+		flagSep2.setBackground(new Color(255, 255, 204));
+		btnNegative.setBackground(new Color(255, 255, 204));
 
-		consolePanel.setBackground(cream);
-		txtConsole.setBackground(cream);
+		consolePanel.setBackground(new Color(255, 243, 66));
+		txtConsole.setBackground(new Color(255, 243, 66));
 
-		tblInput.setBackground(cream);
+		tblInput.setBackground(new Color(255, 243, 93));
 		// tblInput.setBackground(new Color(255, 255, 102));
-		tblMemory.setBackground(cream);
+		tblMemory.setBackground(new Color(204, 229, 255));
 	}
+	
+//	private void setupColours() {
+//		Color cream = new Color(255, 255, 204);
+//		getContentPane().setBackground(cream);
+//		
+//		northPanel.setBackground(cream);
+//		centerLeftPanel.setBackground(cream);
+//		southPanel.setBackground(cream);
+//
+//		registerPanel.setBackground(cream);
+//		xRegister.setBackground(cream);
+//		yRegister.setBackground(cream);
+//		accRegister.setBackground(cream);
+//
+//		flagPanel.setBackground(cream);
+//		btnCarry.setBackground(cream);
+//		flagSep1.setBackground(cream);
+//		btnZero.setBackground(cream);
+//		flagSep2.setBackground(cream);
+//		btnNegative.setBackground(cream);
+//
+//		consolePanel.setBackground(cream);
+//		txtConsole.setBackground(cream);
+//
+//		tblInput.setBackground(cream);
+//		// tblInput.setBackground(new Color(255, 255, 102));
+//		tblMemory.setBackground(cream);
+//	}
 	
 	private void setupButtonIcons() {
 		//File
@@ -903,7 +904,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
 			Frame frame = new Frame();
-			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
 			SwingUtilities.updateComponentTreeUI(frame);
 			frame.setVisible(true);
 		} catch (Exception e) {

@@ -8,9 +8,9 @@ import java.util.Date;
  */
 public class CecilProgram {
 
-	private String programName;
-	private String programAuthor;
-	private Date programDate;
+	private String programName; //Optional
+	private String programAuthor; //Optional
+	private Date programDate; //Optional
 	private ArrayList<ArrayList<String>> programStatements;
 	
 	public String getProgramName() {
