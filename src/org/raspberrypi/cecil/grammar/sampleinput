@@ -1,24 +1,6 @@
-/**
- * 
- * CECIL assembly language sample program input
- * 
- * MIT Open Source License
- * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
- * Southampton University, United Kingdom
- * @version 1.1
- * 
- * @date 01/11/2013
- *
- */
- 
 .start load data1
         add data2
-      print
+       print
        stop
-;
-;--- now the data follows---
-;
 .data1 insert 3
 .data2 insert 4
-;
-;---end of source code---
