@@ -3,9 +3,6 @@ package org.raspberrypi.cecil.view;
 import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.DefaultCellEditor;
@@ -16,6 +13,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -27,12 +25,12 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.JComboBox;
@@ -41,7 +39,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -59,10 +59,11 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
 import java.awt.Insets;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.border.TitledBorder;
+
+import org.raspberrypi.cecil.pojo.CecilInstruction;
 
 public class Frame extends JFrame implements CecilViewInterface {
 	private static final int WIDTH = 1000;
@@ -71,7 +72,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 	
 	private DefaultTableModel mdlInput;
 	String[] tooltips = { "American", "Japanese ", "Latin ", "English"};
-	private ArrayList<String> instructionSet;
+	private ArrayList<CecilInstruction> instructions;
+	private ArrayList<String> instructionList;
 	
 	private JPanel northPanel;
 	private JPanel centerRightPanel;
@@ -95,9 +97,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JButton btnStepThrough;
 	private JButton btnSettings;
 	private JButton btnHelp;
-	private JButton btnCarry;
-	private JButton btnZero;
-	private JButton btnNegative;
+	private JLabel lblCarry;
+	private JLabel lblZero;
+	private JLabel lblNegative;
 
 	private JSeparator flagSep1;
 	private JSeparator flagSep2;
@@ -110,19 +112,18 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
-		setupFonts();
+//		setupFonts();
+		
+		ArrayList<String> examples = new ArrayList<String>();
+		examples.add("0");
+		examples.add("0");
+		examples.add("0");
+		setYStack(examples);
+		setAccStack(examples);
+		setXStack(examples);
 	}
 
 	private void setupDefaultFrame() {
-		try {
-			schoolbellFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/Schoolbell.ttf"));
-		} catch (FontFormatException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		/*
 		 * Setup main frame and panels
 		 */
@@ -130,12 +131,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().setLayout(new GridBagLayout());
 		
-		if (instructionSet == null) {
+		if (instructionList == null) {
 			//Default instructions
-			instructionSet = new ArrayList<String>();
-			instructionSet.add("Instruction 1");
-			instructionSet.add("Instruction 2");
-			instructionSet.add("Instruction 3");
+			instructionList = new ArrayList<String>();
+			instructionList.add("Instruction 1");
+			instructionList.add("Instruction 2");
+			instructionList.add("Instruction 3");
 		}
 		
 		northPanel = new JPanel();	
@@ -258,8 +259,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * X register
 		 */
 		xRegister = new JTextPane();
-		xRegister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		xRegister.setText("0");
+		xRegister.setEditable(false);
+		xRegister.setToolTipText("X register");
+//		xRegister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		//Center the text
 		StyledDocument doc = xRegister.getStyledDocument();
 		SimpleAttributeSet center = new SimpleAttributeSet();
@@ -270,9 +272,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Y register
 		 */
 		yRegister = new JTextPane();
-		yRegister.setText("0");
+		yRegister.setEditable(false);
 		yRegister.setToolTipText("Y register");
-		yRegister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+//		yRegister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		doc = yRegister.getStyledDocument();
 		center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -282,8 +284,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Acc register
 		 */
 		accRegister = new JTextPane();
-		accRegister.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		accRegister.setText("0");
+		accRegister.setEditable(false);
+		accRegister.setToolTipText("Acc register");
+//		accRegister.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		doc = accRegister.getStyledDocument();
 		center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -292,9 +295,20 @@ public class Frame extends JFrame implements CecilViewInterface {
 		/*
 		 * Add the register panes
 		 */
-		registerPanel.add(xRegister);
-		registerPanel.add(yRegister);
-		registerPanel.add(accRegister);
+		JScrollPane scrollPane = new JScrollPane(xRegister);
+		scrollPane.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		scrollPane.setOpaque(false);
+		registerPanel.add(scrollPane);
+		
+		scrollPane = new JScrollPane(accRegister);
+		scrollPane.setBorder(new TitledBorder(null, "ACC", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		scrollPane.setOpaque(false);
+		registerPanel.add(scrollPane);
+		
+		scrollPane = new JScrollPane(yRegister);
+		scrollPane.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		scrollPane.setOpaque(false);
+		registerPanel.add(scrollPane);
 		
 		/*
 		 * Flags
@@ -311,20 +325,17 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_flagpanel.weighty = 0.1;
 		centerRightTopPanel.add(flagPanel, gbc_flagpanel);
 		
-		btnCarry = new JButton("Carry");
-		btnCarry.setFocusable(false);
-		btnCarry.setBorderPainted(false);
-//		btnCarry.setOpaque(false);
+		lblCarry = new JLabel("Carry", SwingConstants.CENTER);
 		gbc_flagpanel = new GridBagConstraints();
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 0;
 		gbc_flagpanel.gridy = 0;
 		gbc_flagpanel.weightx = 0.3;
 		gbc_flagpanel.weighty = 1;
-		flagPanel.add(btnCarry, gbc_flagpanel);
+		flagPanel.add(lblCarry, gbc_flagpanel);
 		
 		flagSep1 = new JSeparator(JSeparator.VERTICAL);
-		flagSep1.setOpaque(true);
+//		flagSep1.setOpaque(true);
 		gbc_flagpanel = new GridBagConstraints();
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 1;
@@ -333,19 +344,15 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_flagpanel.weighty = 1;
 		flagPanel.add(flagSep1, gbc_flagpanel);
 		
-		btnZero = new JButton("Zero");
-		btnZero.setFocusable(false);
-		btnZero.setBorderPainted(false);
-//		btnZero.setOpaque(false);
+		lblZero = new JLabel("Zero", SwingConstants.CENTER);
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 2;
 		gbc_flagpanel.gridy = 0;
 		gbc_flagpanel.weightx = 0.3;
 		gbc_flagpanel.weighty = 1;
-		flagPanel.add(btnZero, gbc_flagpanel);
+		flagPanel.add(lblZero, gbc_flagpanel);
 		
 		flagSep2 = new JSeparator(JSeparator.VERTICAL);
-		flagSep2.setOpaque(true);
 		gbc_flagpanel = new GridBagConstraints();
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 3;
@@ -354,16 +361,14 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_flagpanel.weighty = 1;
 		flagPanel.add(flagSep2, gbc_flagpanel);
 		
-		btnNegative = new JButton("Negative");
-		btnNegative.setFocusable(false);
-		btnNegative.setBorderPainted(false);
+		lblNegative = new JLabel("Negative", SwingConstants.CENTER);
 //		btnNegative.setOpaque(false);
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 4;
 		gbc_flagpanel.gridy = 0;
 		gbc_flagpanel.weightx = 0.3;
 		gbc_flagpanel.weighty = 1;
-		flagPanel.add(btnNegative, gbc_flagpanel);
+		flagPanel.add(lblNegative, gbc_flagpanel);
 		
 		/*
 		 * Console
@@ -374,6 +379,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		centerRightPanel.add(consolePanel);
 					
 		txtConsole = new JTextPane();
+		txtConsole.setEditable(false);
 		consolePanel.add(new JScrollPane(txtConsole));
 		
 		/*
@@ -421,7 +427,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		centerLeftPanel.add(new JScrollPane(tblInput), gbc_scrollPane);
 		
 		DefaultTableModel mdlMemory = new DefaultTableModel();
-		mdlMemory.setColumnCount(100);
+		for (int i = 0; i < 20; i++) {
+			mdlMemory.addColumn(i, new Object[]{0});
+		}
 		
 		tblMemory = new JTable(mdlMemory);
 		tblMemory.setFillsViewportHeight(true);
@@ -464,11 +472,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 		accRegister.setBackground(new Color(255, 255, 0));
 
 		flagPanel.setBackground(new Color(255, 243, 66));
-		btnCarry.setBackground(new Color(255, 255, 204));
 		flagSep1.setBackground(new Color(255, 255, 204));
-		btnZero.setBackground(new Color(255, 255, 204));
+		lblZero.setBackground(new Color(255, 255, 204));
 		flagSep2.setBackground(new Color(255, 255, 204));
-		btnNegative.setBackground(new Color(255, 255, 204));
+		lblNegative.setBackground(new Color(255, 255, 204));
 
 		consolePanel.setBackground(new Color(255, 243, 66));
 		txtConsole.setBackground(new Color(255, 243, 66));
@@ -578,28 +585,37 @@ public class Frame extends JFrame implements CecilViewInterface {
 	
 	private void setupFlagIcons() {
 		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-			btnCarry.setIcon(new ImageIcon(img));
-		} catch (IOException e) {
-			System.out.println("Error creating buttons: could not set button icon");
-		}
-		
-		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-			btnZero.setIcon(new ImageIcon(img));
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			lblCarry.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
 		
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-			btnNegative.setIcon(new ImageIcon(img));
+			lblZero.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			lblNegative.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
 	}
 	
 	private void setupFonts() {
+		try {
+			schoolbellFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/Schoolbell.ttf"));
+		} catch (FontFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		schoolbellFont = schoolbellFont.deriveFont(20f);
 		UIManager.put("ToolTip.font", new FontUIResource(schoolbellFont));
 		
@@ -610,9 +626,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		btnSettings.setFont(schoolbellFont);
 		btnHelp.setFont(schoolbellFont);
 		((TitledBorder) flagPanel.getBorder()).setTitleFont(schoolbellFont);
-		btnCarry.setFont(schoolbellFont);
-		btnZero.setFont(schoolbellFont);
-		btnNegative.setFont(schoolbellFont);
+		lblCarry.setFont(schoolbellFont);
+		lblZero.setFont(schoolbellFont);
+		lblNegative.setFont(schoolbellFont);
 		((TitledBorder) registerPanel.getBorder()).setTitleFont(schoolbellFont);
 		xRegister.setFont(schoolbellFont);
 		((TitledBorder) xRegister.getBorder()).setTitleFont(schoolbellFont);
@@ -630,33 +646,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblMemory.getTableHeader().setFont(schoolbellFont);
 		tblMemory.setFont(schoolbellFont);
 		tblMemory.setRowHeight(40);
-		
-//		for (int i = 0; i < tblInput.getColumnCount(); i ++) {
-//		    TableColumn col = tblInput.getColumnModel().getColumn(i);
-//		    col.setCellEditor(new MyTableCellEditor());
-//		}
-//		
-//		for (int i = 0; i < tblMemory.getColumnCount(); i ++) {
-//		    TableColumn col = tblMemory.getColumnModel().getColumn(i);
-//		    col.setCellEditor(new MyTableCellEditor());
-//		}
 	}
 	
-//	public class MyTableCellEditor extends AbstractCellEditor implements TableCellEditor {
-//	    JComponent component = new JTextField();
-//	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
-//	        ((JTextField)component).setText((String)value);
-//	        ((JTextField)component).setFont(schoolbellFont);
-//	        return component;
-//	    }
-//		@Override
-//		public Object getCellEditorValue() {
-//			return null;
-//		}
-//	}
-	
 	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
-		Java2sAutoComboBox comboBox = new Java2sAutoComboBox(instructionSet);
+		Java2sAutoComboBox comboBox = new Java2sAutoComboBox(instructionList);
 		comboBox.setEditable(true);
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -680,7 +673,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 				setBackground(list.getSelectionBackground());
 				setForeground(Color.BLUE);
 				if (-1 < index) {
-					list.setToolTipText(tooltips[index]);//get the tooltip according the selected item's index
+					if (instructions != null && instructions.get(index) != null && instructions.get(index).getTooltipDescription() != null) {
+						list.setToolTipText(instructions.get(index).getTooltipDescription());//get the tooltip according the selected item's index
+					} else {
+						list.setToolTipText("No description available");
+					}
 				}
 			} else {
 				setBackground(list.getBackground());
@@ -917,56 +914,198 @@ public class Frame extends JFrame implements CecilViewInterface {
 	 * Interface methods
 	 * 
 	 */
-	@Override
-	public void setInstructionList(ArrayList<String> instructions) {
-		instructionSet = instructions;
-	}
 
 	@Override
 	public void setAccStack(ArrayList<String> values) {
-		// TODO Auto-generated method stub
-		
+		if (values != null) {
+			StyledDocument doc = accRegister.getStyledDocument();
+			
+			Style style = accRegister.addStyle("Plain", null);
+			StyleConstants.setForeground(style, Color.BLACK);
+			
+			for (int i = 0; i < values.size(); i++) {
+				if (i == 0) {
+					try {
+						doc.insertString(0, values.get(i), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else if (i < values.size() - 1) {
+					try {
+						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						StyleConstants.setFontSize(style, 20);
+//						StyleConstants.setBold(style, true);
+						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} else {
+			accRegister.setText("");
+		}
 	}
 
 	@Override
 	public void setXStack(ArrayList<String> values) {
-		// TODO Auto-generated method stub
-		
+		if (values != null) {
+			StyledDocument doc = xRegister.getStyledDocument();
+			
+			Style style = xRegister.addStyle("Plain", null);
+			StyleConstants.setForeground(style, Color.BLACK);
+			
+			for (int i = 0; i < values.size(); i++) {
+				if (i == 0) {
+					try {
+						doc.insertString(0, values.get(i), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else if (i < values.size() - 1) {
+					try {
+						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						StyleConstants.setFontSize(style, 20);
+//						StyleConstants.setBold(style, true);
+						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} else {
+			xRegister.setText("");
+		}
 	}
 
 	@Override
 	public void setYStack(ArrayList<String> values) {
-		// TODO Auto-generated method stub
-		
+		if (values != null) {
+			StyledDocument doc = yRegister.getStyledDocument();
+			
+			Style style = yRegister.addStyle("Plain", null);
+			StyleConstants.setForeground(style, Color.BLACK);
+			
+			for (int i = 0; i < values.size(); i++) {
+				if (i == 0) {
+					try {
+						doc.insertString(0, values.get(i), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else if (i < values.size() - 1) {
+					try {
+						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						StyleConstants.setFontSize(style, 20);
+//						StyleConstants.setBold(style, true);
+						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} else {
+			yRegister.setText("");
+		}
 	}
 
 	@Override
 	public void setCarryFlag(boolean flagIsOn) {
-		// TODO Auto-generated method stub
-		
+		try {
+			Image img;
+			if (flagIsOn) {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+			} else {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			}
+			lblCarry.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 	}
 
 	@Override
 	public void setZeroFlag(boolean flagIsOn) {
-		// TODO Auto-generated method stub
-		
+		try {
+			Image img;
+			if (flagIsOn) {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+			} else {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			}
+			lblZero.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 	}
 
 	@Override
 	public void setNegativeFlag(boolean flagIsOn) {
-		// TODO Auto-generated method stub
-		
+		try {
+			Image img;
+			if (flagIsOn) {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+			} else {
+				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			}
+			lblNegative.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
 	}
 
 	@Override
 	public void setConsoleText(ArrayList<String> text) {
-		// TODO Auto-generated method stub
-		
+		if (text != null) {
+			for (int i = 0; i < text.size(); i++) {
+				if (i < text.size() - 1) {
+					txtConsole.setText(text.get(i)+System.getProperty("line.separator"));
+				} else {
+					txtConsole.setText(text.get(i));
+				}
+			}
+		}
 	}
 
 	@Override
-	public void setMemoryAllocation(ArrayList<String> values) {
-		// TODO Auto-generated method stub
+	public void setMemoryAllocation(HashMap<Integer, Integer> values) {
+		if (values == null) {
+			HashMap<Integer, Integer> exampleValues = new HashMap<Integer, Integer>();
+			exampleValues.put(1, 0);
+			exampleValues.put(2, 0);
+			exampleValues.put(3, 0);
+			values = exampleValues;
+		}
 		
+		DefaultTableModel mdlMemory = new DefaultTableModel();
+		for (Map.Entry<Integer, Integer> entry : values.entrySet()) {
+			mdlMemory.addColumn(entry.getKey(), new Object[]{entry.getValue()});
+		}
+		tblMemory.setModel(mdlMemory);
+	}
+
+	@Override
+	public void setInstructionList(ArrayList<CecilInstruction> instructions) {
+		this.instructions = instructions;
+		instructionList = new ArrayList<String>();
+		for (CecilInstruction instruction : instructions) {
+			if (instruction != null && instruction.getInstructionName() != null) {
+				instructionList.add(instruction.getInstructionName());
+			}
+		}
 	}
 }
