@@ -381,6 +381,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		txtConsole = new JTextPane();
 		txtConsole.setEditable(false);
 		consolePanel.add(new JScrollPane(txtConsole));
+		ArrayList<String> text = new ArrayList<String>();
+		text.add("Output 1");
+		text.add("Output 2");
+		text.add("Output 3");
+		setConsoleText(text);
 		
 		/*
 		 * Input editor
@@ -1079,17 +1084,13 @@ public class Frame extends JFrame implements CecilViewInterface {
 
 	@Override
 	public void setConsoleText(ArrayList<String> text) {
-		if (text != null) {
-			for (int i = 0; i < text.size(); i++) {
-				if (i < text.size() - 1) {
-					txtConsole.setText(text.get(i)+System.getProperty("line.separator"));
-				} else {
-					txtConsole.setText(text.get(i));
-				}
-			}
-		}
-	}
-
+		  if (text != null) {
+		   txtConsole.setText("");
+		   for (int i = 0; i < text.size(); i++) {
+		    txtConsole.setText(txtConsole.getText()+text.get(i)+System.getProperty("line.separator"));
+		   }
+		  }
+		 }
 	@Override
 	public void setMemoryAllocation(HashMap<Integer, Integer> values) {
 		if (values == null) {
