@@ -112,7 +112,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
-//		setupFonts();
+		//setupFonts();
 		
 		ArrayList<String> examples = new ArrayList<String>();
 		examples.add("0");
@@ -144,7 +144,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		centerLeftPanel = new JPanel();
 		centerLeftPanel.setLayout(new GridLayout(1,1));
-		centerLeftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		centerLeftPanel.setBorder(new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), null));
 		
 		centerRightPanel = new JPanel();
 		centerRightPanel.setLayout(new GridLayout(2,1));
@@ -245,7 +245,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		registerPanel = new JPanel();
 		registerPanel.setLayout(new GridLayout(1,3));
-		registerPanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		registerPanel.setBorder(new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), null));
 		
 		GridBagConstraints gbc_register = new GridBagConstraints();
 		gbc_register.fill = GridBagConstraints.BOTH;
@@ -314,7 +314,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Flags
 		 */
 		flagPanel = new JPanel();
-		flagPanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		flagPanel.setBorder(new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), null));
 		flagPanel.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
@@ -375,7 +375,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */		
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
-		consolePanel.setBorder(new TitledBorder(null, "Output console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		consolePanel.setBorder(new TitledBorder(null, "Output console", TitledBorder.LEADING, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), null));
 		centerRightPanel.add(consolePanel);
 					
 		txtConsole = new JTextPane();
@@ -396,12 +396,16 @@ public class Frame extends JFrame implements CecilViewInterface {
 
 		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
 //		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		JTextField input = new JTextField();
+		input.setFont(new Font("Arial", Font.PLAIN, 18));
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
 		aligncenter.setHorizontalAlignment(JLabel.CENTER);
 		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
 		tblInput.setRowHeight(25);		
 		tblInput.getColumnModel().getColumn(2).setPreferredWidth(150);
 		tblInput.getColumnModel().getColumn(0).setPreferredWidth(5);
+		tblInput.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(input));
+		tblInput.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(input));
 		tblInput.setFillsViewportHeight(true);
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
@@ -607,16 +611,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	}
 	
 	private void setupFonts() {
-		try {
-			schoolbellFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/Schoolbell.ttf"));
-		} catch (FontFormatException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		schoolbellFont = schoolbellFont.deriveFont(20f);
+		FontUIResource schoolbellFont = new FontUIResource("Arial", Font.BOLD, 18);
 		UIManager.put("ToolTip.font", new FontUIResource(schoolbellFont));
 		
 		btnFile.setFont(schoolbellFont);
@@ -626,9 +621,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		btnSettings.setFont(schoolbellFont);
 		btnHelp.setFont(schoolbellFont);
 		((TitledBorder) flagPanel.getBorder()).setTitleFont(schoolbellFont);
-		lblCarry.setFont(schoolbellFont);
-		lblZero.setFont(schoolbellFont);
-		lblNegative.setFont(schoolbellFont);
+		//btnCarry.setFont(schoolbellFont);
+		//btnZero.setFont(schoolbellFont);
+		//btnNegative.setFont(schoolbellFont);
 		((TitledBorder) registerPanel.getBorder()).setTitleFont(schoolbellFont);
 		xRegister.setFont(schoolbellFont);
 		((TitledBorder) xRegister.getBorder()).setTitleFont(schoolbellFont);
@@ -646,7 +641,18 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblMemory.getTableHeader().setFont(schoolbellFont);
 		tblMemory.setFont(schoolbellFont);
 		tblMemory.setRowHeight(40);
+		
+//		for (int i = 0; i < tblInput.getColumnCount(); i ++) {
+//		    TableColumn col = tblInput.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
+//		
+//		for (int i = 0; i < tblMemory.getColumnCount(); i ++) {
+//		    TableColumn col = tblMemory.getColumnModel().getColumn(i);
+//		    col.setCellEditor(new MyTableCellEditor());
+//		}
 	}
+
 	
 	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
 		Java2sAutoComboBox comboBox = new Java2sAutoComboBox(instructionList);
@@ -659,6 +665,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		};
 		comboBox.addActionListener(actionListener);
 		comboBox.setRenderer(new MyComboBoxRenderer());
+		comboBox.setFont(new Font("Arial", Font.PLAIN, 18));
 		instructionColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	}
 	
@@ -899,11 +906,13 @@ public class Frame extends JFrame implements CecilViewInterface {
 	public static void main(String[] args) {
 		try {
 			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
+			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip					
+			FontUIResource font = new FontUIResource("Arial", Font.PLAIN, 18);
+			UIManager.put("Table.font", font);
 			Frame frame = new Frame();
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
-			SwingUtilities.updateComponentTreeUI(frame);
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			SwingUtilities.updateComponentTreeUI(frame);			
 			frame.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
