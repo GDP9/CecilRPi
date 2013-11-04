@@ -4,23 +4,42 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
 /**
+ *
+ * CECIL assembly language Runner.
+ * Runs user input against the Cecil assembly language provided.
+ * Supplies result for user input and error messages accordingly.
+ *
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
- * CECIL assembly language Runner
- * 
- * MIT Open Source License
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
+ 
  * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
  * Southampton University, United Kingdom
  * @version 1.1
  * 
  * @date 01/11/2013
- *
- * NEED TO SEND ERRORS AND INSERT CHARACTERS AND STRINGS
  *
  */
 public class CecilRunner {
@@ -30,13 +49,26 @@ public class CecilRunner {
 	private List errors;
 
 	/**
-	 * Constructor
+	 * CecilRunner Constructor.
+	 * Constructs the CecilRunner Class by taking in the CecilParser and CecilMemoryModel.
+	 * Sets global CecilParser and CecilMemoryModel variables.
+	 * @param CecilParser
+	 * @param CecilMemoryModel
 	 */
+	 
 	public CecilRunner(CecilParser parser, CecilMemoryModel m) {
 		this.parser = parser;
 		this.m = m;
 	}
 
+	/**
+	 * CecilRunner run method.
+	 * Runs user input against the Cecil assembly language rules.
+	 * It checks which instructions the user has in their program and returns their effect.
+	 * Returns an ArrayList of Strings constituting the result of running user input.
+	 * Result can be an error message, a print of desired result programmed by user, the execution of a subroutine of user's input or a successful exit of the program.
+	 * @return ArrayList<String> result
+	 */
 	public ArrayList<String> run() {
 		int i = 0;
 		ArrayList<String> result = new ArrayList<String>();
@@ -44,7 +76,8 @@ public class CecilRunner {
 		while(m.memory[i] != -1) {
 			switch(m.memory[i]) {
 
-			/* Unary Instructions */
+			/* Unary Instructions (i.e. instructions that do not require a datafield)*/
+			
 			case 0 : /* stop */
 				return result;  // -1 means successful program exit
 			case 1: /* print */
@@ -114,10 +147,9 @@ public class CecilRunner {
 				m.memory[m.YREG_ADDRESS]--;
 				break;
 
-				/* Binary Instructions */	
-			case 18: /* load */
-				//System.out.println(checkInsert(i));
+				/* Binary Instructions (i.e. instructions that can have a datafield present)*/
 				
+			case 18: /* load */
 				if(checkInsert(i+1))	
 					m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
 				else errors.add("Instruction has to be insert");
@@ -237,10 +269,14 @@ public class CecilRunner {
 	}
 
 	/**
-	 * 
+	 * CecilRunner checkStatusFlags method.
+	 * It checks the values of the accumulator, Y register and X register.
+	 * Set the status of the carry, zero and negative flags according to the previously mentioned values.
+	 * if any register has a value bigger or equal to 1024 bits, set the carry flag to true.
+	 * if any register has a value of 0, set the negative and zero flag to true.
 	 */
 	private void checkStatusFlags() {
-		/* checking carry flag status */
+		/* setting carry flag status */
 		if(m.memory[m.ACCUMULATOR_ADDRESS] >= 1024 || m.memory[m.YREG_ADDRESS] >= 1024 || m.memory[m.XREG_ADDRESS] >= 1024) {
 			if(m.memory[m.ACCUMULATOR_ADDRESS] >= 1024)
 				setRegToMax(m.ACCUMULATOR_ADDRESS);
@@ -252,7 +288,7 @@ public class CecilRunner {
 				setRegToMax(m.YREG_ADDRESS);
 		}
 
-		/* checking negative flag status */
+		/* setting negative and zero flag status */
 		else if(m.memory[m.ACCUMULATOR_ADDRESS] == 0 || m.memory[m.YREG_ADDRESS] == 0 || m.memory[m.XREG_ADDRESS] == 0) {
 			m.memory[m.STATUS_ADDRESS] |= (1<<1);
 			m.memory[m.STATUS_ADDRESS] |= 1;
@@ -261,17 +297,23 @@ public class CecilRunner {
 	}
 
 	/**
-	 * 
+	 * CecilRunner setRegToMax method.
+	 * Safety measure on register values.
+	 * Registers (i.e. accumulator, Y register and X register) are set to their maximum value of 1024 bits when its current value tends to be greater than 1024 bits.
+	 * The carry flag is set to true.
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
 		m.memory[register] = 1024;
 		m.memory[m.STATUS_ADDRESS] |= (1<<2);
 	}
+	
 	/**
-	 * 
-	 * @param i
-	 * @return
+	 * CecilRunner checkInsert method
+	 * Checks if the binary instruction being read has a complementary "insert" function.
+	 * Safety and validation measure on user input as binary instructions cannot manipulate or use null datafields.
+	 * @param instruction
+	 * @return boolean
 	 */
 	private boolean checkInsert(int i) {
 		//System.out.println(parser.getInstructionfield().get(m.memory[m.memory[i+1]]));
@@ -279,7 +321,11 @@ public class CecilRunner {
 	}
 
 	/**
-	 * 
+	 * CecilRunner zeroflagstatus method.
+	 * Sets the zero flag according to the register's value.
+	 * If the register has a value equal to zero, the zero flag is set to true.
+	 * Otherwise the zero flag is set to false.
+	 * @param register
 	 */
 	private void zeroflagstatus(int register){
 		if(m.memory[register] == 0){
@@ -291,7 +337,10 @@ public class CecilRunner {
 	}
 
 	/**
-	 * 
+	 * CecilRunner negativeflagstatus method
+	 * Sets the negative flag according to the register's value.
+	 * If the register has a smaller value than the current labelled adress the negative flag is set to true.
+	 * Otherwise, the negative flag is set to false.
 	 * @param register
 	 */
 	private void negativeflagstatus(int register, int address){
@@ -304,10 +353,11 @@ public class CecilRunner {
 	}
 	
 	/**
-	 * 
-	 * @param b
-	 * @param pos
-	 * @return
+	 * CecilRunner isBitSet method
+	 * It checks if the zero, negative or carry flag is set.
+	 * @param bit (i.e. STATUS_ADDRESS)
+	 * @param position in the bit (0 is zero, 1 is negative and 2 is carry flag position)
+	 * @return boolean
 	 */
 	private boolean isBitSet(int b, int pos)
 	{
