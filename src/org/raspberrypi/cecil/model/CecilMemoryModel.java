@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.grammar;
+package org.raspberrypi.cecil.model;
 
 /**
  * CECIL assembly language Memory Model - Static final variables declaration
@@ -27,7 +27,7 @@ public class CecilMemoryModel {
 	static final int STACK_END = 1006;
 	static final int STACK_PTR = 1007;
 	
-	static int[] memory = new int[MEMORY_LENGTH];
+	public static int[] memory = new int[MEMORY_LENGTH];
 	
 	/**
 	 * Constuctor: initialse memory to store -1

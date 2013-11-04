@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.grammar;
+package org.raspberrypi.cecil.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,36 +26,15 @@ import org.antlr.runtime.RecognitionException;
 public class CecilRunner {
 
 	private CecilParser parser;
-	//private CecilCompiler compiler;
 	private CecilMemoryModel m;
 	private List errors;
 
 	/**
 	 * Constructor
 	 */
-	public CecilRunner() {
-		try {
-			CommonTokenStream tokens  =  new CommonTokenStream(new CecilLexer( new ANTLRFileStream("src/org/raspberrypi/cecil/grammar/sampleinput")));
-			parser = new CecilParser(tokens);
-			parser.initialseCommandList();
-			//compiler = new CecilCompiler();
-			m = parser.getMemoryModel();
-
-			/* Parsing!!! */
-			parser.program();
-			errors = parser.getErrors();
-			/* type checking for labels */
-			for(String key : parser.getDatafield().keySet()) {
-				if(parser.getLabelfield().keySet().contains(key)) 
-					m.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
-				//compiler.recursive(memory.memory,parser.getLabelfield().get(key));
-
-				else errors.add("Error, Label not found");
-			}
-		} catch (IOException | RecognitionException e) {
-			e.printStackTrace();
-		}
-
+	public CecilRunner(CecilParser parser, CecilMemoryModel m) {
+		this.parser = parser;
+		this.m = m;
 	}
 
 	public ArrayList<String> run() {
@@ -137,7 +116,9 @@ public class CecilRunner {
 
 				/* Binary Instructions */	
 			case 18: /* load */
-				if(checkInsert(i))	
+				//System.out.println(checkInsert(i));
+				
+				if(checkInsert(i+1))	
 					m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
 				else errors.add("Instruction has to be insert");
 				break;
@@ -249,12 +230,15 @@ public class CecilRunner {
 			}
 
 			checkStatusFlags();
-			m.memory[m.PROGRAM_COUNTER] =i;
-			i++;
+			m.memory[m.PROGRAM_COUNTER] = i;
 		}
+		
 		return result;
 	}
 
+	/**
+	 * 
+	 */
 	private void checkStatusFlags() {
 		/* checking carry flag status */
 		if(m.memory[m.ACCUMULATOR_ADDRESS] >= 1024 || m.memory[m.YREG_ADDRESS] >= 1024 || m.memory[m.XREG_ADDRESS] >= 1024) {
@@ -276,17 +260,21 @@ public class CecilRunner {
 			
 	}
 
+	/**
+	 * 
+	 * @param register
+	 */
 	private void setRegToMax(int register) {
 		m.memory[register] = 1024;
 		m.memory[m.STATUS_ADDRESS] |= (1<<2);
 	}
-
 	/**
 	 * 
 	 * @param i
 	 * @return
 	 */
 	private boolean checkInsert(int i) {
+		//System.out.println(parser.getInstructionfield().get(m.memory[m.memory[i+1]]));
 		return (parser.getInstructionfield().containsKey(m.memory[m.memory[i+1]]) && parser.getInstructionfield().get(m.memory[m.memory[i+1]]).equals("insert"));
 	}
 
@@ -314,6 +302,7 @@ public class CecilRunner {
 			m.memory[m.STATUS_ADDRESS] &= (0<<1);
 		}
 	}
+	
 	/**
 	 * 
 	 * @param b
