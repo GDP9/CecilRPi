@@ -20,14 +20,14 @@ options {
 
 /* package and import declaration for parser */
 @header { 
-  package org.raspberrypi.cecil.model;
+  package org.raspberrypi.cecil.grammar;
   import java.util.HashMap;
   import java.util.ArrayList;
 }
 
 /* package and import declaration for lexer */
 @lexer::header {
-  package org.raspberrypi.cecil.model;
+  package org.raspberrypi.cecil.grammar;
 }
 
 /* Member function and field declaration */

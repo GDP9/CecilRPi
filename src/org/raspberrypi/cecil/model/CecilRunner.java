@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.model;
+package org.raspberrypi.cecil.grammar;
 
 import java.io.IOException;
 import java.util.ArrayList;

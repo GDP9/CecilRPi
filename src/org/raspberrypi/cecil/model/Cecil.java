@@ -1,11 +1,8 @@
 /**
  * 
  */
-package org.raspberrypi.cecil.model;
+package org.raspberrypi.cecil.grammar;
 
-import java.util.ArrayList;
-
-import org.raspberrypi.cecil.pojo.CecilInstruction;
 import org.raspberrypi.cecil.pojo.CecilProgram;
 import org.raspberrypi.cecil.pojo.CecilResult;
 
@@ -19,6 +16,11 @@ public class Cecil implements CecilModelInterface {
 	protected CecilRunner runner;
 	protected CecilMemoryModel sim40;
 	
+	@Override
+	public String compile(CecilProgram program) {
+		
+		return null;
+	}
 	
 	@Override
 	public CecilResult run() {
@@ -27,18 +29,6 @@ public class Cecil implements CecilModelInterface {
 	
 	@Override
 	public CecilResult stepThrough(int lineNo) {
-		return null;
-	}
-
-	@Override
-	public ArrayList<CecilInstruction> getInstructions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CecilResult compile(CecilProgram program) {
-		// TODO Auto-generated method stub
 		return null;
 	}
  

@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.model.test;
+package org.raspberrypi.cecil.grammar.test;
 
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.raspberrypi.cecil.model.CecilLexer;
-import org.raspberrypi.cecil.model.CecilMemoryModel;
-import org.raspberrypi.cecil.model.CecilParser;
-import org.raspberrypi.cecil.model.CecilRunner;
+import org.raspberrypi.cecil.grammar.CecilLexer;
+import org.raspberrypi.cecil.grammar.CecilMemoryModel;
+import org.raspberrypi.cecil.grammar.CecilParser;
+import org.raspberrypi.cecil.grammar.CecilRunner;
 
 public class Testing {
 
@@ -92,7 +92,8 @@ public class Testing {
 			while(m.memory[i] != -1)
 				System.out.println(i+" "+m.memory[i++]);
 			
-			CecilRunner runner = new CecilRunner(parser, m);		
+			CecilRunner runner = new CecilRunner(parser, m);
+			for()			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
