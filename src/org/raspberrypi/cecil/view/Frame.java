@@ -10,7 +10,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -59,10 +58,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.io.IOException;
 
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import org.raspberrypi.cecil.pojo.CecilInstruction;
@@ -103,12 +103,14 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JLabel lblZero;
 	private JLabel lblNegative;
 	
+	private EtchedBorder panelBorder;
+	
 	/**
 	 * Create the frame.
 	 */
 	public Frame() {
 		setupDefaultFrame();
-//		setupColours();
+		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
 //		setupFonts();
@@ -129,6 +131,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().setLayout(new GridBagLayout());
+		panelBorder = new EtchedBorder();
 		
 		if (instructionList == null) {
 			//Default instructions
@@ -241,6 +244,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		JPanel centerRightTopPanel = new JPanel();
 		centerRightTopPanel.setLayout(new GridBagLayout());
+		centerRightTopPanel.setOpaque(false);
 		centerRightPanel.add(centerRightTopPanel);
 		
 		registerPanel = new JPanel();
@@ -261,7 +265,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		xRegister = new JTextPane();
 		xRegister.setEditable(false);
 		xRegister.setToolTipText("X register");
-//		xRegister.setBorder(new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		//Center the text
 		StyledDocument doc = xRegister.getStyledDocument();
 		SimpleAttributeSet center = new SimpleAttributeSet();
@@ -274,7 +278,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		yRegister = new JTextPane();
 		yRegister.setEditable(false);
 		yRegister.setToolTipText("Y register");
-//		yRegister.setBorder(new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		doc = yRegister.getStyledDocument();
 		center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -286,7 +290,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		accRegister = new JTextPane();
 		accRegister.setEditable(false);
 		accRegister.setToolTipText("Acc register");
-//		accRegister.setBorder(new TitledBorder(null, "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		doc = accRegister.getStyledDocument();
 		center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -296,17 +300,17 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Add the register panes
 		 */
 		JScrollPane scrollPane = new JScrollPane(xRegister);
-		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(null, "X", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "X", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		scrollPane.setOpaque(false);
 		registerPanel.add(scrollPane);
 		
 		scrollPane = new JScrollPane(accRegister);
-		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(null, "ACC", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "ACC", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		scrollPane.setOpaque(false);
 		registerPanel.add(scrollPane);
 		
 		scrollPane = new JScrollPane(yRegister);
-		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(null, "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		scrollPane.setOpaque(false);
 		registerPanel.add(scrollPane);
 		
@@ -325,20 +329,32 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_flagpanel.weighty = 0.1;
 		centerRightTopPanel.add(flagPanel, gbc_flagpanel);
 		
+		JPanel carryPanel = new JPanel(new GridLayout(1,1));
+		carryPanel.setOpaque(false);
+		carryPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblCarry = new JLabel("Carry", SwingConstants.CENTER);
-		lblCarry.setBorder(new EmptyBorder(10, 5, 10, 5));
+		lblCarry.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblCarry.setOpaque(true);
-		flagPanel.add(lblCarry);
+		carryPanel.add(lblCarry);
+		flagPanel.add(carryPanel);
 		
+		JPanel zeroPanel = new JPanel(new GridLayout(1,1));
+		zeroPanel.setOpaque(false);
+		zeroPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblZero = new JLabel("Zero", SwingConstants.CENTER);
-		lblZero.setBorder(new EmptyBorder(10, 5, 10, 5));
+		lblZero.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblZero.setOpaque(true);
-		flagPanel.add(lblZero);
+		zeroPanel.add(lblZero);
+		flagPanel.add(zeroPanel);
 		
+		JPanel negativePanel = new JPanel(new GridLayout(1,1));
+		negativePanel.setOpaque(false);
+		negativePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblNegative = new JLabel("Negative", SwingConstants.CENTER);
-		lblNegative.setBorder(new EmptyBorder(10, 5, 10, 5));
+		lblNegative.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblNegative.setOpaque(true);
-		flagPanel.add(lblNegative);
+		negativePanel.add(lblNegative);
+		flagPanel.add(negativePanel);
 		
 		/*
 		 * Console
@@ -350,7 +366,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 					
 		txtConsole = new JTextPane();
 		JScrollPane consoleScroll = new JScrollPane(txtConsole);
-		consoleScroll.setBorder(new EmptyBorder(5, 5, 5, 5));
+		consoleScroll.setOpaque(false);
+		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		txtConsole.setEditable(false);
 		consolePanel.add(consoleScroll);
 		
@@ -397,7 +414,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
 		JScrollPane inputScroll = new JScrollPane(tblInput);
-		inputScroll.setBorder(new EmptyBorder(5, 5, 5, 5));
+		inputScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		inputScroll.setOpaque(false);
 		centerLeftPanel.add(inputScroll, gbc_scrollPane);
 		
 		DefaultTableModel mdlMemory = new DefaultTableModel();
@@ -410,7 +428,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		memoryScroll.setBorder(new EmptyBorder(5, 5, 5, 5));
+		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		memoryScroll.setOpaque(false);
 		southPanel.add(memoryScroll);
 	}
 	
@@ -437,11 +456,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 //	}
 	
 	private void setupColours() {
-		Color background = new Color(255, 255, 255);
+		Color background = new Color(255, 192, 48);
 		Color innerPanel = new Color(255, 255, 255);
 		getContentPane().setBackground(background);
 		northPanel.setBackground(background);
 		centerLeftPanel.setBackground(background);
+		centerRightPanel.setBackground(background);
 		southPanel.setBackground(background);
 
 		btnCompile.setBackground(background);
@@ -457,11 +477,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		lblNegative.setBackground(innerPanel);
 
 		consolePanel.setBackground(background);
-		txtConsole.setBackground(background);
+		txtConsole.setBackground(innerPanel);
 
-		tblInput.setBackground(background);
+		tblInput.setBackground(innerPanel);
 		// tblInput.setBackground(new Color(255, 255, 102));
-		tblMemory.setBackground(background);
+		tblMemory.setBackground(innerPanel);
 	}
 	
 	private void setupButtonIcons() {
