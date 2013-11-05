@@ -50,7 +50,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
+
 import java.awt.GridLayout;
+
 import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
@@ -153,8 +155,18 @@ public class Frame extends JFrame implements CecilViewInterface {
 		fileMenu.add(menuItem);
 		
 		JMenu settingsMenu = new JMenu("Settings");
-		settingsMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-settings.png").getPath()));
+		settingsMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-settings.png").getPath()));		
 		menuBar.add(settingsMenu);
+		
+		JMenuItem fontchooser = new JMenuItem("Font chooser");
+		settingsMenu.add(fontchooser);
+		fontchooser.addActionListener(new ActionListener() {
+			   public void actionPerformed(ActionEvent ae) {
+				   System.out.println("Hello");
+				   Frame frame = new Frame();
+				    (new FontChooser(frame)).setVisible(true);
+				   }
+				 });
 
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-help.png").getPath()));
