@@ -41,6 +41,8 @@ import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +72,7 @@ import java.io.IOException;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import org.raspberrypi.cecil.pojo.CecilInstruction;
@@ -79,8 +82,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private static final int HEIGHT = 750;
 	private Font schoolbellFont = null;
 	
-	private DefaultTableModel mdlInput;
-	String[] tooltips = { "American", "Japanese ", "Latin ", "English"};
 	private ArrayList<CecilInstruction> instructions;
 	private ArrayList<String> instructionList;
 	
@@ -100,18 +101,18 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JTable tblInput;
 	private JTable tblMemory;
 	
-//	private JButton btnFile;
 	private JButton btnCompile;
 	private JButton btnRun;
 	private JButton btnStepThrough;
-//	private JButton btnSettings;
-//	private JButton btnHelp;
 	private JLabel lblCarry;
 	private JLabel lblZero;
 	private JLabel lblNegative;
 	
-	public BackgroundMenuBar menuBar;
-		
+	private BackgroundMenuBar menuBar;
+	private JMenu fileMenu;
+	private JMenu settingsMenu;
+	private JMenu helpMenu;
+	
 	/**
 	 * Create the frame.
 	 */
@@ -139,7 +140,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		getContentPane().setLayout(new GridBagLayout());
 		menuBar = new BackgroundMenuBar();
-		menuBar.setOpaque(true);
+//		menuBar.setOpaque(true);
 		
 		ImageIcon icon = new ImageIcon(getClass().getResource("/resources/cecil_title.png").getPath());
 		JMenuItem iconItem = new JMenuItem();
@@ -147,15 +148,14 @@ public class Frame extends JFrame implements CecilViewInterface {
 		iconItem.setIcon(icon);
 		menuBar.add(iconItem);
 		
-		JMenu fileMenu = new JMenu("File");
-		fileMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-directory.png").getPath()));
+		fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		
 		JMenuItem menuItem = new JMenuItem("A text only item");
 		fileMenu.add(menuItem);
 		
-		JMenu settingsMenu = new JMenu("Settings");
-		settingsMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-settings.png").getPath()));		
+		settingsMenu = new JMenu("Settings");
+		settingsMenu.setRolloverEnabled(true);
 		menuBar.add(settingsMenu);
 		
 		JMenuItem fontchooser = new JMenuItem("Font chooser");
@@ -168,8 +168,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 				   }
 				 });
 
-		JMenu helpMenu = new JMenu("Help");
-		helpMenu.setIcon(new ImageIcon(getClass().getResource("/resources/vdk-help.png").getPath()));
+		helpMenu = new JMenu("Help");
+		helpMenu.setRolloverEnabled(true);
 		menuBar.add(helpMenu);
 		
 		setJMenuBar(menuBar);
@@ -184,11 +184,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		northPanel = new JPanel();	
 		northPanel.setLayout(new GridLayout(1,3));
-		northPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		northPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
 		
 		centerLeftPanel = new JPanel();
 		centerLeftPanel.setLayout(new GridLayout(1,1));
-		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Input Editor", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Program", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		
 		centerRightPanel = new JPanel();
 		centerRightPanel.setLayout(new GridLayout(2,1));
@@ -211,7 +211,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_north.gridy = 0;
 		gbc_north.weightx = 1;
 		gbc_north.weighty = 0.05;
-//		gbc_north.insets = new Insets(10, 10, 0, 10);
 		getContentPane().add(northPanel, gbc_north);
 		
 		/*
@@ -223,7 +222,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
 		gbc_centre.weighty = 0.55;
-//		gbc_centre.insets = new Insets(0, 10, 0, 10);
 		getContentPane().add(centerPanel, gbc_centre);		
 		
 		/*
@@ -235,7 +233,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
 		gbc_south.weighty = 0.4;
-//		gbc_south.insets = new Insets(10, 10, 20, 10);
 		getContentPane().add(southPanel, gbc_south);
 		
 		/*
@@ -255,11 +252,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		/*
 		 * Setup north panel buttons
-		 */
-//		btnFile = new JButton("File");
-//		btnFile.setToolTipText("File");
-//		topLeft.add(btnFile);
-		
+		 */		
 		btnCompile = new JButton("Compile");
 		btnCompile.setToolTipText("Compile");
 		topCentre.add(btnCompile);
@@ -271,14 +264,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		btnStepThrough = new JButton("Step through");
 		btnStepThrough.setToolTipText("Step through");
 		topCentre.add(btnStepThrough);
-		
-//		btnSettings = new JButton("Settings");
-//		btnSettings.setToolTipText("Settings");
-//		topRight.add(btnSettings);
-//		
-//		btnHelp = new JButton("Help");
-//		btnHelp.setToolTipText("Help");
-//		topRight.add(btnHelp);
 		
 		/*
 		 * Registers
@@ -359,7 +344,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Flags
 		 */
 		flagPanel = new JPanel();
-		flagPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Status Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		flagPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		flagPanel.setLayout(new GridLayout(1,3));
 		
 		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
@@ -402,7 +387,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */		
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
-		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Output console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Result", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		centerRightPanel.add(consolePanel);
 					
 		txtConsole = new JTextPane();
@@ -415,7 +400,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		/*
 		 * Input editor
 		 */
-		mdlInput = new DefaultTableModel();
+		final DefaultTableModel mdlInput = new DefaultTableModel();
 		mdlInput.addColumn("#");
 		mdlInput.addColumn("Label");
 		mdlInput.addColumn("Instruction");
@@ -423,15 +408,16 @@ public class Frame extends JFrame implements CecilViewInterface {
 		mdlInput.addRow(new Object[]{1,"","",""});
 		
 		tblInput = new JTable(mdlInput);
-
+		tblInput.getTableHeader().setReorderingAllowed(false);
+		tblInput.getColumnModel().getColumn(0).setResizable(false);
+		tblInput.getColumnModel().getColumn(0).setMinWidth(20);
+		tblInput.getColumnModel().getColumn(0).setMaxWidth(20);
+		
 		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
-//		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
 		aligncenter.setHorizontalAlignment(JLabel.CENTER);
 		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
 		tblInput.setRowHeight(25);		
-		tblInput.getColumnModel().getColumn(2).setPreferredWidth(150);
-		tblInput.getColumnModel().getColumn(0).setPreferredWidth(5);
 		tblInput.setFillsViewportHeight(true);
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
@@ -465,9 +451,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		}
 		
 		tblMemory = new JTable(mdlMemory);
+		tblMemory.getTableHeader().setReorderingAllowed(false);
+		tblMemory.setEnabled(false);
 		tblMemory.setFillsViewportHeight(true);
-
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		memoryScroll.setOpaque(false);
@@ -475,10 +463,15 @@ public class Frame extends JFrame implements CecilViewInterface {
 	}
 	
 	private void setupColours() {
-		Color background = new Color(255, 204, 245);
+//		Color background = new Color(248, 255, 125);
+//		Color highlight = new Color(66, 227, 77);
+		Color background = new Color(255, 230, 214);
+		Color highlight = new Color(255, 148, 82);
 		Color innerPanel = new Color(255, 255, 255);
 		getContentPane().setBackground(background);
-		menuBar.setColour(background);
+		menuBar.setColour(highlight);
+		LineBorder border = new LineBorder(highlight, 3, true);
+		UIManager.put("TitledBorder.border", border);
 		
 		northPanel.setBackground(background);
 		centerLeftPanel.setBackground(background);
@@ -501,24 +494,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 		txtConsole.setBackground(innerPanel);
 
 		tblInput.setBackground(innerPanel);
-		// tblInput.setBackground(new Color(255, 255, 102));
 		tblMemory.setBackground(innerPanel);
 	}
 	
-	private void setupButtonIcons() {
-		//File
-//		try {
-//			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
-//			btnFile.setIcon(new ImageIcon(img));
-//			
-//			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
-//			btnFile.setRolloverIcon(new ImageIcon(img));
-//			
-//			
-//		} catch (IOException e) {
-//			System.out.println("Error creating buttons: could not set button icon");
-//		}
-		
+	private void setupButtonIcons() {		
 		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
@@ -552,27 +531,125 @@ public class Frame extends JFrame implements CecilViewInterface {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
 		
-//		//Settings
-//		try {
-//			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
-//			btnSettings.setIcon(new ImageIcon(img));
-//			
-//			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
-//			btnSettings.setRolloverIcon(new ImageIcon(img));
-//		} catch (IOException e) {
-//			System.out.println("Error creating buttons: could not set button icon");
-//		}
-//		
-//		//Help
-//		try {
-//			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
-//			btnHelp.setIcon(new ImageIcon(img));
-//			
-//			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
-//			btnHelp.setRolloverIcon(new ImageIcon(img));
-//		} catch (IOException e) {
-//			System.out.println("Error creating buttons: could not set button icon");
-//		}
+		//File
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
+			fileMenu.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
+			fileMenu.setRolloverIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		
+		fileMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
+					fileMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
+					fileMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+		});
+		
+		//Settings
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
+			settingsMenu.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
+			settingsMenu.setRolloverIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		
+		settingsMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
+					settingsMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
+					settingsMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+		});
+		
+		//Help
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
+			helpMenu.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
+			helpMenu.setRolloverIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		
+		helpMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
+					helpMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				try {
+					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
+					helpMenu.setIcon(new ImageIcon(img));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+		});
 	}
 	
 	private void setupFlagIcons() {
@@ -902,7 +979,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	public static void main(String[] args) {
 		try {
 			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
+//			UIManager.put("ToolTip.background", new ColorUIResource(255, 140, 0));//setting the background of the tooltip
 			Frame frame = new Frame();
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //			UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel");//setting a Napkin like look
