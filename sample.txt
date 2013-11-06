@@ -1,0 +1,1 @@
+.start load d1  print   printch  .d1 insert 65 

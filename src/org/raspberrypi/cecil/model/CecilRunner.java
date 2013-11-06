@@ -1,13 +1,8 @@
 package org.raspberrypi.cecil.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 
 /**
  * 
@@ -37,205 +32,263 @@ public class CecilRunner {
 		this.m = m;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<String> run() {
 		int i = 0;
 		ArrayList<String> result = new ArrayList<String>();
 
-		while(m.memory[i] != -1) {
+		while(m.memory[i] != -1) {	
 			switch(m.memory[i]) {
 
-			/* Unary Instructions */
-			case 0 : /* stop */
-				return result;  // -1 means successful program exit
-			case 1: /* print */
-				result.add(""+m.memory[m.ACCUMULATOR_ADDRESS]);
-			case 2: /* printch */
-				result.add(""+(char) m.memory[m.ACCUMULATOR_ADDRESS]);
-			case 3: /* printb */
-				result.add(Integer.toBinaryString(m.memory[m.ACCUMULATOR_ADDRESS]));
-			case 4: /* cclear */
-				m.memory[m.STATUS_ADDRESS] &= (0<<2);
-				break;
-			case 5: /* cset */
-				m.memory[m.STATUS_ADDRESS] |= (1<<2);
-				break;
-			case 6: /* lshift */
-				m.memory[m.ACCUMULATOR_ADDRESS] <<= 1;
-				break;
-			case 7: /* rshift */
-				m.memory[m.ACCUMULATOR_ADDRESS] >>= 1;
-				break;
-			case 8: /* pull */
-				if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-					m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[m.STACK_PTR]--;
-				}
-				else errors.add("Cannot pull because of underflow");
-				break;
-			case 9: /* xinc */
-				m.memory[m.XREG_ADDRESS]++;
-				break;
-			case 10: /* xdec */
-				m.memory[m.XREG_ADDRESS]--;
-				break;
-			case 11: /* xpull */
-				if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-					m.memory[m.XREG_ADDRESS] = m.memory[m.STACK_PTR]--;
-				}
-				else errors.add("Cannot pull because of underflow");
-				break;
-			case 12: /* xpush */
-				if(m.memory[m.STACK_PTR] != m.STACK_END) {
-					m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.XREG_ADDRESS];
-				}
-				else errors.add("Cannot pull because of overflow");
-				break;
-			case 13: /* push */
-				if(m.memory[m.STACK_PTR] != m.STACK_END) {
-					m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.ACCUMULATOR_ADDRESS];
-				}
-				else errors.add("Cannot pull because of overflow");
-				break;
-			case 14: /* ypush */
-				if(m.memory[m.STACK_PTR] != m.STACK_END) {
-					m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.YREG_ADDRESS];
-				}
-				else errors.add("Cannot pull because of overflow");
-				break;
-			case 15: /* ypull */
-				if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-					m.memory[m.YREG_ADDRESS] = m.memory[m.STACK_PTR]--;
-				}
-				else errors.add("Cannot pull because of underflow");
-				break;
-			case 16: /* yinc */
-				m.memory[m.YREG_ADDRESS]++;
-				break;
-			case 17: /* ydec */
-				m.memory[m.YREG_ADDRESS]--;
+			case 0: return result(i);
+			case 1: case 2: case 3: 
+				result = result(i);
+				i++;
 				break;
 
-				/* Binary Instructions */	
-			case 18: /* load */
-				//System.out.println(checkInsert(i));
-				
-				if(checkInsert(i+1))	
-					m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 19: /* store */
-				if(checkInsert(i))	
-					m.memory[m.memory[++i]] = m.memory[m.ACCUMULATOR_ADDRESS];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 20: /* add */
-				if(checkInsert(i))	{
-					m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-					m.memory[m.ACCUMULATOR_ADDRESS] += m.memory[m.memory[++i]];
-				}
-				else errors.add("Instruction has to be insert");
-				break;
-			case 21: /* sub */
-				if(checkInsert(i)) {	
-					m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-					m.memory[m.ACCUMULATOR_ADDRESS] -= m.memory[m.memory[++i]];
-				}
-				else errors.add("Instruction has to be insert");
-				break;
-			case 22: /* and */
-				if(checkInsert(i)) {	
-					m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-					m.memory[m.ACCUMULATOR_ADDRESS] &= m.memory[m.memory[++i]];
-				}
-				else errors.add("Instruction has to be insert");
-				break;
-			case 23: /* or */
-				if(checkInsert(i)) {	
-					m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-					m.memory[m.ACCUMULATOR_ADDRESS] |= m.memory[m.memory[++i]];
-				}
-				else errors.add("Instruction has to be insert");
-				break;
-			case 24: /* xor */
-				if(checkInsert(i)) {	
-					m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-					m.memory[m.ACCUMULATOR_ADDRESS] ^= m.memory[m.memory[++i]];
-				}
-				else errors.add("Instruction has to be insert");
-				break;
-			case 25: /* jump */
-				i = m.memory[i+1];
-				break;
-			case 26: /* comp */
-				zeroflagstatus(m.ACCUMULATOR_ADDRESS);
-				negativeflagstatus(m.ACCUMULATOR_ADDRESS, m.memory[++i]);
-				break;
-			case 27: /* jineg */
-				/* Description If the negative flag is set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
-				if(isBitSet(m.memory[m.STATUS_ADDRESS], 1))
-					i = m.memory[i+1];
-				break;
-			case 28 : /* jipos */
-				/*Description If neither the carry or negative flags are set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
-				if(!isBitSet(m.memory[m.STATUS_ADDRESS], 1) &&  !isBitSet(m.memory[m.STATUS_ADDRESS], 2))
-					i = m.memory[i+1];
-				break;
-			case 29: /* jizero */
-				if(!isBitSet(m.memory[m.STATUS_ADDRESS], 0))
-					i = m.memory[i+1];
-				break;
-			case 30: /* jmptosr */
-				m.memory[m.memory[m.STACK_PTR]] = m.memory[i];
-				i = m.memory[i+1];
-				break;
-			case 31: /* jicarry */
-				if(!isBitSet(m.memory[m.STATUS_ADDRESS], 2))
-					i = m.memory[i+1];
-				break;
-			case 32: /* xload */
-				if(checkInsert(i))	
-					m.memory[m.XREG_ADDRESS] = m.memory[++i];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 33: /* xstore */
-				if(checkInsert(i))	
-					m.memory[m.memory[++i]] = m.memory[m.XREG_ADDRESS];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 34: /* loadmx */
-				if(checkInsert(i))	
-					m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i] + m.memory[m.XREG_ADDRESS];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 35: /* xcomp */
-				zeroflagstatus(m.XREG_ADDRESS);		
-				negativeflagstatus(m.XREG_ADDRESS, m.memory[++i]);
-				break;
-			case 36: /* yload */
-				if(checkInsert(i))	
-					m.memory[m.YREG_ADDRESS] = m.memory[++i];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 37: /* ystore */
-				if(checkInsert(i))	
-					m.memory[m.memory[++i]] = m.memory[m.YREG_ADDRESS];
-				else errors.add("Instruction has to be insert");
-				break;
-			case 38: /* insert */
-				m.memory[i] = m.memory[++i];
-				break;
-			case 39: /* ycomp */
-				zeroflagstatus(m.YREG_ADDRESS);		
-				negativeflagstatus(m.YREG_ADDRESS, m.memory[++i]);
-				break;
+			default:	
+				i = execute(i);
 			}
-
 			checkStatusFlags();
 			m.memory[m.PROGRAM_COUNTER] = i;
 		}
-		
+
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	private ArrayList<String> result(int i) {
+		ArrayList result = new ArrayList<String>();
+
+		switch(m.memory[i]){
+
+		case 0 : /* stop */
+			return result;  // -1 means successful program exit
+
+		case 1: /* print */
+			result.add(""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+			break;
+
+		case 2: /* printch */
+			result.add(""+(char)m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+			break;
+
+		case 3: /* printb */
+			result.add(Integer.toBinaryString(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]));
+			break;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Executing each instruction
+	 * @param i
+	 * @return
+	 */
+	private int execute(int i) {
+		switch(m.memory[i]) {
+
+		/* Unary Instructions */
+
+		case 4: /* cclear */
+			m.memory[m.STATUS_ADDRESS] &= (0<<2);
+			i++;
+			break;
+		case 5: /* cset */
+			m.memory[m.STATUS_ADDRESS] |= (1<<2);
+			i++;
+			break;
+		case 6: /* lshift */
+			m.memory[m.ACCUMULATOR_ADDRESS] <<= 1;
+			i++;
+			break;
+		case 7: /* rshift */
+			m.memory[m.ACCUMULATOR_ADDRESS] >>= 1;
+			i++;
+			break;
+		case 8: /* pull */
+			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
+				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[m.STACK_PTR]--;
+			}
+			else errors.add("Cannot pull because of underflow");
+			i++;
+			break;
+		case 9: /* xinc */
+			m.memory[m.XREG_ADDRESS]++;
+			i++;
+			break;
+		case 10: /* xdec */
+			m.memory[m.XREG_ADDRESS]--;
+			i++;
+			break;
+		case 11: /* xpull */
+			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
+				m.memory[m.XREG_ADDRESS] = m.memory[m.STACK_PTR]--;
+			}
+			else errors.add("Cannot pull because of underflow");
+			i++;
+			break;
+		case 12: /* xpush */
+			if(m.memory[m.STACK_PTR] != m.STACK_END) {
+				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.XREG_ADDRESS];
+			}
+			else errors.add("Cannot pull because of overflow");
+			i++;
+			break;
+		case 13: /* push */
+			if(m.memory[m.STACK_PTR] != m.STACK_END) {
+				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.ACCUMULATOR_ADDRESS];
+			}
+			else errors.add("Cannot pull because of overflow");
+			i++;
+			break;
+		case 14: /* ypush */
+			if(m.memory[m.STACK_PTR] != m.STACK_END) {
+				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.YREG_ADDRESS];
+			}
+			else errors.add("Cannot pull because of overflow");
+			i++;
+			break;
+		case 15: /* ypull */
+			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
+				m.memory[m.YREG_ADDRESS] = m.memory[m.STACK_PTR]--;
+			}
+			else errors.add("Cannot pull because of underflow");
+			i++;
+			break;
+		case 16: /* yinc */
+			m.memory[m.YREG_ADDRESS]++;
+			i++;
+			break;
+		case 17: /* ydec */
+			m.memory[m.YREG_ADDRESS]--;
+			i++;
+			break;
+
+			/* Binary Instructions */	
+		case 18: /* load */
+			//System.out.println(checkInsert(i));
+
+			if(checkInsert(i+1))	
+				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 19: /* store */
+			if(checkInsert(i))	
+				m.memory[m.memory[++i]] = m.memory[m.ACCUMULATOR_ADDRESS];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 20: /* add */
+			if(checkInsert(i))	{
+				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
+				m.memory[m.ACCUMULATOR_ADDRESS] += m.memory[m.memory[++i]];
+			}
+			else errors.add("Instruction has to be insert");
+			break;
+		case 21: /* sub */
+			if(checkInsert(i)) {	
+				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
+				m.memory[m.ACCUMULATOR_ADDRESS] -= m.memory[m.memory[++i]];
+			}
+			else errors.add("Instruction has to be insert");
+			break;
+		case 22: /* and */
+			if(checkInsert(i)) {	
+				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
+				m.memory[m.ACCUMULATOR_ADDRESS] &= m.memory[m.memory[++i]];
+			}
+			else errors.add("Instruction has to be insert");
+			break;
+		case 23: /* or */
+			if(checkInsert(i)) {	
+				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
+				m.memory[m.ACCUMULATOR_ADDRESS] |= m.memory[m.memory[++i]];
+			}
+			else errors.add("Instruction has to be insert");
+			break;
+		case 24: /* xor */
+			if(checkInsert(i)) {	
+				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
+				m.memory[m.ACCUMULATOR_ADDRESS] ^= m.memory[m.memory[++i]];
+			}
+			else errors.add("Instruction has to be insert");
+			break;
+		case 25: /* jump */
+			i = m.memory[i+1];
+			break;
+		case 26: /* comp */
+			zeroflagstatus(m.ACCUMULATOR_ADDRESS);
+			negativeflagstatus(m.ACCUMULATOR_ADDRESS, m.memory[++i]);
+			break;
+		case 27: /* jineg */
+			/* Description If the negative flag is set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
+			if(isBitSet(m.memory[m.STATUS_ADDRESS], 1))
+				i = m.memory[i+1];
+			break;
+		case 28 : /* jipos */
+			/*Description If neither the carry or negative flags are set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
+			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 1) &&  !isBitSet(m.memory[m.STATUS_ADDRESS], 2))
+				i = m.memory[i+1];
+			break;
+		case 29: /* jizero */
+			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 0))
+				i = m.memory[i+1];
+			break;
+		case 30: /* jmptosr */
+			m.memory[m.memory[m.STACK_PTR]] = m.memory[i];
+			i = m.memory[i+1];
+			break;
+		case 31: /* jicarry */
+			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 2))
+				i = m.memory[i+1];
+			break;
+		case 32: /* xload */
+			if(checkInsert(i))	
+				m.memory[m.XREG_ADDRESS] = m.memory[++i];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 33: /* xstore */
+			if(checkInsert(i))	
+				m.memory[m.memory[++i]] = m.memory[m.XREG_ADDRESS];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 34: /* loadmx */
+			if(checkInsert(i))	
+				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i] + m.memory[m.XREG_ADDRESS];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 35: /* xcomp */
+			zeroflagstatus(m.XREG_ADDRESS);		
+			negativeflagstatus(m.XREG_ADDRESS, m.memory[++i]);
+			break;
+		case 36: /* yload */
+			if(checkInsert(i))	
+				m.memory[m.YREG_ADDRESS] = m.memory[++i];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 37: /* ystore */
+			if(checkInsert(i))	
+				m.memory[m.memory[++i]] = m.memory[m.YREG_ADDRESS];
+			else errors.add("Instruction has to be insert");
+			break;
+		case 38: /* insert */
+			m.memory[i] = m.memory[++i];
+			break;
+		case 39: /* ycomp */
+			zeroflagstatus(m.YREG_ADDRESS);		
+			negativeflagstatus(m.YREG_ADDRESS, m.memory[++i]);
+			break;
+		}
+		return i;
+	}
 	/**
 	 * 
 	 */
@@ -257,7 +310,7 @@ public class CecilRunner {
 			m.memory[m.STATUS_ADDRESS] |= (1<<1);
 			m.memory[m.STATUS_ADDRESS] |= 1;
 		}
-			
+
 	}
 
 	/**
@@ -302,7 +355,7 @@ public class CecilRunner {
 			m.memory[m.STATUS_ADDRESS] &= (0<<1);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param b

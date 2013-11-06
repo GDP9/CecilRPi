@@ -1,7 +1,6 @@
 package org.raspberrypi.cecil.model.test;
 
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,9 +41,16 @@ public class Testing {
 		userinput.add(input);
 		input  = new ArrayList<String>();
 		
+		input.add("");
+		input.add("stop");
+		input.add("");
+		
+		userinput.add(input);
+		input  = new ArrayList<String>();
+		
 		input.add(".d1");
 		input.add("insert");
-		input.add("3");
+		input.add("65");
 		
 		userinput.add(input);
 		
@@ -92,7 +98,10 @@ public class Testing {
 			while(m.memory[i] != -1)
 				System.out.println(i+" "+m.memory[i++]);
 			
-			CecilRunner runner = new CecilRunner(parser, m);		
+			CecilRunner runner = new CecilRunner(parser, m);
+			for(String s: runner.run())
+				System.out.println("   "+s);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

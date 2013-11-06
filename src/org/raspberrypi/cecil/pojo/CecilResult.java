@@ -2,74 +2,82 @@ package org.raspberrypi.cecil.pojo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.raspberrypi.cecil.model.CecilMemoryModel;
 
 /*
  * All the values to be displayed in the "output" views when run or step through is completed.
  */
 public class CecilResult {
 
-	private ArrayList<String> xStack;
-	private ArrayList<String> yStack;
-	private ArrayList<String> accStack;
+	private int[] xStack;
+	private int[] yStack;
+	private int[] accStack;
 	private boolean carryFlag;
 	private boolean zeroFlag;
 	private boolean negativeFlag;
-	private HashMap<Integer, Integer> memoryAllocations;
+	private CecilMemoryModel malloc;
 	private ArrayList<String> results;
-	private ArrayList<String> errors;
 	
-	public ArrayList<String> getxStack() {
+	/**
+	 * 
+	 * @param errors
+	 * @param malloc
+	 */
+	public CecilResult(List<String> errors, CecilMemoryModel malloc) {
+		this.results = (ArrayList<String>) errors;
+		this.malloc = malloc;
+	}
+	
+	public int[] getxStack() {
+		xStack[0] = malloc.memory[1027];
 		return xStack;
 	}
-	public void setxStack(ArrayList<String> xStack) {
-		this.xStack = xStack;
-	}
-	public ArrayList<String> getyStack() {
+	
+	public int[] getyStack() {
+		yStack[0] = malloc.memory[1028];
 		return yStack;
 	}
-	public void setyStack(ArrayList<String> yStack) {
-		this.yStack = yStack;
-	}
-	public ArrayList<String> getAccStack() {
+	
+	public int[] getAccStack() {
+		accStack[0] = malloc.memory[1026];
 		return accStack;
 	}
-	public void setAccStack(ArrayList<String> accStack) {
-		this.accStack = accStack;
-	}
+	
 	public boolean isCarryFlag() {
+		if((malloc.memory[1025] << 2) == 1)
+			carryFlag = true;
+		else carryFlag = false;
+		
 		return carryFlag;
 	}
-	public void setCarryFlag(boolean carryFlag) {
-		this.carryFlag = carryFlag;
-	}
+	
 	public boolean isZeroFlag() {
+		if((malloc.memory[1025] << 0) == 1)
+			zeroFlag = true;
+		else zeroFlag = false;
+		
 		return zeroFlag;
 	}
-	public void setZeroFlag(boolean zeroFlag) {
-		this.zeroFlag = zeroFlag;
-	}
+	
 	public boolean isNegativeFlag() {
+		if((malloc.memory[1025] << 1) == 1)
+			negativeFlag = true;
+		else negativeFlag = false;
+		
 		return negativeFlag;
 	}
-	public void setNegativeFlag(boolean negativeFlag) {
-		this.negativeFlag = negativeFlag;
+	
+	public int[] getMemoryAllocations() {
+		return malloc.memory ;
 	}
-	public HashMap<Integer, Integer> getMemoryAllocations() {
-		return memoryAllocations;
-	}
-	public void setMemoryAllocations(HashMap<Integer, Integer> memoryAllocations) {
-		this.memoryAllocations = memoryAllocations;
-	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<String> getResults() {
 		return results;
-	}
-	public void setResults(ArrayList<String> results) {
-		this.results = results;
-	}
-	public ArrayList<String> getErrors() {
-		return errors;
-	}
-	public void setErrors(ArrayList<String> errors) {
-		this.errors = errors;
 	}
 }
