@@ -33,20 +33,20 @@ public class CecilController implements CecilControllerInterface {
 			view.setAccStack(new ArrayList<String>());
 		}
 		
-		if (result.getxStack() != null && result.getxStack().length > 0) {
+		if (result.getxReg() != null && result.getxReg().length > 0) {
 			ArrayList<String> xStack = new ArrayList<String>();
-			for (int i = 0; i < result.getxStack().length; i++) {
-				xStack.add(Integer.toString(result.getxStack()[i]));
+			for (int i = 0; i < result.getxReg().length; i++) {
+				xStack.add(Integer.toString(result.getxReg()[i]));
 			}
 			view.setXStack(xStack);
 		} else {
 			view.setXStack(new ArrayList<String>());
 		}
 		
-		if (result.getyStack() != null && result.getyStack().length > 0) {
+		if (result.getyReg() != null && result.getyReg().length > 0) {
 			ArrayList<String> yStack = new ArrayList<String>();
-			for (int i = 0; i < result.getyStack().length; i++) {
-				yStack.add(Integer.toString(result.getyStack()[i]));
+			for (int i = 0; i < result.getyReg().length; i++) {
+				yStack.add(Integer.toString(result.getyReg()[i]));
 			}
 			view.setYStack(yStack);
 		} else {

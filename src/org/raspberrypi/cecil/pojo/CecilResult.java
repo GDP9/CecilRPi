@@ -10,9 +10,9 @@ import org.raspberrypi.cecil.model.CecilMemoryModel;
  */
 public class CecilResult {
 
-	private int[] xStack;
-	private int[] yStack;
-	private int[] accStack;
+	private int[] xReg;
+	private int[] yReg;
+	private int[] acc;
 	private boolean carryFlag;
 	private boolean zeroFlag;
 	private boolean negativeFlag;
@@ -40,19 +40,19 @@ public class CecilResult {
 		this.malloc = memoryModel;		
 	}
 
-	public int[] getxStack() {
-		xStack[0] = malloc.memory[1027];
-		return xStack;
+	public int[] getxReg() {
+		xReg[0] = malloc.memory[malloc.memory[1027]];
+		return xReg;
 	}
 	
-	public int[] getyStack() {
-		yStack[0] = malloc.memory[1028];
-		return yStack;
+	public int[] getyReg() {
+		yReg[0] = malloc.memory[1028];
+		return yReg;
 	}
 	
 	public int[] getAccStack() {
-		accStack[0] = malloc.memory[1026];
-		return accStack;
+		acc[0] = malloc.memory[1026];
+		return acc;
 	}
 	
 	public boolean isCarryFlag() {
