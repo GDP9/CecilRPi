@@ -739,8 +739,8 @@ public class Frame extends JFrame implements CecilViewInterface {
 				setBackground(list.getSelectionBackground());
 				setForeground(Color.BLUE);
 				if (-1 < index) {
-					if (instructions != null && instructions.get(index) != null && instructions.get(index).getTooltipDescription() != null) {
-						list.setToolTipText(instructions.get(index).getTooltipDescription());//get the tooltip according the selected item's index
+					if (instructions != null && instructions.get(index) != null && instructions.get(index).getDescription() != null) {
+						list.setToolTipText(instructions.get(index).getDescription());//get the tooltip according the selected item's index
 					} else {
 						list.setToolTipText("No description available");
 					}
