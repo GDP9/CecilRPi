@@ -16,13 +16,15 @@ JComboBox fontName;
 JCheckBox fontBold, fontItalic;
 JTextField fontSize;
 JLabel sampleText;
-Font newFont;
+public Font newFont;
 Color newColor;
 JTextArea image;
 JComboBox colourName;
+Frame frame;
 
-public FontChooser(Frame parent) {
- super(parent, "Font Chooser", true);
+public FontChooser(Frame frame) {
+	this.frame= frame;
+ //super(parent, "Font Chooser", true);
  setSize(350, 350);
  //setResizable(false);
 
@@ -165,6 +167,7 @@ protected void updateFont() {
  Font f = new Font(name, (bold ? Font.BOLD : 0) +
                          (ital ? Font.ITALIC : 0), size);
  sampleText.setFont(f);
+ newFont = sampleText.getFont(); 
 }
 
 protected void updateColour() {
@@ -185,13 +188,19 @@ protected void updateColour() {
 
 public void saveandclose() {
  // Save font & color information
- newFont = sampleText.getFont();
- setVisible(false);
+ newFont = sampleText.getFont();  
+ frame.setnewFont(newFont);
+setVisible(false);
+//System.out.println("Test in FontChooser?"+new Frame().test);
+
 }
 
+public Font getnewFont(){
+	return newFont;
+}
 public void cancelandclose() {
  // Erase any font information and then close the window
- newFont = null;
+ //newFont = null;
  newColor = null;
  setVisible(false);
 }

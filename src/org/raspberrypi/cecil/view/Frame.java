@@ -119,6 +119,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private Java2sAutoComboBox comboBox;
 	
 	private CecilController controller;
+	FontUIResource font1 = new FontUIResource("Arial", Font.PLAIN, 18);
 	
 	/**
 	 * Create the frame.
@@ -130,7 +131,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
-		setupFonts();
+		setupFonts(font1);
 		
 		ArrayList<String> examples = new ArrayList<String>();
 		examples.add("0");
@@ -182,13 +183,15 @@ public class Frame extends JFrame implements CecilViewInterface {
 		
 		JMenuItem fontchooser = new JMenuItem("Font chooser");
 		settingsMenu.add(fontchooser);
+		final FontChooser fc = new FontChooser(this);
 		fontchooser.addActionListener(new ActionListener() {
-			   public void actionPerformed(ActionEvent ae) {
-//				   System.out.println("Hello");
-//				   Frame frame = new Frame();
-//				    (new FontChooser(frame)).setVisible(true);
-				   }
-				 });
+		   public void actionPerformed(ActionEvent ae) {				
+			  
+			   fc.setVisible(true);			  
+			    
+			   }			 
+			 });
+
 
 		helpMenu = new JMenu("Help");
 		helpMenu.setRolloverEnabled(true);
@@ -715,11 +718,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		}
 	}
 	
-	private void setupFonts() {
-		font = new Font("Arial", Font.PLAIN, 18);
+	private void setupFonts(Font font) {
+		
 
 		UIManager.put("ToolTip.font", new FontUIResource(font));
-		FontUIResource font = new FontUIResource("Arial", Font.PLAIN, 18);
+		
         UIManager.put("Table.font", font);
         
 		input.setFont(font);
@@ -1033,6 +1036,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private void onStepThroughClicked()  {
 		controller.stepThroughClicked() ;
 	}
+	
+	public void setnewFont(Font font){
+		setupFonts(font);
+	}
+
 	/*
 	 * Interface methods
 	 * 
