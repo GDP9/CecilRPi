@@ -21,23 +21,26 @@ public class Cecil implements CecilModelInterface {
 
 	protected CecilCompiler compiler;
 	protected CecilRunner runner;
+	private static int ctr;
 
+	public Cecil() {
+		ctr = 0;
+	}
 
 	@Override
 	public CecilResult run() {
 		CecilRunner runner = new CecilRunner(compiler.parser, compiler.getMemoryModel());
-		
-		ArrayList<String> results = runner.run();
+
+		ArrayList<String> results = runner.run(ctr);
 		CecilResult r = new CecilResult(results, compiler.getMemoryModel());
-		
+
 		return r;
 	}
 
 	@Override
-	public CecilResult stepThrough(int lineNo) {
-		
-		
-		return null;
+	public CecilResult stepThrough() {
+		CecilRunner runner = new CecilRunner(compiler.parser, compiler.getMemoryModel());
+		return new CecilResult(runner.stepthrough(ctr), compiler.getMemoryModel());
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class Cecil implements CecilModelInterface {
 			for(int i = 0; i < a.size(); i++) {
 				sample += a.get(i) + " ";
 			}
-		
+
 		File samplefile = new File("sample.txt");
 		FileWriter fw;
 		try {
@@ -66,10 +69,11 @@ public class Cecil implements CecilModelInterface {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		compiler = new CecilCompiler(samplefile.getAbsolutePath());
 		CecilResult result = new CecilResult(compiler.getCompilationErrors(), compiler.getMemoryModel());
-		
+
 		return result;
 	}
+
 }

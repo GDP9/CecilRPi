@@ -37,6 +37,7 @@ public class CecilMemoryModel {
 			memory[i] = -1;
 		
 		memory[STACK_PTR] = 908;
+		//memory[ACCUMULATOR_ADDRESS]=0;
 	}
 	
 	

@@ -23,6 +23,9 @@ public class CecilRunner {
 	private CecilParser parser;
 	private CecilMemoryModel m;
 	private List errors;
+	private ArrayList<String> results;
+	private static int ctr;
+
 
 	/**
 	 * Constructor
@@ -30,33 +33,9 @@ public class CecilRunner {
 	public CecilRunner(CecilParser parser, CecilMemoryModel m) {
 		this.parser = parser;
 		this.m = m;
-	}
+		this.results = new ArrayList<String>();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> run() {
-		int i = 0;
-		ArrayList<String> result = new ArrayList<String>();
-
-		while(m.memory[i] != -1) {	
-			switch(m.memory[i]) {
-
-			case 0: return result(i);
-			case 1: case 2: case 3: 
-				result = result(i);
-				i++;
-				break;
-
-			default:	
-				i = execute(i);
-			}
-			checkStatusFlags();
-			m.memory[m.PROGRAM_COUNTER] = i;
-		}
-
-		return result;
+		ctr = 0;
 	}
 
 	/**
@@ -64,28 +43,72 @@ public class CecilRunner {
 	 * @param i
 	 * @return
 	 */
-	private ArrayList<String> result(int i) {
-		ArrayList result = new ArrayList<String>();
+	public String stepthrough(int i) {
+		System.out.println("m.memory in stepthrough  " + m.memory[i]);
+		switch(m.memory[i]) {
+		case 0: return result(i);
 
-		switch(m.memory[i]){
+		case 1: case 2: case 3: 
+			return result(i++);
 
-		case 0 : /* stop */
-			return result;  // -1 means successful program exit
-
-		case 1: /* print */
-			result.add(""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
-			break;
-
-		case 2: /* printch */
-			result.add(""+(char)m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
-			break;
-
-		case 3: /* printb */
-			result.add(Integer.toBinaryString(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]));
-			break;
+		default:	
+			i = execute(i);
 		}
 
-		return result;
+		checkStatusFlags();
+		m.memory[m.PROGRAM_COUNTER] = i;
+
+		return "";
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<String> run(int i) {
+
+		while(m.memory[i] != -1) {	
+			switch(m.memory[i]) {
+
+			case 0: return this.results;
+			case 1: case 2: case 3: 
+				results.add(result(i));
+
+				i++;
+
+				break;
+
+			default:	
+				i = execute(i);
+			}
+
+			checkStatusFlags();
+			m.memory[m.PROGRAM_COUNTER] = i;
+		}
+
+		return this.results;
+	}
+
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	private String result(int i) {
+		switch(m.memory[i]){
+
+		case 1: /* print */
+			//System.out.println("heeerrrreeee   " + m.memory[m.ACCUMULATOR_ADDRESS]);
+			return (""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+
+		case 2: /* printch */
+			return (""+(char)m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+
+		case 3: /* printb */
+			return (Integer.toBinaryString(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]));
+		}
+
+		return "";
 	}
 
 	/**
@@ -175,11 +198,14 @@ public class CecilRunner {
 
 			/* Binary Instructions */	
 		case 18: /* load */
-			//System.out.println(checkInsert(i));
-
-			if(checkInsert(i+1))	
+			//System.out.println(checkInsert(i+1));
+			if(checkInsert(i+1))	{
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
+				System.out.println("Accumulator is "+ m.memory[m.ACCUMULATOR_ADDRESS]);
+			}
 			else errors.add("Instruction has to be insert");
+			
+			System.out.println(m.memory[m.ACCUMULATOR_ADDRESS]);
 			break;
 		case 19: /* store */
 			if(checkInsert(i))	

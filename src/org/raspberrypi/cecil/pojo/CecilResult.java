@@ -30,6 +30,16 @@ public class CecilResult {
 		this.malloc = malloc;
 	}
 	
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public CecilResult(String stepthrough, CecilMemoryModel memoryModel) {
+		this.results = new ArrayList<String>();
+		this.results.add(stepthrough);
+		this.malloc = memoryModel;		
+	}
+
 	public int[] getxStack() {
 		xStack[0] = malloc.memory[1027];
 		return xStack;
@@ -79,13 +89,5 @@ public class CecilResult {
 	 */
 	public ArrayList<String> getResults() {
 		return results;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
 	}
 }

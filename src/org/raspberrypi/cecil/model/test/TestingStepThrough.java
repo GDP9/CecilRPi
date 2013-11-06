@@ -14,54 +14,54 @@ import org.raspberrypi.cecil.model.CecilMemoryModel;
 import org.raspberrypi.cecil.model.CecilParser;
 import org.raspberrypi.cecil.model.CecilRunner;
 
-public class Testing {
+public class TestingStepThrough {
 
 	public static void main(String args[]) {
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
-		
+
 		input.add(".start");
 		input.add("load");
 		input.add("d1");
-		
+
 		userinput.add(input);
 		input  = new ArrayList<String>();
-		
+
 		input.add("");
 		input.add("print");
 		input.add("");
-		
+
 		userinput.add(input);
 		input  = new ArrayList<String>();
-		
+
 		input.add("");
 		input.add("printch");
 		input.add("");
-		
+
 		userinput.add(input);
 		input  = new ArrayList<String>();
-		
+
 		input.add("");
 		input.add("stop");
 		input.add("");
-		
+
 		userinput.add(input);
 		input  = new ArrayList<String>();
-		
+
 		input.add(".d1");
 		input.add("insert");
 		input.add("65");
-		
+
 		userinput.add(input);
-		
+
 		String sample = new String();
 		for(ArrayList a: userinput)
 			for(int i=0; i<a.size();i++) {
 				sample += a.get(i) + " ";
 			}
-		
-		//System.out.println(sample);
-		
+
+		System.out.println(sample);
+
 		File samplefile = new File("sample.txt");
 		FileWriter fw;
 		try {
@@ -73,35 +73,35 @@ public class Testing {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
+
+
 		CommonTokenStream tokens;
 		try {
 			tokens = new CommonTokenStream(new CecilLexer( new ANTLRFileStream(samplefile.getAbsolutePath())));
 			CecilParser parser = new CecilParser(tokens);
-            parser.initialseCommandList();
-			
+			parser.initialseCommandList();
+
 			CecilMemoryModel m = parser.getMemoryModel();
 
 			/* Parsing!!! */
 			parser.program();
-			
+
 			/* type checking for labels */
 			for(String key : parser.getDatafield().keySet()) {
 				if(parser.getLabelfield().keySet().contains(key)) 
 					m.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
-			
+
 				else parser.getErrors().add("Error, Label not found");
 			}
-			
 			int i = 0;
-			//while(m.memory[i] != -1)
-				//System.out.println(i+" "+m.memory[i++]);
+			while(m.memory[i] != -1)
+				System.out.println(i+" "+m.memory[i++]);
 			
 			CecilRunner runner = new CecilRunner(parser, m);
-			
-			for(String s: runner.run(0))
-				System.out.println(" result "+ s);
+			System.out.println("result stepthrough is   " + runner.stepthrough(0));
+			System.out.println("result stepthrough is   " + runner.stepthrough(1));
+			System.out.println("result stepthrough is   " + runner.stepthrough(2));
+			System.out.println("result stepthrough is   " + runner.stepthrough(3));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -110,6 +110,6 @@ public class Testing {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 }
