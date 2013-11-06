@@ -4,6 +4,8 @@ import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -31,11 +33,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.Element;
+import javax.swing.text.Highlighter;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.Utilities;
 import javax.swing.JComboBox;
 
 import java.awt.event.ItemEvent;
@@ -44,6 +51,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,9 +102,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JPanel registerPanel;
 	private JPanel flagPanel;
 	
-	private JTextPane xRegister;
-	private JTextPane yRegister;
-	private JTextPane accRegister;
+	private JList<String> xRegister;
+	private JList<String> yRegister;
+	private JList<String> accRegister;
 	private JTextPane txtConsole;
 	
 	private JTable tblInput;
@@ -124,12 +133,14 @@ public class Frame extends JFrame implements CecilViewInterface {
 //		setupFonts();
 		
 		ArrayList<String> examples = new ArrayList<String>();
-		examples.add("0");
-		examples.add("0");
-		examples.add("0");
-		setYStack(examples);
-		setAccStack(examples);
+		examples.add("1");
+		examples.add("2");
+		examples.add("3");
+		
 		setXStack(examples);
+		setAccStack(examples);
+		setYStack(examples);
+	
 	}
 
 	private void setupDefaultFrame() {
@@ -138,6 +149,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 */
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().setLayout(new GridBagLayout());
 		menuBar = new BackgroundMenuBar();
 //		menuBar.setOpaque(true);
@@ -177,9 +189,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		if (instructionList == null) {
 			//Default instructions
 			instructionList = new ArrayList<String>();
-			instructionList.add("Instruction 1");
-			instructionList.add("Instruction 2");
-			instructionList.add("Instruction 3");
+			instructionList.add("load");
+			instructionList.add("print");
+			instructionList.add("stop");
+			instructionList.add("add");
+			instructionList.add("insert");
 		}
 		
 		northPanel = new JPanel();	
@@ -288,39 +302,65 @@ public class Frame extends JFrame implements CecilViewInterface {
 		/*
 		 * X register
 		 */
-		xRegister = new JTextPane();
-		xRegister.setEditable(false);
+		xRegister = new JList<String>();
+		  xRegister.setCellRenderer(new DefaultListCellRenderer(){
+	        	public int getHorizontalAlignment() {        		
+	                return CENTER;
+	       }
+	        });
+		xRegister.setEnabled(false);
 		xRegister.setToolTipText("X register");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		//Center the text
-		StyledDocument doc = xRegister.getStyledDocument();
-		SimpleAttributeSet center = new SimpleAttributeSet();
-		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+//		xRegister.addMouseListener(new MouseListener() {
+//			@Override
+//			public void mouseClicked(MouseEvent arg0) {
+//				xRegister.setSelectedIndex(0);
+//			}
+//			@Override
+//			public void mouseEntered(MouseEvent arg0) {
+//				xRegister.setSelectedIndex(0);
+//			}
+//			@Override
+//			public void mouseExited(MouseEvent arg0) {
+//				xRegister.setSelectedIndex(0);
+//			}
+//			@Override
+//			public void mousePressed(MouseEvent arg0) {
+//				xRegister.setSelectedIndex(0);
+//			}
+//			@Override
+//			public void mouseReleased(MouseEvent arg0) {
+//				xRegister.setSelectedIndex(0);
+//			}
+//		});
 		
 		/*
 		 * Y register
 		 */
-		yRegister = new JTextPane();
-		yRegister.setEditable(false);
+		yRegister = new JList<String>();
+		  yRegister.setCellRenderer(new DefaultListCellRenderer(){
+	        	public int getHorizontalAlignment() {        		
+	                return CENTER;
+	       }
+	        });
+		yRegister.setEnabled(false);
 		yRegister.setToolTipText("Y register");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		doc = yRegister.getStyledDocument();
-		center = new SimpleAttributeSet();
-		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		/*
 		 * Acc register
 		 */
-		accRegister = new JTextPane();
-		accRegister.setEditable(false);
+//		accRegister = new JTextPane();
+		accRegister = new JList<String>();
+        accRegister.setCellRenderer(new DefaultListCellRenderer(){
+        	public int getHorizontalAlignment() {        		
+                return CENTER;
+       }
+        });
+        accRegister.setEnabled(false);
 		accRegister.setToolTipText("Acc register");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		doc = accRegister.getStyledDocument();
-		center = new SimpleAttributeSet();
-		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
 		
 		/*
 		 * Add the register panes
@@ -331,7 +371,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		registerPanel.add(scrollPane);
 		
 		scrollPane = new JScrollPane(accRegister);
-		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "ACC", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+		scrollPane.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		scrollPane.setOpaque(false);
 		registerPanel.add(scrollPane);
 		
@@ -455,16 +495,19 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblMemory.setEnabled(false);
 		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblMemory.setOpaque(true);
 		
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		memoryScroll.setOpaque(false);
+		memoryScroll.setOpaque(true);
+		//memoryScroll.setBackground(Color.BLUE);
+		tblMemory.setSize(memoryScroll.WIDTH, memoryScroll.HEIGHT);
 		southPanel.add(memoryScroll);
 	}
 	
 	private void setupColours() {
-//		Color background = new Color(248, 255, 125);
-//		Color highlight = new Color(66, 227, 77);
+		//Color background = new Color(248, 255, 125);
+		//Color highlight = new Color(66, 227, 77);
 		Color background = new Color(255, 230, 214);
 		Color highlight = new Color(255, 148, 82);
 		Color innerPanel = new Color(255, 255, 255);
@@ -472,6 +515,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		menuBar.setColour(highlight);
 		LineBorder border = new LineBorder(highlight, 3, true);
 		UIManager.put("TitledBorder.border", border);
+		UIManager.put("Label.disabledForeground", Color.BLACK);
 		
 		northPanel.setBackground(background);
 		centerLeftPanel.setBackground(background);
@@ -484,6 +528,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 		xRegister.setBackground(innerPanel);
 		yRegister.setBackground(innerPanel);
 		accRegister.setBackground(innerPanel);
+		
+		accRegister.setSelectionBackground(highlight);
+		xRegister.setSelectionBackground(highlight);
+		yRegister.setSelectionBackground(highlight);
 
 		flagPanel.setBackground(background);
 		lblCarry.setBackground(innerPanel);
@@ -494,6 +542,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		txtConsole.setBackground(innerPanel);
 
 		tblInput.setBackground(innerPanel);
+		tblInput.setSelectionBackground(highlight);
 		tblMemory.setBackground(innerPanel);
 	}
 	
@@ -998,110 +1047,32 @@ public class Frame extends JFrame implements CecilViewInterface {
 
 	@Override
 	public void setAccStack(ArrayList<String> values) {
-		if (values != null) {
-			StyledDocument doc = accRegister.getStyledDocument();
-			
-			Style style = accRegister.addStyle("Plain", null);
-			StyleConstants.setForeground(style, Color.BLACK);
-			
-			for (int i = 0; i < values.size(); i++) {
-				if (i == 0) {
-					try {
-						doc.insertString(0, values.get(i), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else if (i < values.size() - 1) {
-					try {
-						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else {
-					try {
-						StyleConstants.setFontSize(style, 20);
-//						StyleConstants.setBold(style, true);
-						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else {
-			accRegister.setText("");
-		}
+		ArrayList<String> temp = new ArrayList<String>(values);
+		Collections.reverse(temp);
+		String[] list = new String[temp.size()];
+		temp.toArray(list);
+		accRegister.setListData(list);
+		accRegister.setSelectedIndex(0);
 	}
 
 	@Override
 	public void setXStack(ArrayList<String> values) {
-		if (values != null) {
-			StyledDocument doc = xRegister.getStyledDocument();
-			
-			Style style = xRegister.addStyle("Plain", null);
-			StyleConstants.setForeground(style, Color.BLACK);
-			
-			for (int i = 0; i < values.size(); i++) {
-				if (i == 0) {
-					try {
-						doc.insertString(0, values.get(i), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else if (i < values.size() - 1) {
-					try {
-						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else {
-					try {
-						StyleConstants.setFontSize(style, 20);
-//						StyleConstants.setBold(style, true);
-						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else {
-			xRegister.setText("");
-		}
+		ArrayList<String> temp = new ArrayList<String>(values);
+		Collections.reverse(temp);
+		String[] list = new String[temp.size()];
+		temp.toArray(list);
+		xRegister.setListData(list);
+		xRegister.setSelectedIndex(0);
 	}
 
 	@Override
 	public void setYStack(ArrayList<String> values) {
-		if (values != null) {
-			StyledDocument doc = yRegister.getStyledDocument();
-			
-			Style style = yRegister.addStyle("Plain", null);
-			StyleConstants.setForeground(style, Color.BLACK);
-			
-			for (int i = 0; i < values.size(); i++) {
-				if (i == 0) {
-					try {
-						doc.insertString(0, values.get(i), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else if (i < values.size() - 1) {
-					try {
-						doc.insertString(0, values.get(i)+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				} else {
-					try {
-						StyleConstants.setFontSize(style, 20);
-//						StyleConstants.setBold(style, true);
-						doc.insertString(0, "- "+values.get(i)+" -"+System.getProperty("line.separator"), style);
-					} catch (BadLocationException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else {
-			yRegister.setText("");
-		}
+		ArrayList<String> temp = new ArrayList<String>(values);
+		Collections.reverse(temp);
+		String[] list = new String[temp.size()];
+		temp.toArray(list);
+		yRegister.setListData(list);
+		yRegister.setSelectedIndex(0);
 	}
 
 	@Override
