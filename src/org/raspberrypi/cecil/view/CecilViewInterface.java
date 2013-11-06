@@ -17,5 +17,7 @@ public interface CecilViewInterface {
 	public void setZeroFlag(boolean flagIsOn);
 	public void setNegativeFlag(boolean flagIsOn);
 	public void setConsoleText(ArrayList<String> text);
-	public void setMemoryAllocation(HashMap<Integer, Integer> values);
+	public void setMemoryAllocation(HashMap<String, String> values);
+	
+	public void setButtonsEnabled(boolean enabled);
 }

@@ -1,7 +1,6 @@
 package org.raspberrypi.cecil.pojo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.raspberrypi.cecil.model.CecilMemoryModel;
@@ -19,6 +18,7 @@ public class CecilResult {
 	private boolean negativeFlag;
 	private CecilMemoryModel malloc;
 	private ArrayList<String> results;
+	private boolean success;
 	
 	/**
 	 * 
@@ -79,5 +79,13 @@ public class CecilResult {
 	 */
 	public ArrayList<String> getResults() {
 		return results;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 }
