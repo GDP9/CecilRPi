@@ -1,1 +1,1 @@
-.start load data1  add data2  print   stop  .data1 insert 3 .data2 insert 4    
+.start load d1  print   printch   stop  .d1 insert 65 
