@@ -3,6 +3,7 @@ package org.raspberrypi.cecil.model.test;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.Cecil;
+import org.raspberrypi.cecil.model.MemoryModel;
 import org.raspberrypi.cecil.pojo.CecilProgram;
 import org.raspberrypi.cecil.pojo.CecilResult;
 
@@ -53,13 +54,13 @@ public class TestingCompile {
 
 
 		Cecil c = new Cecil();
-		CecilResult r = c.compile(program);
-		int m[] = r.getMemoryAllocations();
+		c.compile(program);
+		MemoryModel m = c.getResult();
 
 		for(int i = 0; i < 10; i++)
-			System.out.println(" loc "+i+"  "+m[i]);
+			System.out.println(" loc "+i+"  "+m.memory[i]);
 		
-		for(String s: r.getResults())
+		for(String s: m.getOutput())
 			System.out.println(s);
 
 	}
@@ -108,13 +109,13 @@ public class TestingCompile {
 
 
 		Cecil c = new Cecil();
-		CecilResult r = c.compile(program);
-		int m[] = r.getMemoryAllocations();
+		c.compile(program);
+		MemoryModel m = c.getResult();
 
 		for(int i = 0; i < 10; i++)
-			System.out.println(" loc "+i+"  "+m[i]);
+			System.out.println(" loc "+i+"  "+m.memory[i]);
 		
-		for(String s: r.getResults())
+		for(String s: m.getOutput())
 			System.out.println(s);
 	}
 }

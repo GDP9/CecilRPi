@@ -19,12 +19,12 @@ import org.antlr.runtime.RecognitionException;
  * @date 01/11/2013
  */
  
-public class CecilCompiler {
+public class Compiler {
 	
 	private CecilParser parser;
-	private CecilMemoryModel m;
+	private MemoryModel m;
 	
-	public CecilCompiler(String filepath) {
+	public Compiler(String filepath) {
 		try {
 			CommonTokenStream tokens  =  new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath)));
 			
@@ -70,7 +70,7 @@ public class CecilCompiler {
 	 * 
 	 * @return
 	 */
-	public CecilMemoryModel getMemoryModel() {
+	public MemoryModel getMemoryModel() {
 		return m;
 	}
 	

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.raspberrypi.cecil.model.Cecil;
-import org.raspberrypi.cecil.model.CecilMemoryModel;
+import org.raspberrypi.cecil.model.MemoryModel;
 import org.raspberrypi.cecil.pojo.CecilProgram;
 import org.raspberrypi.cecil.pojo.CecilResult;
 import org.raspberrypi.cecil.view.Frame;
@@ -23,7 +23,7 @@ public class CecilController implements CecilControllerInterface {
 		CecilProgram program = new CecilProgram();
 		program.setProgramStatements(code);
 		model.compile(program);
-		CecilMemoryModel result = model.getResult();
+		MemoryModel result = model.getResult();
 
 		if (result.getAcc() != null && result.getAcc().length > 0) {
 			ArrayList<String> accStack = new ArrayList<String>();

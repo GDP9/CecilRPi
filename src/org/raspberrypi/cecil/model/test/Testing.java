@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.raspberrypi.cecil.model.CecilCompiler;
-import org.raspberrypi.cecil.model.CecilRunner;
+import org.raspberrypi.cecil.model.Compiler;
+import org.raspberrypi.cecil.model.Runner;
 
 public class Testing {
 
@@ -71,15 +71,15 @@ public class Testing {
 
 		int i = 0;
 
-		CecilCompiler compiler = new CecilCompiler(samplefile.getAbsolutePath());
-		CecilRunner runner = new CecilRunner(compiler, compiler.getMemoryModel());
+		Compiler compiler = new Compiler(samplefile.getAbsolutePath());
+		Runner runner = new Runner(compiler, compiler.getMemoryModel());
 
 		runner.run(0);
 
 		for(String s: runner.getMemoryModel().getOutput())
 			System.out.println(" result " + s);
 		
-		for(int k=0; i <20; k++)
+		for(int k=0; k <1029; k++)
 			System.out.println(runner.getMemoryModel().memory[k]);
 
 	} 

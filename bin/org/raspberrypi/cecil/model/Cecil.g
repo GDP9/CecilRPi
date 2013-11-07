@@ -33,7 +33,7 @@ options {
 /* Member function and field declaration */
 @members { 
     /* Memory Model */
-    private CecilMemoryModel memorymodel = new CecilMemoryModel();
+    private MemoryModel memorymodel = new MemoryModel();
     
     /* Local variables */
     private static int pointer = 0;
@@ -49,7 +49,7 @@ options {
     
     
     /* Getter for Memory Model */
-    public CecilMemoryModel getMemoryModel() {
+    public MemoryModel getMemoryModel() {
       return memorymodel;
     }
     

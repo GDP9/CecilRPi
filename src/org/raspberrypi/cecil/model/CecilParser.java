@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\Shreeprabha\\Dropbox\\GDP\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\Cecil.g 2013-11-07 16:00:49
+// $ANTLR 3.5.1 C:\\Users\\Shreeprabha\\Dropbox\\GDP\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\Cecil.g 2013-11-07 17:29:50
  
   package org.raspberrypi.cecil.model;
   import java.util.HashMap;
@@ -105,7 +105,7 @@ public class CecilParser extends Parser {
 
 	 
 	    /* Memory Model */
-	    private CecilMemoryModel memorymodel = new CecilMemoryModel();
+	    private MemoryModel memorymodel = new MemoryModel();
 	    
 	    /* Local variables */
 	    private static int pointer = 0;
@@ -121,7 +121,7 @@ public class CecilParser extends Parser {
 	    
 	    
 	    /* Getter for Memory Model */
-	    public CecilMemoryModel getMemoryModel() {
+	    public MemoryModel getMemoryModel() {
 	      return memorymodel;
 	    }
 	    

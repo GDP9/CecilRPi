@@ -3,7 +3,7 @@ package org.raspberrypi.cecil.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.raspberrypi.cecil.model.CecilMemoryModel;
+import org.raspberrypi.cecil.model.MemoryModel;
 
 /*
  * All the values to be displayed in the "output" views when run or step through is completed.
@@ -16,7 +16,7 @@ public class CecilResult {
 	private boolean carryFlag;
 	private boolean zeroFlag;
 	private boolean negativeFlag;
-	private CecilMemoryModel malloc;
+	private MemoryModel malloc;
 	private ArrayList<String> results;
 	private boolean success;
 	
@@ -25,7 +25,7 @@ public class CecilResult {
 	 * @param errors
 	 * @param malloc
 	 */
-	public CecilResult(List<String> errors, CecilMemoryModel malloc) {
+	public CecilResult(List<String> errors, MemoryModel malloc) {
 		this.results = (ArrayList<String>) errors;
 		this.malloc = malloc;
 	}
@@ -34,7 +34,7 @@ public class CecilResult {
 		return success;
 	}
 
-	public CecilResult(String stepthrough, CecilMemoryModel memoryModel) {
+	public CecilResult(String stepthrough, MemoryModel memoryModel) {
 		this.results = new ArrayList<String>();
 		this.results.add(stepthrough);
 		this.malloc = memoryModel;		

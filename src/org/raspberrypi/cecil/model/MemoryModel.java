@@ -18,7 +18,7 @@ import java.util.ArrayList;
  *  x-reg : 1027
  *  y-reg : 1028
  */
-public class CecilMemoryModel {
+public class MemoryModel {
 	
 	static private int[] xReg;
 	static private int[] yReg;
@@ -44,7 +44,7 @@ public class CecilMemoryModel {
 	/**
 	 * Constuctor: initialse memory to store -1
 	 */
-	public CecilMemoryModel() {
+	public MemoryModel() {
 		for(int i = 0 ; i < MEMORY_LENGTH; i++)
 			memory[i] = -1;
 		
@@ -57,7 +57,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setxReg(int[] xReg) {
-		CecilMemoryModel.xReg = xReg;
+		MemoryModel.xReg = xReg;
 	}
 
 	public static int[] getyReg() {
@@ -65,7 +65,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setyReg(int[] yReg) {
-		CecilMemoryModel.yReg = yReg;
+		MemoryModel.yReg = yReg;
 	}
 
 	public static int[] getAcc() {
@@ -73,7 +73,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setAcc(int[] acc) {
-		CecilMemoryModel.acc = acc;
+		MemoryModel.acc = acc;
 	}
 
 	public static boolean isCarryFlag() {
@@ -81,7 +81,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setCarryFlag(boolean carryFlag) {
-		CecilMemoryModel.carryFlag = carryFlag;
+		MemoryModel.carryFlag = carryFlag;
 	}
 
 	public static boolean isZeroFlag() {
@@ -89,7 +89,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setZeroFlag(boolean zeroFlag) {
-		CecilMemoryModel.zeroFlag = zeroFlag;
+		MemoryModel.zeroFlag = zeroFlag;
 	}
 
 	public static boolean isNegativeFlag() {
@@ -97,7 +97,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setNegativeFlag(boolean negativeFlag) {
-		CecilMemoryModel.negativeFlag = negativeFlag;
+		MemoryModel.negativeFlag = negativeFlag;
 	}
 
 	public static boolean isSuccessCompile() {
@@ -105,7 +105,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setSuccessCompile(boolean successCompile) {
-		CecilMemoryModel.successCompile = successCompile;
+		MemoryModel.successCompile = successCompile;
 	}
 
 	public static ArrayList<String> getOutput() {
@@ -113,7 +113,7 @@ public class CecilMemoryModel {
 	}
 
 	public static void setOutput(ArrayList<String> output) {
-		CecilMemoryModel.output = output;
+		MemoryModel.output = output;
 	}
 	
 	

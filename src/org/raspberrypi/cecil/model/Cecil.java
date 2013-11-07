@@ -17,10 +17,10 @@ import org.raspberrypi.cecil.pojo.CecilResult;
  * @author Shreeprabha Carolina
  *
  */
-public class Cecil implements CecilModelInterface {
+public class Cecil implements ModelInterface {
 
-	protected CecilCompiler compiler;
-	protected CecilRunner runner;
+	protected Compiler compiler;
+	protected Runner runner;
 	private static int ptr;
 
 	public Cecil() {
@@ -120,12 +120,12 @@ public class Cecil implements CecilModelInterface {
 			e.printStackTrace();
 		}
 
-		compiler = new CecilCompiler(samplefile.getAbsolutePath());
-		runner = new CecilRunner(compiler, compiler.getMemoryModel());
+		compiler = new Compiler(samplefile.getAbsolutePath());
+		runner = new Runner(compiler, compiler.getMemoryModel());
 	}
 
 	@Override
-	public CecilMemoryModel getResult() {
+	public MemoryModel getResult() {
 		compiler.getMemoryModel();
 		
 		return null;

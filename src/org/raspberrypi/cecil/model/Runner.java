@@ -14,20 +14,20 @@ package org.raspberrypi.cecil.model;
  * NEED TO SEND m.getOutput() AND INSERT CHARACTERS AND STRINGS
  *
  */
-public class CecilRunner {
+public class Runner {
 
-	private CecilCompiler compiler;
-	private CecilMemoryModel m;
+	private Compiler compiler;
+	private MemoryModel m;
 
 	/**
 	 * Constructor
 	 */
-	public CecilRunner(CecilCompiler compiler, CecilMemoryModel m) {
+	public Runner(Compiler compiler, MemoryModel m) {
 		this.compiler = compiler;
 		this.m = m;
 	}
 
-	public CecilMemoryModel getMemoryModel() {
+	public MemoryModel getMemoryModel() {
 		return this.m;
 	}
 	

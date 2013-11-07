@@ -10,9 +10,10 @@ import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.raspberrypi.cecil.model.CecilLexer;
-import org.raspberrypi.cecil.model.CecilMemoryModel;
+import org.raspberrypi.cecil.model.MemoryModel;
 import org.raspberrypi.cecil.model.CecilParser;
-import org.raspberrypi.cecil.model.CecilRunner;
+import org.raspberrypi.cecil.model.Runner;
+import org.raspberrypi.cecil.model.Compiler;
 
 public class TestingStepThrough {
 
@@ -74,42 +75,15 @@ public class TestingStepThrough {
 			e1.printStackTrace();
 		}
 
-
-		CommonTokenStream tokens;
-		try {
-			tokens = new CommonTokenStream(new CecilLexer( new ANTLRFileStream(samplefile.getAbsolutePath())));
-			CecilParser parser = new CecilParser(tokens);
-			parser.initialseCommandList();
-
-			CecilMemoryModel m = parser.getMemoryModel();
-
-			/* Parsing!!! */
-			parser.program();
-
-			/* type checking for labels */
-			for(String key : parser.getDatafield().keySet()) {
-				if(parser.getLabelfield().keySet().contains(key)) 
-					m.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
-
-				else parser.getErrors().add("Error, Label not found");
-			}
-			int i = 0;
-			while(m.memory[i] != -1)
-				System.out.println(i+" "+m.memory[i++]);
-			
-			CecilRunner runner = new CecilRunner(parser, m);
-			System.out.println("result stepthrough is   " + runner.stepthrough(0));
-			System.out.println("result stepthrough is   " + runner.stepthrough(1));
-			System.out.println("result stepthrough is   " + runner.stepthrough(2));
-			System.out.println("result stepthrough is   " + runner.stepthrough(3));
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RecognitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		Compiler compiler = new Compiler(samplefile.getAbsolutePath());
+		Runner runner = new Runner(compiler, compiler.getMemoryModel());
+		runner.stepthrough(0);
+		runner.stepthrough(1);
+		runner.stepthrough(2);
+		runner.stepthrough(3);
+		
+		for(String s: runner.getMemoryModel().getOutput())
+			System.out.println("step through result " +s);
+		
 	}
 }
