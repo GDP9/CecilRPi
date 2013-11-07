@@ -10,6 +10,7 @@ public interface ModelInterface {
 	public void run(); //Run the program that was previously compiled, return a CecilResult object containing all values to be displayed(?)
 	public void stepThrough();
 	
-	public MemoryModel getResult();
+	public Compiler getCompiler();
+	public Runner getRunner();
 	public ArrayList<CecilInstruction> getInstructions();
 }

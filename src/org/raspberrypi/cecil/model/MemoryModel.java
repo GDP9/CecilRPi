@@ -20,9 +20,9 @@ import java.util.ArrayList;
  */
 public class MemoryModel {
 	
-	static private int[] xReg;
-	static private int[] yReg;
-	static private int[] acc;
+	static private ArrayList<Integer> xReg;
+	static private ArrayList<Integer> yReg;
+	static private ArrayList<Integer> acc;
 	static private boolean carryFlag;
 	static private boolean zeroFlag;
 	static private boolean negativeFlag;
@@ -41,6 +41,27 @@ public class MemoryModel {
 	
 	public static int[] memory = new int[MEMORY_LENGTH];
 	
+	public void updateViewVars() {
+		xReg.add(memory[memory[XREG_ADDRESS]]);
+		yReg.add(memory[memory[YREG_ADDRESS]]);
+		acc.add(memory[memory[ACCUMULATOR_ADDRESS]]);
+		
+		if( (memory[STATUS_ADDRESS] << 0) == 0)
+			zeroFlag = false;
+		else zeroFlag = true;
+		
+
+		if( (memory[STATUS_ADDRESS] << 1) == 0)
+			negativeFlag = false;
+		else negativeFlag = true;
+		
+
+		if( (memory[STATUS_ADDRESS] << 2) == 0)
+			carryFlag = false;
+		else carryFlag = true;
+		
+	}
+	
 	/**
 	 * Constuctor: initialse memory to store -1
 	 */
@@ -50,30 +71,12 @@ public class MemoryModel {
 		
 		memory[STACK_PTR] = 908;
 		output = new ArrayList<String>();
-	}
-
-	public static int[] getxReg() {
-		return xReg;
-	}
-
-	public static void setxReg(int[] xReg) {
-		MemoryModel.xReg = xReg;
-	}
-
-	public static int[] getyReg() {
-		return yReg;
-	}
-
-	public static void setyReg(int[] yReg) {
-		MemoryModel.yReg = yReg;
-	}
-
-	public static int[] getAcc() {
-		return acc;
-	}
-
-	public static void setAcc(int[] acc) {
-		MemoryModel.acc = acc;
+		
+		xReg = new ArrayList<Integer>();
+		yReg = new ArrayList<Integer>();
+		acc = new ArrayList<Integer>();
+		
+		zeroFlag = carryFlag = negativeFlag = false;
 	}
 
 	public static boolean isCarryFlag() {
@@ -115,6 +118,46 @@ public class MemoryModel {
 	public static void setOutput(ArrayList<String> output) {
 		MemoryModel.output = output;
 	}
-	
-	
+
+	/**
+	 * @return the xReg
+	 */
+	public static ArrayList<Integer> getxReg() {
+		return xReg;
+	}
+
+	/**
+	 * @param xReg the xReg to set
+	 */
+	public static void setxReg(ArrayList<Integer> xReg) {
+		MemoryModel.xReg = xReg;
+	}
+
+	/**
+	 * @return the yReg
+	 */
+	public static ArrayList<Integer> getyReg() {
+		return yReg;
+	}
+
+	/**
+	 * @param yReg the yReg to set
+	 */
+	public static void setyReg(ArrayList<Integer> yReg) {
+		MemoryModel.yReg = yReg;
+	}
+
+	/**
+	 * @return the acc
+	 */
+	public static ArrayList<Integer> getAcc() {
+		return acc;
+	}
+
+	/**
+	 * @param acc the acc to set
+	 */
+	public static void setAcc(ArrayList<Integer> acc) {
+		MemoryModel.acc = acc;
+	}	
 }

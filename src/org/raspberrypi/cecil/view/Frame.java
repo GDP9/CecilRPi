@@ -1023,6 +1023,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 			ArrayList<String> line = new ArrayList<String>();
 			for (int j = 1; j < tblInput.getColumnCount(); j++) {
 				line.add((String) tblInput.getValueAt(i, j));
+				System.out.println(tblInput.getValueAt(i, j));
 			}
 			code.add(line);
 		}

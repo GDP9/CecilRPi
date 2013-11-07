@@ -3,8 +3,11 @@
  */
 package org.raspberrypi.cecil.model;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class Cecil implements ModelInterface {
 
 	@Override
 	public void run() {
-		runner.run(ptr);
+		runner.run(0);
 	}
 
 	@Override
@@ -37,6 +40,7 @@ public class Cecil implements ModelInterface {
 		runner.stepthrough(ptr);
 	}
 
+	
 	@Override
 	public ArrayList<CecilInstruction> getInstructions() {
 		ArrayList<CecilInstruction> instructions = new ArrayList<CecilInstruction>();
@@ -120,14 +124,36 @@ public class Cecil implements ModelInterface {
 			e.printStackTrace();
 		}
 
+		System.out.println("Reading file");
+		try {
+			String s;
+			BufferedReader reader = new BufferedReader(new FileReader(samplefile.getAbsolutePath()));
+			while((s = reader.readLine()) != null) {
+				System.out.println(s);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		compiler = new Compiler(samplefile.getAbsolutePath());
+		
+		System.out.println("Instruction field");
+		for(int i: compiler.getInstructionField().keySet()) {
+			System.out.println(compiler.getInstructionField().get(i));
+		}
+		
 		runner = new Runner(compiler, compiler.getMemoryModel());
 	}
 
 	@Override
-	public MemoryModel getResult() {
-		compiler.getMemoryModel();
-		
-		return null;
+	public Compiler getCompiler() {
+		return compiler;
+	}
+	
+	@Override
+	public Runner getRunner() {
+		return runner;
 	}
 }

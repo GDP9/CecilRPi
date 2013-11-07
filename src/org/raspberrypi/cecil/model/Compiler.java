@@ -49,8 +49,10 @@ public class Compiler {
 				m.getOutput().add("Program needs a stop instruction!");
 			}
 			
-			if(m.getOutput().isEmpty())
-				m.getOutput().add("Successful Compilation");
+			if(m.getOutput().isEmpty()) {
+				m.getOutput().add("Successful Compilation"); 
+				m.setSuccessCompile(true);
+			}
 			
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();

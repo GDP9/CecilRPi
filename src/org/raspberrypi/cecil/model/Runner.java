@@ -30,7 +30,7 @@ public class Runner {
 	public MemoryModel getMemoryModel() {
 		return this.m;
 	}
-	
+
 	/**
 	 * 
 	 * @param i
@@ -40,18 +40,19 @@ public class Runner {
 		switch(m.memory[i]) {
 
 		case 0: return;
-		
+
 		case 1: case 2: case 3: 
 			m.getOutput().add(result(i));
 			++i;
 			break;
-		
+
 		default:
-			System.out.println("Here 1");
 			i = execute(i);
 		}
 
+
 		checkStatusFlags();
+		m.updateViewVars();
 		m.memory[m.PROGRAM_COUNTER] = i;
 	}
 
@@ -65,22 +66,23 @@ public class Runner {
 			switch(m.memory[i]) {
 
 			case 0: return;
-			
+
 			case 1: case 2: case 3: 
 				m.getOutput().add(result(i));
 				++i;
 				break;
-				
+
 			default:
 				i = execute(i);
 			}
 
 			checkStatusFlags();
+			m.updateViewVars();
 			m.memory[m.PROGRAM_COUNTER] = i;
 		}
 	}
 
-	
+
 	/**
 	 * 
 	 * @param i
@@ -189,16 +191,17 @@ public class Runner {
 
 			/* Binary Instructions */	
 		case 18: /* load */
-			System.out.println(i);
-			if(checkInsert(i+1))	{
+			if(checkInsert(i))	{
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
-				System.out.println("Accumulator is "+ m.memory[m.ACCUMULATOR_ADDRESS]);
-				System.out.println("I is "+i);
+				System.out.println("here in load");
 			}
-			
-			else m.getOutput().add("Instruction has to be insert");
-			
-			System.out.println(m.memory[m.ACCUMULATOR_ADDRESS]);
+
+			else {
+				System.out.println("not in load");
+				m.getOutput().add("Instruction has to be insert");
+
+			}
+
 			break;
 		case 19: /* store */
 			if(checkInsert(i))	
@@ -347,8 +350,11 @@ public class Runner {
 	 * @return
 	 */
 	private boolean checkInsert(int i) {
-		//System.out.println(parser.getInstructionfield().get(m.memory[m.memory[i+1]]));
-		return (compiler.getInstructionField().containsKey(m.memory[m.memory[i+1]]) && compiler.getInstructionField().get(m.memory[m.memory[i+1]]).equals("insert"));
+		for(int j = 0; j < 10; j++)
+			System.out.println(" loc "+j+"  "+m.memory[j]);
+		System.out.println(m.memory[i+1]);
+
+		return (compiler.getInstructionField().containsKey(m.memory[i+1]) && compiler.getInstructionField().get(m.memory[i+1]).equals("insert"));
 	}
 
 	/**

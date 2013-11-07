@@ -22,33 +22,34 @@ public class CecilController implements CecilControllerInterface {
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
 		CecilProgram program = new CecilProgram();
 		program.setProgramStatements(code);
+		
 		model.compile(program);
-		MemoryModel result = model.getResult();
+		MemoryModel result = model.getCompiler().getMemoryModel();
 
-		if (result.getAcc() != null && result.getAcc().length > 0) {
+		if (result.getAcc() != null) {
 			ArrayList<String> accStack = new ArrayList<String>();
-			for (int i = 0; i < result.getAcc().length; i++) {
-				accStack.add(Integer.toString(result.getAcc()[i]));
+			for (int i = 0; i < result.getAcc().size(); i++) {
+				accStack.add(Integer.toString(result.getAcc().get(i)));
 			}
 			view.setAccStack(accStack);
 		} else {
 			view.setAccStack(new ArrayList<String>());
 		}
 
-		if (result.getxReg() != null && result.getxReg().length > 0) {
+		if (result.getxReg() != null && result.getxReg().size() > 0) {
 			ArrayList<String> xStack = new ArrayList<String>();
-			for (int i = 0; i < result.getxReg().length; i++) {
-				xStack.add(Integer.toString(result.getxReg()[i]));
+			for (int i = 0; i < result.getxReg().size(); i++) {
+				xStack.add(Integer.toString(result.getxReg().get(i)));
 			}
 			view.setXStack(xStack);
 		} else {
 			view.setXStack(new ArrayList<String>());
 		}
 
-		if (result.getyReg() != null && result.getyReg().length > 0) {
+		if (result.getyReg() != null && result.getyReg().size() > 0) {
 			ArrayList<String> yStack = new ArrayList<String>();
-			for (int i = 0; i < result.getyReg().length; i++) {
-				yStack.add(Integer.toString(result.getyReg()[i]));
+			for (int i = 0; i < result.getyReg().size(); i++) {
+				yStack.add(Integer.toString(result.getyReg().get(i)));
 			}
 			view.setYStack(yStack);
 		} else {
@@ -80,9 +81,64 @@ public class CecilController implements CecilControllerInterface {
 
 	@Override
 	public void runClicked() {
-		// TODO Auto-generated method stub
 
+		model.run();
+		
+		MemoryModel result = model.getRunner().getMemoryModel();
+
+		if (result.getAcc() != null) {
+			ArrayList<String> accStack = new ArrayList<String>();
+			for (int i = 0; i < result.getAcc().size(); i++) {
+				accStack.add(Integer.toString(result.getAcc().get(i)));
+			}
+			view.setAccStack(accStack);
+		} else {
+			view.setAccStack(new ArrayList<String>());
+		}
+
+		if (result.getxReg() != null && result.getxReg().size() > 0) {
+			ArrayList<String> xStack = new ArrayList<String>();
+			for (int i = 0; i < result.getxReg().size(); i++) {
+				xStack.add(Integer.toString(result.getxReg().get(i)));
+			}
+			view.setXStack(xStack);
+		} else {
+			view.setXStack(new ArrayList<String>());
+		}
+
+		if (result.getyReg() != null && result.getyReg().size() > 0) {
+			ArrayList<String> yStack = new ArrayList<String>();
+			for (int i = 0; i < result.getyReg().size(); i++) {
+				yStack.add(Integer.toString(result.getyReg().get(i)));
+			}
+			view.setYStack(yStack);
+		} else {
+			view.setYStack(new ArrayList<String>());
+		}
+
+		view.setCarryFlag(result.isCarryFlag());
+		view.setZeroFlag(result.isZeroFlag());
+		view.setNegativeFlag(result.isNegativeFlag());
+
+		if (result.memory[0] !=  -1) {
+			HashMap<String, String> memoryValues = new HashMap<String, String>();
+			int i = 0;
+			while(result.memory[i] != -1) {
+				memoryValues.put(Integer.toString(i), Integer.toString(result.memory[i]));
+				i++;
+			}
+
+			view.setMemoryAllocation(memoryValues);
+		} 
+
+		else {
+			view.setMemoryAllocation(new HashMap<String, String>());
+		}
+
+		view.setConsoleText(result.getOutput());
+		view.setButtonsEnabled(result.isSuccessCompile());
 	}
+
 
 	@Override
 	public void stepThroughClicked() {

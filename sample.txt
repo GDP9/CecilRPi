@@ -1,1 +1,1 @@
-.start load d1  print   printch   stop  .d1 insert 65 
+ load d  print   print   stop  .d insert 3 

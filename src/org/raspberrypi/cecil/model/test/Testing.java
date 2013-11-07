@@ -15,27 +15,27 @@ public class Testing {
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
-		input.add(".start");
+		input.add("");
 		input.add("load");
 		input.add("d1");
 
 		userinput.add(input);
 		input  = new ArrayList<String>();
 
-		input.add("");
-		input.add("print");
-		input.add("");
+//		input.add("");
+//		input.add("print");
+//		input.add("");
 
-		userinput.add(input);
-		input  = new ArrayList<String>();
+//		userinput.add(input);
+//		input  = new ArrayList<String>();
 
-		input.add("");
-		input.add("printch");
-		input.add("");
-
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
+//		input.add("");
+//		input.add("printch");
+//		input.add("");
+//
+//		userinput.add(input);
+//		input  = new ArrayList<String>();
+//
 		input.add("");
 		input.add("stop");
 		input.add("");
@@ -72,6 +72,15 @@ public class Testing {
 		int i = 0;
 
 		Compiler compiler = new Compiler(samplefile.getAbsolutePath());
+		
+		for(int j = 0; j < 10; j++)
+			System.out.println(" loc "+j+"  "+compiler.getMemoryModel().memory[j]);
+		
+		System.out.println("Instruction field");
+		for(int k: compiler.getInstructionField().keySet()) {
+			System.out.println(compiler.getInstructionField().get(k));
+		}
+		
 		Runner runner = new Runner(compiler, compiler.getMemoryModel());
 
 		runner.run(0);

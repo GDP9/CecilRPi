@@ -55,7 +55,7 @@ public class TestingCompile {
 
 		Cecil c = new Cecil();
 		c.compile(program);
-		MemoryModel m = c.getResult();
+		MemoryModel m = c.getCompiler().getMemoryModel();
 
 		for(int i = 0; i < 10; i++)
 			System.out.println(" loc "+i+"  "+m.memory[i]);
@@ -110,7 +110,7 @@ public class TestingCompile {
 
 		Cecil c = new Cecil();
 		c.compile(program);
-		MemoryModel m = c.getResult();
+		MemoryModel m = c.getCompiler().getMemoryModel();
 
 		for(int i = 0; i < 10; i++)
 			System.out.println(" loc "+i+"  "+m.memory[i]);
