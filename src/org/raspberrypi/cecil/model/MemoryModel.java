@@ -42,24 +42,26 @@ public class MemoryModel {
 	public static int[] memory = new int[MEMORY_LENGTH];
 	
 	public void updateViewVars() {
-		xReg.add(memory[memory[XREG_ADDRESS]]);
-		yReg.add(memory[memory[YREG_ADDRESS]]);
-		acc.add(memory[memory[ACCUMULATOR_ADDRESS]]);
+		
+		if(memory[XREG_ADDRESS] != -1)
+			xReg.add(memory[memory[XREG_ADDRESS]]);
+		if(memory[YREG_ADDRESS] != -1)
+			yReg.add(memory[memory[YREG_ADDRESS]]);
+		if(memory[ACCUMULATOR_ADDRESS] != -1)
+			acc.add(memory[memory[ACCUMULATOR_ADDRESS]]);
 		
 		if( (memory[STATUS_ADDRESS] << 0) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
 		
-
 		if( (memory[STATUS_ADDRESS] << 1) == 0)
 			negativeFlag = false;
 		else negativeFlag = true;
 		
-
 		if( (memory[STATUS_ADDRESS] << 2) == 0)
 			carryFlag = false;
 		else carryFlag = true;
-		
+
 	}
 	
 	/**

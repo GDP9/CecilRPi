@@ -76,20 +76,19 @@ public class Testing {
 		for(int j = 0; j < 10; j++)
 			System.out.println(" loc "+j+"  "+compiler.getMemoryModel().memory[j]);
 		
-		System.out.println("Instruction field");
-		for(int k: compiler.getInstructionField().keySet()) {
-			System.out.println(compiler.getInstructionField().get(k));
-		}
 		
 		Runner runner = new Runner(compiler, compiler.getMemoryModel());
 
 		runner.run(0);
-
-		for(String s: runner.getMemoryModel().getOutput())
-			System.out.println(" result " + s);
 		
-		for(int k=0; k <1029; k++)
-			System.out.println(runner.getMemoryModel().memory[k]);
+		for(int h:runner.getMemoryModel().getAcc())
+			System.out.println("fasfasf "+h);
+//
+//		for(String s: runner.getMemoryModel().getOutput())
+//			System.out.println(" result " + s);
+//		
+//		for(int k=0; k <1029; k++)
+//			System.out.println(runner.getMemoryModel().memory[k]);
 
 	} 
 }

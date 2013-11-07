@@ -37,7 +37,7 @@ public class Runner {
 	 * @return
 	 */
 	public void stepthrough(int i) {
-		switch(m.memory[i]) {
+		switch(i) {
 
 		case 0: return;
 
@@ -63,6 +63,8 @@ public class Runner {
 	public void run(int i) {
 
 		while(m.memory[i] != -1) {	
+			//System.out.println("i "+ i+"   mem[i]  "+m.memory[i]);
+			
 			switch(m.memory[i]) {
 
 			case 0: return;
@@ -73,13 +75,16 @@ public class Runner {
 				break;
 
 			default:
+				System.out.println("val of i "+ i);
 				i = execute(i);
+				System.out.println("val of i "+i);
 			}
 
 			checkStatusFlags();
 			m.updateViewVars();
 			m.memory[m.PROGRAM_COUNTER] = i;
 		}
+		
 	}
 
 
@@ -89,7 +94,7 @@ public class Runner {
 	 * @return
 	 */
 	private String result(int i) {
-		switch(m.memory[i]){
+		switch(i){
 
 		case 1: /* print */
 			return (""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
@@ -193,11 +198,11 @@ public class Runner {
 		case 18: /* load */
 			if(checkInsert(i))	{
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
-				System.out.println("here in load");
+				i++;
 			}
 
 			else {
-				System.out.println("not in load");
+			
 				m.getOutput().add("Instruction has to be insert");
 
 			}
@@ -302,6 +307,7 @@ public class Runner {
 			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 38: /* insert */
+			
 			m.memory[i] = m.memory[++i];
 			break;
 		case 39: /* ycomp */
@@ -309,7 +315,7 @@ public class Runner {
 			negativeflagstatus(m.YREG_ADDRESS, m.memory[++i]);
 			break;
 		}
-		System.out.println("val of i "+i);
+	
 		return i;
 	}
 	/**
@@ -317,19 +323,24 @@ public class Runner {
 	 */
 	private void checkStatusFlags() {
 		/* checking carry flag status */
-		if(m.memory[m.ACCUMULATOR_ADDRESS] >= 1024 || m.memory[m.YREG_ADDRESS] >= 1024 || m.memory[m.XREG_ADDRESS] >= 1024) {
-			if(m.memory[m.ACCUMULATOR_ADDRESS] >= 1024)
+		
+		if((m.memory[m.ACCUMULATOR_ADDRESS] != -1 && m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] >= 1024)
+				|| (m.memory[m.YREG_ADDRESS] != -1 && m.memory[m.memory[m.YREG_ADDRESS]] >= 1024)
+				|| (m.memory[m.XREG_ADDRESS] != -1 && m.memory[m.memory[m.XREG_ADDRESS]] >= 1024)) {
+			if(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] >= 1024)
 				setRegToMax(m.ACCUMULATOR_ADDRESS);
 
-			if( m.memory[m.XREG_ADDRESS] >= 1024) 
+			if( m.memory[m.memory[m.XREG_ADDRESS]] >= 1024) 
 				setRegToMax(m.XREG_ADDRESS);
 
-			if(m.memory[m.YREG_ADDRESS] >= 1024)
+			if(m.memory[m.memory[m.YREG_ADDRESS]] >= 1024)
 				setRegToMax(m.YREG_ADDRESS);
 		}
 
 		/* checking negative flag status */
-		else if(m.memory[m.ACCUMULATOR_ADDRESS] == 0 || m.memory[m.YREG_ADDRESS] == 0 || m.memory[m.XREG_ADDRESS] == 0) {
+		else if((m.memory[m.ACCUMULATOR_ADDRESS] != -1 && m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] == 0)
+				|| (m.memory[m.YREG_ADDRESS] != -1 && m.memory[m.memory[m.YREG_ADDRESS]] == 0)
+				|| (m.memory[m.XREG_ADDRESS] != -1 && m.memory[m.memory[m.XREG_ADDRESS]] == 0)) {
 			m.memory[m.STATUS_ADDRESS] |= (1<<1);
 			m.memory[m.STATUS_ADDRESS] |= 1;
 		}
@@ -341,7 +352,7 @@ public class Runner {
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
-		m.memory[register] = 1024;
+		m.memory[m.memory[register]] = 1024;
 		m.memory[m.STATUS_ADDRESS] |= (1<<2);
 	}
 	/**
@@ -350,10 +361,6 @@ public class Runner {
 	 * @return
 	 */
 	private boolean checkInsert(int i) {
-		for(int j = 0; j < 10; j++)
-			System.out.println(" loc "+j+"  "+m.memory[j]);
-		System.out.println(m.memory[i+1]);
-
 		return (compiler.getInstructionField().containsKey(m.memory[i+1]) && compiler.getInstructionField().get(m.memory[i+1]).equals("insert"));
 	}
 
