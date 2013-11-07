@@ -1,6 +1,0 @@
-.start load data1
-        add data2
-       print
-       stop
-.data1 insert 3
-.data2 insert 4

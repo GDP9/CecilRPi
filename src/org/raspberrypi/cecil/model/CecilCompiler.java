@@ -1,6 +1,7 @@
 package org.raspberrypi.cecil.model;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRFileStream;
@@ -20,7 +21,7 @@ import org.antlr.runtime.RecognitionException;
  
 public class CecilCompiler {
 	
-	CecilParser parser;
+	private CecilParser parser;
 	private CecilMemoryModel m;
 	
 	public CecilCompiler(String filepath) {
@@ -40,26 +41,35 @@ public class CecilCompiler {
 				if(parser.getLabelfield().keySet().contains(key)) 
 					m.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
 			
-				else parser.getErrors().add("Error, Label not found");
+				else m.getOutput().add("Error, Label not found");
 			}
 			
 			/* checking for stop instruction */
 			if(!parser.getInstructionfield().containsValue("stop")) {
-				parser.getErrors().add("Program needs a stop instruction!");
+				m.getOutput().add("Program needs a stop instruction!");
 			}
 			
-			if(parser.getErrors().isEmpty())
-				parser.getErrors().add("Successful");
+			if(m.getOutput().isEmpty())
+				m.getOutput().add("Successful Compilation");
 			
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public List<String> getCompilationErrors() {
-		return parser.getErrors();
+	/**
+	 * 
+	 * @return
+	 */
+	public HashMap<Integer, String> getInstructionField() {
+		return parser.getInstructionfield();
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public CecilMemoryModel getMemoryModel() {
 		return m;
 	}

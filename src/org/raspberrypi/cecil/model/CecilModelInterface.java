@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import org.raspberrypi.cecil.pojo.CecilInstruction;
 import org.raspberrypi.cecil.pojo.CecilProgram;
-import org.raspberrypi.cecil.pojo.CecilResult;
 
 public interface CecilModelInterface {
-	public CecilResult compile(CecilProgram program); //Just use errors if needed
-	public CecilResult run(); //Run the program that was previously compiled, return a CecilResult object containing all values to be displayed(?)
-	public CecilResult stepThrough();
+	public void compile(CecilProgram program); //Just use errors if needed
+	public void run(); //Run the program that was previously compiled, return a CecilResult object containing all values to be displayed(?)
+	public void stepThrough();
 	
+	public CecilMemoryModel getResult();
 	public ArrayList<CecilInstruction> getInstructions();
 }

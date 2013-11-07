@@ -1,9 +1,5 @@
 package org.raspberrypi.cecil.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * 
  * CECIL assembly language Runner
@@ -15,80 +11,76 @@ import java.util.List;
  * 
  * @date 01/11/2013
  *
- * NEED TO SEND ERRORS AND INSERT CHARACTERS AND STRINGS
+ * NEED TO SEND m.getOutput() AND INSERT CHARACTERS AND STRINGS
  *
  */
 public class CecilRunner {
 
-	private CecilParser parser;
+	private CecilCompiler compiler;
 	private CecilMemoryModel m;
-	private List errors;
-	private ArrayList<String> results;
-	private static int ctr;
-
 
 	/**
 	 * Constructor
 	 */
-	public CecilRunner(CecilParser parser, CecilMemoryModel m) {
-		this.parser = parser;
+	public CecilRunner(CecilCompiler compiler, CecilMemoryModel m) {
+		this.compiler = compiler;
 		this.m = m;
-		this.results = new ArrayList<String>();
-
-		ctr = 0;
 	}
 
+	public CecilMemoryModel getMemoryModel() {
+		return this.m;
+	}
+	
 	/**
 	 * 
 	 * @param i
 	 * @return
 	 */
-	public String stepthrough(int i) {
-		System.out.println("m.memory in stepthrough  " + m.memory[i]);
+	public void stepthrough(int i) {
 		switch(m.memory[i]) {
-		case 0: return result(i);
 
+		case 0: return;
+		
 		case 1: case 2: case 3: 
-			return result(i++);
-
-		default:	
+			m.getOutput().add(result(i));
+			++i;
+			break;
+		
+		default:
+			System.out.println("Here 1");
 			i = execute(i);
 		}
 
 		checkStatusFlags();
 		m.memory[m.PROGRAM_COUNTER] = i;
-
-		return "";
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public ArrayList<String> run(int i) {
+	public void run(int i) {
 
 		while(m.memory[i] != -1) {	
 			switch(m.memory[i]) {
 
-			case 0: return this.results;
+			case 0: return;
+			
 			case 1: case 2: case 3: 
-				results.add(result(i));
-
-				i++;
-
+				m.getOutput().add(result(i));
+				++i;
 				break;
-
-			default:	
+				
+			default:
 				i = execute(i);
 			}
 
 			checkStatusFlags();
 			m.memory[m.PROGRAM_COUNTER] = i;
 		}
-
-		return this.results;
 	}
 
+	
 	/**
 	 * 
 	 * @param i
@@ -98,7 +90,6 @@ public class CecilRunner {
 		switch(m.memory[i]){
 
 		case 1: /* print */
-			//System.out.println("heeerrrreeee   " + m.memory[m.ACCUMULATOR_ADDRESS]);
 			return (""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
 
 		case 2: /* printch */
@@ -141,7 +132,7 @@ public class CecilRunner {
 			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[m.STACK_PTR]--;
 			}
-			else errors.add("Cannot pull because of underflow");
+			else m.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 9: /* xinc */
@@ -156,35 +147,35 @@ public class CecilRunner {
 			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
 				m.memory[m.XREG_ADDRESS] = m.memory[m.STACK_PTR]--;
 			}
-			else errors.add("Cannot pull because of underflow");
+			else m.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 12: /* xpush */
 			if(m.memory[m.STACK_PTR] != m.STACK_END) {
 				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.XREG_ADDRESS];
 			}
-			else errors.add("Cannot pull because of overflow");
+			else m.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 13: /* push */
 			if(m.memory[m.STACK_PTR] != m.STACK_END) {
 				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.ACCUMULATOR_ADDRESS];
 			}
-			else errors.add("Cannot pull because of overflow");
+			else m.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 14: /* ypush */
 			if(m.memory[m.STACK_PTR] != m.STACK_END) {
 				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.YREG_ADDRESS];
 			}
-			else errors.add("Cannot pull because of overflow");
+			else m.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 15: /* ypull */
 			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
 				m.memory[m.YREG_ADDRESS] = m.memory[m.STACK_PTR]--;
 			}
-			else errors.add("Cannot pull because of underflow");
+			else m.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 16: /* yinc */
@@ -198,54 +189,56 @@ public class CecilRunner {
 
 			/* Binary Instructions */	
 		case 18: /* load */
-			//System.out.println(checkInsert(i+1));
+			System.out.println(i);
 			if(checkInsert(i+1))	{
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
 				System.out.println("Accumulator is "+ m.memory[m.ACCUMULATOR_ADDRESS]);
+				System.out.println("I is "+i);
 			}
-			else errors.add("Instruction has to be insert");
+			
+			else m.getOutput().add("Instruction has to be insert");
 			
 			System.out.println(m.memory[m.ACCUMULATOR_ADDRESS]);
 			break;
 		case 19: /* store */
 			if(checkInsert(i))	
 				m.memory[m.memory[++i]] = m.memory[m.ACCUMULATOR_ADDRESS];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 20: /* add */
 			if(checkInsert(i))	{
 				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
 				m.memory[m.ACCUMULATOR_ADDRESS] += m.memory[m.memory[++i]];
 			}
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 21: /* sub */
 			if(checkInsert(i)) {	
 				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
 				m.memory[m.ACCUMULATOR_ADDRESS] -= m.memory[m.memory[++i]];
 			}
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 22: /* and */
 			if(checkInsert(i)) {	
 				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
 				m.memory[m.ACCUMULATOR_ADDRESS] &= m.memory[m.memory[++i]];
 			}
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 23: /* or */
 			if(checkInsert(i)) {	
 				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
 				m.memory[m.ACCUMULATOR_ADDRESS] |= m.memory[m.memory[++i]];
 			}
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 24: /* xor */
 			if(checkInsert(i)) {	
 				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
 				m.memory[m.ACCUMULATOR_ADDRESS] ^= m.memory[m.memory[++i]];
 			}
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 25: /* jump */
 			i = m.memory[i+1];
@@ -279,17 +272,17 @@ public class CecilRunner {
 		case 32: /* xload */
 			if(checkInsert(i))	
 				m.memory[m.XREG_ADDRESS] = m.memory[++i];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 33: /* xstore */
 			if(checkInsert(i))	
 				m.memory[m.memory[++i]] = m.memory[m.XREG_ADDRESS];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 34: /* loadmx */
 			if(checkInsert(i))	
 				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i] + m.memory[m.XREG_ADDRESS];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 35: /* xcomp */
 			zeroflagstatus(m.XREG_ADDRESS);		
@@ -298,12 +291,12 @@ public class CecilRunner {
 		case 36: /* yload */
 			if(checkInsert(i))	
 				m.memory[m.YREG_ADDRESS] = m.memory[++i];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 37: /* ystore */
 			if(checkInsert(i))	
 				m.memory[m.memory[++i]] = m.memory[m.YREG_ADDRESS];
-			else errors.add("Instruction has to be insert");
+			else m.getOutput().add("Instruction has to be insert");
 			break;
 		case 38: /* insert */
 			m.memory[i] = m.memory[++i];
@@ -313,6 +306,7 @@ public class CecilRunner {
 			negativeflagstatus(m.YREG_ADDRESS, m.memory[++i]);
 			break;
 		}
+		System.out.println("val of i "+i);
 		return i;
 	}
 	/**
@@ -354,7 +348,7 @@ public class CecilRunner {
 	 */
 	private boolean checkInsert(int i) {
 		//System.out.println(parser.getInstructionfield().get(m.memory[m.memory[i+1]]));
-		return (parser.getInstructionfield().containsKey(m.memory[m.memory[i+1]]) && parser.getInstructionfield().get(m.memory[m.memory[i+1]]).equals("insert"));
+		return (compiler.getInstructionField().containsKey(m.memory[m.memory[i+1]]) && compiler.getInstructionField().get(m.memory[m.memory[i+1]]).equals("insert"));
 	}
 
 	/**

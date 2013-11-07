@@ -34,6 +34,7 @@ options {
 @members { 
     /* Memory Model */
     private CecilMemoryModel memorymodel = new CecilMemoryModel();
+    
     /* Local variables */
     private static int pointer = 0;
     private HashMap<String, Integer> datafield = new HashMap<String, Integer>();
@@ -104,17 +105,13 @@ options {
         CommandList.put("ycomp", 39);
        }
        
-    private List<String> errors = new ArrayList<String>();
+    private List<String> output = memorymodel.getOutput();
     
     public void displayRecognitionError(String[] tokenNames,
                                         RecognitionException e) {
         String hdr = getErrorHeader(e);
         String msg = getErrorMessage(e, tokenNames);
-        errors.add(hdr + " " + msg);
-    }
-    
-    public List<String> getErrors() {
-        return errors;
+        this.output.add(hdr + " " + msg);
     }
 }
 

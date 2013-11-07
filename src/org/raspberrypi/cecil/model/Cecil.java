@@ -21,26 +21,20 @@ public class Cecil implements CecilModelInterface {
 
 	protected CecilCompiler compiler;
 	protected CecilRunner runner;
-	private static int ctr;
+	private static int ptr;
 
 	public Cecil() {
-		ctr = 0;
+		ptr = 0;
 	}
 
 	@Override
-	public CecilResult run() {
-		CecilRunner runner = new CecilRunner(compiler.parser, compiler.getMemoryModel());
-
-		ArrayList<String> results = runner.run(ctr);
-		CecilResult r = new CecilResult(results, compiler.getMemoryModel());
-
-		return r;
+	public void run() {
+		runner.run(ptr);
 	}
 
 	@Override
-	public CecilResult stepThrough() {
-		CecilRunner runner = new CecilRunner(compiler.parser, compiler.getMemoryModel());
-		return new CecilResult(runner.stepthrough(ctr), compiler.getMemoryModel());
+	public void stepThrough() {
+		runner.stepthrough(ptr);
 	}
 
 	@Override
@@ -94,18 +88,21 @@ public class Cecil implements CecilModelInterface {
 		return instructions;
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param description
+	 * @return
+	 */
 	private CecilInstruction getCecilInstructionData(String name, String description){
 		CecilInstruction instruction = new CecilInstruction();
 		instruction.setInstructionName(name);
 		instruction.setDescription(description);
 		return instruction;
 	}
-	
-
-
 
 	@Override
-	public CecilResult compile(CecilProgram program) {
+	public void compile(CecilProgram program) {
 		String sample = new String();
 		for(ArrayList<String> a: program.getProgramStatements())
 			for(int i = 0; i < a.size(); i++) {
@@ -124,9 +121,13 @@ public class Cecil implements CecilModelInterface {
 		}
 
 		compiler = new CecilCompiler(samplefile.getAbsolutePath());
-		CecilResult result = new CecilResult(compiler.getCompilationErrors(), compiler.getMemoryModel());
-
-		return result;
+		runner = new CecilRunner(compiler, compiler.getMemoryModel());
 	}
 
+	@Override
+	public CecilMemoryModel getResult() {
+		compiler.getMemoryModel();
+		
+		return null;
+	}
 }
