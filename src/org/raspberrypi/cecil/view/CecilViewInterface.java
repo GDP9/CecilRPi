@@ -5,8 +5,24 @@ import java.util.HashMap;
 
 import org.raspberrypi.cecil.pojo.CecilInstruction;
 
+/**
+ * View interface methods.
+ * 
+ * MIT Open Source License
+ * @author Cathy Jin (cj8g10)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 07/11/2013
+ *
+ */
 public interface CecilViewInterface {
-	//To be given at the start and displayed in the instruction drop down boxes
+	/**
+	 * Set the instructions to be displayed in the instruction dropdown box and tooltip descriptions.
+	 * This method should be called after the view is created.
+	 * 
+	 * @param instructions ArrayList of instructions.
+	 */
 	public void setInstructionList(ArrayList<CecilInstruction> instructions);
 	
 	//All stack values are ordered oldest to newest (last in array is the "current" value)

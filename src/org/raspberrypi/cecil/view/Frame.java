@@ -149,6 +149,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		/*
 		 * Setup main frame and panels
 		 */
+		getContentPane().removeAll();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -1150,6 +1151,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 				instructionList.add(instruction.getInstructionName());
 			}
 		}
+		setupDefaultFrame();
+		setupColours();
+		setupButtonIcons();
+		setupFlagIcons();
+		setupFonts(font1);
 	}
 
 	@Override
