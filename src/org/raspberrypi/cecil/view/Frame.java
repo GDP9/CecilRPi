@@ -75,14 +75,31 @@ import javax.swing.border.TitledBorder;
 import org.raspberrypi.cecil.controller.CecilController;
 import org.raspberrypi.cecil.pojo.CecilInstruction;
 
+/**
+ * Controller class for interfacing between the model and view.
+ * This class creates an instance of the view (Frame) and model (Cecil) classes.
+ * This class contains the main method.
+ * 
+ * MIT Open Source License
+ * @author Karishma Nune (kkn1g10), Cathy Jin (cj8g10)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 07/11/2013
+ *
+ */
 public class Frame extends JFrame implements CecilViewInterface {
 	private static final int WIDTH = 1100;
 	private static final int HEIGHT = 750;
-	private Font font = null;
 	
+	//Controller
+	private CecilController controller;
+	
+	//Instructions
 	private ArrayList<CecilInstruction> instructions;
 	private ArrayList<String> instructionList;
 	
+	//Panels
 	private JPanel northPanel;
 	private JPanel centerRightPanel;
 	private JPanel centerLeftPanel;
@@ -91,6 +108,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JPanel registerPanel;
 	private JPanel flagPanel;
 	
+	//Registers
 	private JList<String> xRegister;
 	private JList<String> yRegister;
 	private JList<String> accRegister;
@@ -98,31 +116,45 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JScrollPane yScroll;
 	private JScrollPane accScroll;
 	
+	//Console
 	private JTextPane txtConsole;
 	
+	//Input
 	private JTable tblInput;
+	
+	//Memory
 	private JTable tblMemory;
 	
+	//Action buttons
 	private JButton btnCompile;
 	private JButton btnRun;
 	private JButton btnStepThrough;
+	
+	//Status flags
 	private JLabel lblCarry;
 	private JLabel lblZero;
 	private JLabel lblNegative;
 	
+	//Menu
 	private BackgroundMenuBar menuBar;
 	private JMenu fileMenu;
 	private JMenu settingsMenu;
 	private JMenu helpMenu;
+	private JMenuItem menuOpen;
+	private JMenuItem menuSave;
+	private JMenuItem menuExit;
+	private JMenuItem menuPreferences;
+	private JMenuItem menuWelcome;
+	private JMenuItem menuAbout;
+	private JMenuItem menuDocumentation;
 	
+	//Misc
 	private JTextField input;
 	private Java2sAutoComboBox comboBox;
-	
-	private CecilController controller;
-	FontUIResource font1 = new FontUIResource("Arial", Font.PLAIN, 18);
+	private FontUIResource font1 = new FontUIResource("Arial", Font.PLAIN, 18);
 	
 	/**
-	 * Create the frame.
+	 * Creates the view with default fonts, colours, and values.
 	 */
 	public Frame(CecilController controller) {
 		this.controller = controller;
@@ -132,15 +164,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		setupButtonIcons();
 		setupFlagIcons();
 		setupFonts(font1);
-		
-		ArrayList<String> examples = new ArrayList<String>();
-		examples.add("0");
-//		examples.add("2");
-//		examples.add("3");
-		
-		setXStack(examples);
-		setAccStack(examples);
-		setYStack(examples);
 		
 		setVisible(true);
 	}
@@ -157,48 +180,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println("ERROR: "+e1.getMessage());
 		}
 		getContentPane().setLayout(new GridBagLayout());
 		setTitle("CECIL");
-		
-		menuBar = new BackgroundMenuBar();
-//		menuBar.setOpaque(true);
-		
-		ImageIcon icon = new ImageIcon(getClass().getResource("/resources/cecil_title.png").getPath());
-		JMenuItem iconItem = new JMenuItem();
-		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
-		iconItem.setIcon(icon);
-		menuBar.add(iconItem);
-		
-		fileMenu = new JMenu("File");
-		menuBar.add(fileMenu);
-		
-		JMenuItem menuItem = new JMenuItem("A text only item");
-		fileMenu.add(menuItem);
-		
-		settingsMenu = new JMenu("Settings");
-		settingsMenu.setRolloverEnabled(true);
-		menuBar.add(settingsMenu);
-		
-		JMenuItem fontchooser = new JMenuItem("Font chooser");
-		settingsMenu.add(fontchooser);
-		final FontChooser fc = new FontChooser(this);
-		fontchooser.addActionListener(new ActionListener() {
-		   public void actionPerformed(ActionEvent ae) {				
-			  
-			   fc.setVisible(true);			  
-			    
-			   }			 
-			 });
-
-
-		helpMenu = new JMenu("Help");
-		helpMenu.setRolloverEnabled(true);
-		menuBar.add(helpMenu);
-		
-		setJMenuBar(menuBar);
 		
 		if (instructionList == null) {
 			//Default instructions
@@ -210,6 +195,62 @@ public class Frame extends JFrame implements CecilViewInterface {
 			instructionList.add("insert");
 		}
 		
+		/*
+		 * Menu bar
+		 */
+		menuBar = new BackgroundMenuBar();
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/resources/cecil_title.png").getPath());
+		JMenuItem iconItem = new JMenuItem();
+		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
+		iconItem.setIcon(icon);
+		menuBar.add(iconItem);
+		
+		fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
+		
+		menuOpen = new JMenuItem("Open");
+		menuSave = new JMenuItem("Save");
+		menuExit = new JMenuItem("Exit");
+		
+		fileMenu.add(menuOpen);
+		fileMenu.add(menuSave);
+		fileMenu.addSeparator();
+		fileMenu.add(menuExit);
+		
+		settingsMenu = new JMenu("Settings");
+		settingsMenu.setRolloverEnabled(true);
+		menuBar.add(settingsMenu);
+		
+		menuPreferences = new JMenuItem("Preferences");
+		final FontChooser fc = new FontChooser(this);
+		menuPreferences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+
+				fc.setVisible(true);
+
+			}
+		});
+		settingsMenu.add(menuPreferences);
+
+		helpMenu = new JMenu("Help");
+		helpMenu.setRolloverEnabled(true);
+		menuBar.add(helpMenu);
+		
+		menuWelcome = new JMenuItem("Welcome");
+		menuDocumentation = new JMenuItem("Documentation");
+		menuAbout = new JMenuItem("About CECIL");
+		
+		helpMenu.add(menuWelcome);
+		helpMenu.add(menuDocumentation);
+		helpMenu.addSeparator();
+		helpMenu.add(menuAbout);
+		
+		setJMenuBar(menuBar);
+		
+		/*
+		 * Panels
+		 */
 		northPanel = new JPanel();	
 		northPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		northPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
@@ -290,6 +331,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 		btnStepThrough = new JButton("Step through");
 		btnStepThrough.setToolTipText("Step through");
 		btnStepThrough.setEnabled(false);
+		btnStepThrough.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				onStepThroughClicked();
+			}
+		});
 		northPanel.add(btnStepThrough);
 		
 		/*
@@ -316,11 +363,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * X register
 		 */
 		xRegister = new JList<String>();
-		  xRegister.setCellRenderer(new DefaultListCellRenderer(){
-	        	public int getHorizontalAlignment() {        		
-	                return CENTER;
-	       }
-	        });
+		xRegister.setCellRenderer(new DefaultListCellRenderer(){
+			public int getHorizontalAlignment() {
+				return CENTER;
+			}
+		});
 		xRegister.setEnabled(false);
 		xRegister.setToolTipText("X register");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -329,11 +376,11 @@ public class Frame extends JFrame implements CecilViewInterface {
 		 * Y register
 		 */
 		yRegister = new JList<String>();
-		  yRegister.setCellRenderer(new DefaultListCellRenderer(){
-	        	public int getHorizontalAlignment() {        		
-	                return CENTER;
-	       }
-	        });
+		yRegister.setCellRenderer(new DefaultListCellRenderer() {
+			public int getHorizontalAlignment() {
+				return CENTER;
+			}
+		});
 		yRegister.setEnabled(false);
 		yRegister.setToolTipText("Y register");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -341,13 +388,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 		/*
 		 * Acc register
 		 */
-//		accRegister = new JTextPane();
 		accRegister = new JList<String>();
         accRegister.setCellRenderer(new DefaultListCellRenderer(){
-        	public int getHorizontalAlignment() {        		
-                return CENTER;
-       }
-        });
+			public int getHorizontalAlignment() {
+				return CENTER;
+			}
+		});
         accRegister.setEnabled(false);
 		accRegister.setToolTipText("Acc register");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -445,7 +491,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(30);
 		
 		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
-//       table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		input = new JTextField();      
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
        	aligncenter.setHorizontalAlignment(JLabel.CENTER);
@@ -460,7 +505,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 					if (tblInput.getSelectedRow() + 1 == (tblInput.getRowCount())) {
 
 						mdlInput.addRow(new Object[] {tblInput.getSelectedRow()+2, "", "", "" });
-						//System.out.println(table_1.getValueAt(table_1.getSelectedRow()+1, 0));
 					}
 				}
 			}
@@ -480,6 +524,9 @@ public class Frame extends JFrame implements CecilViewInterface {
 		inputScroll.setOpaque(false);
 		centerLeftPanel.add(inputScroll, gbc_scrollPane);
 		
+		/*
+		 * Memory
+		 */
 		DefaultTableModel mdlMemory = new DefaultTableModel();
 		for (int i = 0; i < 1024; i++) {
 			mdlMemory.addColumn(i, new Object[]{""});
@@ -490,13 +537,10 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblMemory.setEnabled(false);
 		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//		tblMemory.setOpaque(true);
 		
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		memoryScroll.setOpaque(true);
-		//memoryScroll.setBackground(Color.BLUE);
-//		tblMemory.setSize(memoryScroll.WIDTH, memoryScroll.HEIGHT);
 		southPanel.add(memoryScroll);
 	}
 	
@@ -595,8 +639,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
 					fileMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -605,8 +648,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
 					fileMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -635,8 +677,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
 					settingsMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -645,8 +686,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
 					settingsMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -675,8 +715,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
 					helpMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -685,8 +724,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
 					helpMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 			@Override
@@ -720,10 +758,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	}
 	
 	private void setupFonts(Font font) {
-		
-
 		UIManager.put("ToolTip.font", new FontUIResource(font));
-		
         UIManager.put("Table.font", font);
         
 		input.setFont(font);
@@ -736,8 +771,15 @@ public class Frame extends JFrame implements CecilViewInterface {
 		fileMenu.setFont(font);
 		settingsMenu.setFont(font);
 		helpMenu.setFont(font);
-		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(font);
+		menuOpen.setFont(font);
+		menuSave.setFont(font);
+		menuExit.setFont(font);
+		menuPreferences.setFont(font);
+		menuWelcome.setFont(font);
+		menuDocumentation.setFont(font);
+		menuAbout.setFont(font);
 		
+		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(font);
 		lblCarry.setFont(font);
 		lblZero.setFont(font);
 		lblNegative.setFont(font);
@@ -765,7 +807,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		comboBox.setEditable(true);
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				ItemSelectable is = (ItemSelectable)actionEvent.getSource();
+				actionEvent.getSource();
 			}
 		};
 		comboBox.addActionListener(actionListener);
@@ -778,7 +820,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		return ((selected.length == 0) ? "null" : (String)selected[0]);
 	} 
 	 
-	class MyComboBoxRenderer extends BasicComboBoxRenderer {
+	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			if (isSelected) {	
 				setBackground(list.getSelectionBackground());
@@ -933,7 +975,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	}
 	
 	 /*JComboBox auto-complete*/
-	public class Java2sAutoComboBox extends JComboBox {
+	private class Java2sAutoComboBox extends JComboBox {
 		private class AutoTextFieldEditor extends BasicComboBoxEditor {
 			private Java2sAutoTextField getAutoTextFieldEditor() {
 				return (Java2sAutoTextField) editor;
@@ -1047,7 +1089,6 @@ public class Frame extends JFrame implements CecilViewInterface {
 	 * Interface methods
 	 * 
 	 */
-
 	@Override
 	public void setAccStack(ArrayList<String> values) {
 		ArrayList<String> temp = new ArrayList<String>(values);

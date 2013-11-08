@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.raspberrypi.cecil.model.Cecil;
 import org.raspberrypi.cecil.model.MemoryModel;
-import org.raspberrypi.cecil.pojo.CecilInstruction;
 import org.raspberrypi.cecil.pojo.CecilProgram;
 import org.raspberrypi.cecil.view.Frame;
 

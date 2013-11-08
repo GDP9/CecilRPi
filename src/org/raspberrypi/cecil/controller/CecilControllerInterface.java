@@ -15,6 +15,7 @@ import java.util.ArrayList;
  *
  */
 public interface CecilControllerInterface {
+	
 	/**
 	 * Notify the controller that the compile button has been clicked.
 	 * 
