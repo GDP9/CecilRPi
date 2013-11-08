@@ -21,19 +21,76 @@ public interface CecilViewInterface {
 	 * Set the instructions to be displayed in the instruction dropdown box and tooltip descriptions.
 	 * This method should be called after the view is created.
 	 * 
-	 * @param instructions ArrayList of instructions.
+	 * @param instructions Instruction set with descriptions.
 	 */
 	public void setInstructionList(ArrayList<CecilInstruction> instructions);
 	
-	//All stack values are ordered oldest to newest (last in array is the "current" value)
+	/**
+	 * Set the values to be displayed in the accumulator register visualisation.
+	 * Uses an ArrayList to show the history of values from oldest to newest.
+	 * 
+	 * @param values The values to be displayed.
+	 */
 	public void setAccStack(ArrayList<String> values);
+	
+	/**
+	 * Set the values to be displayed in the X register visualisation.
+	 * Uses an ArrayList to show the history of values from oldest to newest.
+	 * 
+	 * @param values The values to be displayed.
+	 */
 	public void setXStack(ArrayList<String> values);
+	
+	/**
+	 * Set the values to be displayed in the Y register visualisation.
+	 * Uses an ArrayList to show the history of values from oldest to newest.
+	 * 
+	 * @param values The values to be displayed.
+	 */
 	public void setYStack(ArrayList<String> values);
+	
+	/**
+	 * Set the state to be displayed in the carry status flag visualisation.
+	 * 
+	 * @param flagIsOn The state to be displayed.
+	 */
 	public void setCarryFlag(boolean flagIsOn);
+	
+	/**
+	 * Set the state to be displayed in the zero status flag visualisation.
+	 * 
+	 * @param flagIsOn The state to be displayed.
+	 */
 	public void setZeroFlag(boolean flagIsOn);
+	
+	/**
+	 * Set the state to be displayed in the negative status flag visualisation.
+	 * 
+	 * @param flagIsOn The state to be displayed.
+	 */
 	public void setNegativeFlag(boolean flagIsOn);
+	
+	/**
+	 * Set the values to be displayed in the console output visualisation.
+	 * If the compile or run is successful it will display a list of results.
+	 * If unsuccessful it will display an error.
+	 * 
+	 * @param text Result or error strings.
+	 */
 	public void setConsoleText(ArrayList<String> text);
+	
+	/**
+	 * Set the values to be displayed in the memory visualisation.
+	 * 
+	 * @param values The values to be displayed.
+	 */
 	public void setMemoryAllocation(HashMap<String, String> values);
 	
-	public void setButtonsEnabled(boolean enabled);
+	/**
+	 * Set the state of the run and step through buttons to be enabled or disabled.
+	 * The buttons should be disabled until a successful compile has completed.
+	 * 
+	 * @param isEnabled The state to be displayed.
+	 */
+	public void setButtonsEnabled(boolean isEnabled);
 }
