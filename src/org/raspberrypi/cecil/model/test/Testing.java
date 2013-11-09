@@ -22,20 +22,20 @@ public class Testing {
 		userinput.add(input);
 		input  = new ArrayList<String>();
 
-//		input.add("");
-//		input.add("print");
-//		input.add("");
+		input.add("");
+		input.add("print");
+		input.add("");
 
-//		userinput.add(input);
-//		input  = new ArrayList<String>();
+		userinput.add(input);
+		input  = new ArrayList<String>();
 
-//		input.add("");
-//		input.add("printch");
-//		input.add("");
-//
-//		userinput.add(input);
-//		input  = new ArrayList<String>();
-//
+		input.add("");
+		input.add("printch");
+		input.add("");
+
+		userinput.add(input);
+		input  = new ArrayList<String>();
+
 		input.add("");
 		input.add("stop");
 		input.add("");

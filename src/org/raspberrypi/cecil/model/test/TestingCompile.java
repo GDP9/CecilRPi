@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.Cecil;
 import org.raspberrypi.cecil.model.MemoryModel;
-import org.raspberrypi.cecil.pojo.CecilProgram;
-import org.raspberrypi.cecil.pojo.CecilResult;
+import org.raspberrypi.cecil.pojo.Program;
+
 
 public class TestingCompile {
 
@@ -49,9 +49,7 @@ public class TestingCompile {
 		userinput.add(input);
 
 
-		CecilProgram program = new CecilProgram();
-		program.setProgramStatements(userinput);
-
+		Program program = new Program(userinput);
 
 		Cecil c = new Cecil();
 		c.compile(program);
@@ -104,9 +102,7 @@ public class TestingCompile {
 		userinput.add(input);
 
 
-		CecilProgram program = new CecilProgram();
-		program.setProgramStatements(userinput);
-
+		Program program = new Program(userinput);
 
 		Cecil c = new Cecil();
 		c.compile(program);
