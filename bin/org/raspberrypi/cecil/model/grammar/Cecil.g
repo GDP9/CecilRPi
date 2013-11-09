@@ -77,11 +77,12 @@ options {
     /**
     * Implicitly invoked by the parser. The error is appended in the output console. 
     */
+    @Override
     public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-        String hdr = getErrorHeader(e);
-        String msg = getErrorMessage(e, tokenNames);
+        String error = "Error:"+e.line +" unrecognised token "+ e.token;
+        //String msg = getErrorMessage(e, tokenNames);
         
-        this.output.add(hdr + " " + msg);
+        this.output.add(error);
     }
 }
 
@@ -106,13 +107,15 @@ instruction
   ;  
   
 labelfield 
-  :  'start' | NAME
+  :  NAME
   ;
 
 instructiondata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
-        if(($binaryinstruction.text).equals("insert")) {
+          System.out.println(" val "+($binaryinstruction.text));
+         
+         if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
             sim40.memory[pointer++] = Integer.parseInt($datafield.text);
@@ -122,9 +125,16 @@ instructiondata
       /* else reference instruction */  
         else {
           instructionfield.put(pointer, $binaryinstruction.text);
+          
+          System.out.println(" val "+($binaryinstruction.text));
+          if(instructionList.instructionToMnemonic($binaryinstruction.text) == -1)
+            throw new RecognitionException();
+          
           sim40.memory[pointer++] = instructionList.instructionToMnemonic($binaryinstruction.text); 
+          
           if(($datafield.text).matches("^[0-9]+$"))
             sim40.memory[pointer++] = Integer.parseInt($datafield.text);
+          
           else 
             datafield.put($datafield.text,pointer++);
          } 

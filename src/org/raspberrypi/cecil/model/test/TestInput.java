@@ -56,15 +56,23 @@ public class TestInput {
 		/**
 		 * Incorrect input initialisation
 		 */
+		input  = new ArrayList<String>();
 		input.add(" ");
 		input.add("load");
 		input.add("d1");
-		input.add(";This is a sample comment");
+		input.add(" ");
 		incorrectInput.add(input);
 		input  = new ArrayList<String>();
 
 		input.add(" ");
 		input.add("print");
+		input.add(" ");
+		input.add(";This is a sample comment");
+		incorrectInput.add(input);
+		input  = new ArrayList<String>();
+
+		input.add(" ");
+		input.add("printch");
 		input.add(" ");
 		input.add(";This is a sample comment");
 		incorrectInput.add(input);
@@ -78,7 +86,7 @@ public class TestInput {
 		input  = new ArrayList<String>();
 
 		input.add(".d1");
-		input.add("add");
+		input.add("insert");
 		input.add("65");
 		input.add(" ");
 		incorrectInput.add(input);

@@ -10,8 +10,8 @@ public class TestingCompile {
 	public static void main(String args[]) {
 
 		TestingCompile c = new TestingCompile();
-		c.first();
-		//c.jr();
+		//c.first();
+		c.jr();
 	}
 	
 	/* lacks stop instruction : result should be an error*/

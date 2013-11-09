@@ -1,4 +1,4 @@
-  load d1 ;This is a sample comment
+  loa d1  
   print   ;This is a sample comment
   printch   ;This is a sample comment
   stop    
