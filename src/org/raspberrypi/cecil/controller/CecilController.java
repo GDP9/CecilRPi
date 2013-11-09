@@ -1,5 +1,6 @@
 package org.raspberrypi.cecil.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,9 +30,53 @@ public class CecilController implements CecilControllerInterface {
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
 	 */
 	public CecilController() {
+		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
+		ArrayList<String> line = new ArrayList<String>();
+		line.add(".start");
+		line.add("load");
+		line.add("num1");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add("");
+		line.add("add");
+		line.add("num2");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add("");
+		line.add("print");
+		line.add("");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add("");
+		line.add("printch");
+		line.add("");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add("");
+		line.add("stop");
+		line.add("");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(".num1");
+		line.add("insert");
+		line.add("63");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(".num2");
+		line.add("insert");
+		line.add("2");
+		program.add(line);
+		
 		view = new Frame(this);		
 		model = new Cecil();
 		view.setInstructionList(model.getInstructions());
+		view.setProgramCode(program);
 	}
 
 	@Override
@@ -162,7 +207,12 @@ public class CecilController implements CecilControllerInterface {
 
 	}
 
-
+	@Override
+	public void fileOpened(File file) {
+		// TODO Auto-generated method stub
+		System.out.println("Attempting to open "+file.getName());
+	}
+	
 	/**
 	 * Launches the application by creating a new CecilController.
 	 */

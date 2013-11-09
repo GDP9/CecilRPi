@@ -26,6 +26,13 @@ public interface CecilViewInterface {
 	public void setInstructionList(ArrayList<CecilInstruction> instructions);
 	
 	/**
+	 * Set the program code to be displayed in the input editor.
+	 * 
+	 * @param program An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
+	 */
+	public void setProgramCode(ArrayList<ArrayList<String>> program);
+	
+	/**
 	 * Set the values to be displayed in the accumulator register visualisation.
 	 * Uses an ArrayList to show the history of values from oldest to newest.
 	 * 

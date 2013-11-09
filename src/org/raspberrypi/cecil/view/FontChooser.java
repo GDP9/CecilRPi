@@ -189,7 +189,7 @@ protected void updateColour() {
 public void saveandclose() {
  // Save font & color information
  newFont = sampleText.getFont();  
- frame.setnewFont(newFont);
+ frame.setNewFont(newFont);
 setVisible(false);
 //System.out.println("Test in FontChooser?"+new Frame().test);
 

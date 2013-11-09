@@ -5,6 +5,7 @@ import java.awt.ItemSelectable;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -71,6 +72,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.raspberrypi.cecil.controller.CecilController;
 import org.raspberrypi.cecil.pojo.CecilInstruction;
@@ -152,19 +154,23 @@ public class Frame extends JFrame implements CecilViewInterface {
 	private JTextField input;
 	private Java2sAutoComboBox comboBox;
 	private FontUIResource font1 = new FontUIResource("Arial", Font.PLAIN, 18);
+	private ArrayList<ArrayList<String>> currentProgram;
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
 	public Frame(CecilController controller) {
 		this.controller = controller;
-		
+		drawFrame();
+	}
+	
+	private void drawFrame() {
 		setupDefaultFrame();
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
 		setupFonts(font1);
-		
+		setupProgramCode();
 		setVisible(true);
 	}
 
@@ -210,6 +216,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 		menuBar.add(fileMenu);
 		
 		menuOpen = new JMenuItem("Open");
+		menuOpen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				onOpenClicked();
+			}
+		});
 		menuSave = new JMenuItem("Save");
 		menuExit = new JMenuItem("Exit");
 		
@@ -226,9 +238,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 		final FontChooser fc = new FontChooser(this);
 		menuPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-
 				fc.setVisible(true);
-
 			}
 		});
 		settingsMenu.add(menuPreferences);
@@ -802,6 +812,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 		tblMemory.setRowHeight(40);
 	}
 	
+	private void setupProgramCode() {		
+		if (currentProgram != null && currentProgram.size() > 0) {
+			loadProgramCode(currentProgram);
+		}
+	}
+	
 	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
 		comboBox = new Java2sAutoComboBox(instructionList);
 		comboBox.setEditable(true);
@@ -1060,28 +1076,79 @@ public class Frame extends JFrame implements CecilViewInterface {
 		}
 	}
 
+	/**
+	 * Retrieves the program code from the input editor and passes it to the controller.
+	 */
 	private void onCompileClicked() {
+		setButtonsEnabled(false);
+		//TODO Remove empty lines?
 		ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < tblInput.getRowCount(); i++) {
 			ArrayList<String> line = new ArrayList<String>();
 			for (int j = 1; j < tblInput.getColumnCount(); j++) {
 				line.add((String) tblInput.getValueAt(i, j));
-				System.out.println(tblInput.getValueAt(i, j));
 			}
 			code.add(line);
 		}
 		controller.compileClicked(code);
 	}
 	
+	/**
+	 * Notifies the controller that the run button has been clicked.
+	 */
 	private void onRunClicked() {
 		controller.runClicked();
 	}
 	
+	/**
+	 * Notifies the controller that the step through button has been clicked.
+	 */
 	private void onStepThroughClicked()  {
 		controller.stepThroughClicked() ;
 	}
 	
-	public void setnewFont(Font font){
+	/**
+	 * Opens a JFileChooser dialog in which the user can open a .cecil file.
+	 */
+	private void onOpenClicked() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
+		fileChooser.setFileFilter(filter);
+		int returnValue = fileChooser.showOpenDialog(this);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			System.out.println(fileChooser.getSelectedFile().getName());
+			//TODO Send to model to parse
+		}
+	}
+	
+	/**
+	 * Loads a program into the input editor.
+	 * 
+	 * @param program An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
+	 */
+	private void loadProgramCode(ArrayList<ArrayList<String>> program) {
+		DefaultTableModel model = (DefaultTableModel) tblInput.getModel();
+		model.setRowCount(0);
+		if (program != null && program.size() > 0) {
+			for (ArrayList<String> line : program) {
+				Object[] data = new Object[line.size()+1];
+				data[0] = program.indexOf(line)+1;
+				for (int i = 0; i < line.size(); i++) {
+					data[i+1] = line.get(i);
+				}
+				model.addRow(data);
+			}
+		}
+		model.fireTableDataChanged();
+	}
+	
+	/**
+	 * Change the application font size.
+	 * 
+	 * @param font The new font.
+	 * 
+	 */
+	public void setNewFont(Font font){
 		setupFonts(font);
 	}
 
@@ -1192,11 +1259,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 				instructionList.add(instruction.getInstructionName());
 			}
 		}
-		setupDefaultFrame();
-		setupColours();
-		setupButtonIcons();
-		setupFlagIcons();
-		setupFonts(font1);
+		drawFrame();
+	}
+	
+	@Override
+	public void setProgramCode(ArrayList<ArrayList<String>> program) {
+		loadProgramCode(program);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.raspberrypi.cecil.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -32,4 +33,9 @@ public interface CecilControllerInterface {
 	 * Notify the controller that the step through button has been clicked.
 	 */
 	public void stepThroughClicked();
+	
+	/**
+	 * Notify the controller that a file has been opened.
+	 */
+	public void fileOpened(File file);
 }
