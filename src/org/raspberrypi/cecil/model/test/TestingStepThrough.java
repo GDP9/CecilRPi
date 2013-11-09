@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.raspberrypi.cecil.model.CecilLexer;
-import org.raspberrypi.cecil.model.MemoryModel;
-import org.raspberrypi.cecil.model.CecilParser;
+import org.raspberrypi.cecil.model.Simulator;
 import org.raspberrypi.cecil.model.Runner;
 import org.raspberrypi.cecil.model.Compiler;
+import org.raspberrypi.cecil.model.grammar.CecilLexer;
+import org.raspberrypi.cecil.model.grammar.CecilParser;
 
 public class TestingStepThrough {
 
@@ -76,13 +76,13 @@ public class TestingStepThrough {
 		}
 
 		Compiler compiler = new Compiler(samplefile.getAbsolutePath());
-		Runner runner = new Runner(compiler, compiler.getMemoryModel());
+		Runner runner = new Runner(compiler, compiler.getSimulator());
 		runner.stepthrough(0);
 		runner.stepthrough(1);
 		runner.stepthrough(2);
 		runner.stepthrough(3);
 		
-		for(String s: runner.getMemoryModel().getOutput())
+		for(String s: runner.getSimulator().getOutput())
 			System.out.println("step through result " +s);
 		
 	}

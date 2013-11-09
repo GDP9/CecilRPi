@@ -17,18 +17,18 @@ package org.raspberrypi.cecil.model;
 public class Runner {
 
 	private Compiler compiler;
-	private MemoryModel m;
+	private Simulator sim40;
 
 	/**
 	 * Constructor
 	 */
-	public Runner(Compiler compiler, MemoryModel m) {
+	public Runner(Compiler compiler, Simulator sim40) {
 		this.compiler = compiler;
-		this.m = m;
+		this.sim40 = sim40;
 	}
 
-	public MemoryModel getMemoryModel() {
-		return this.m;
+	public Simulator getSimulator() {
+		return this.sim40;
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class Runner {
 		case 0: return;
 
 		case 1: case 2: case 3: 
-			m.getOutput().add(result(i));
+			sim40.getOutput().add(result(i));
 			++i;
 			break;
 
@@ -52,8 +52,8 @@ public class Runner {
 
 
 		checkStatusFlags();
-		m.updateViewVars();
-		m.memory[m.PROGRAM_COUNTER] = i;
+		sim40.updateViewVars();
+		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 	}
 
 	/**
@@ -62,15 +62,15 @@ public class Runner {
 	 */
 	public void run(int i) {
 
-		while(m.memory[i] != -1) {	
+		while(sim40.memory[i] != -1) {	
 			//System.out.println("i "+ i+"   mem[i]  "+m.memory[i]);
 			
-			switch(m.memory[i]) {
+			switch(sim40.memory[i]) {
 
 			case 0: return;
 
 			case 1: case 2: case 3: 
-				m.getOutput().add(result(i));
+				sim40.getOutput().add(result(i));
 				++i;
 				break;
 
@@ -81,8 +81,8 @@ public class Runner {
 			}
 
 			checkStatusFlags();
-			m.updateViewVars();
-			m.memory[m.PROGRAM_COUNTER] = i;
+			sim40.updateViewVars();
+			sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		}
 		
 	}
@@ -97,13 +97,13 @@ public class Runner {
 		switch(i){
 
 		case 1: /* print */
-			return (""+m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+			return (""+sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]]);
 
 		case 2: /* printch */
-			return (""+(char)m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]);
+			return (""+(char)sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]]);
 
 		case 3: /* printb */
-			return (Integer.toBinaryString(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]]));
+			return (Integer.toBinaryString(sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]]));
 		}
 
 		return "";
@@ -115,204 +115,204 @@ public class Runner {
 	 * @return
 	 */
 	private int execute(int i) {
-		switch(m.memory[i]) {
+		switch(sim40.memory[i]) {
 
 		/* Unary Instructions */
 
 		case 4: /* cclear */
-			m.memory[m.STATUS_ADDRESS] &= (0<<2);
+			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<2);
 			i++;
 			break;
 		case 5: /* cset */
-			m.memory[m.STATUS_ADDRESS] |= (1<<2);
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 			i++;
 			break;
 		case 6: /* lshift */
-			m.memory[m.ACCUMULATOR_ADDRESS] <<= 1;
+			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
 			i++;
 			break;
 		case 7: /* rshift */
-			m.memory[m.ACCUMULATOR_ADDRESS] >>= 1;
+			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
 			i++;
 			break;
 		case 8: /* pull */
-			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[m.STACK_PTR]--;
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
 			}
-			else m.getOutput().add("Cannot pull because of underflow");
+			else sim40.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 9: /* xinc */
-			m.memory[m.XREG_ADDRESS]++;
+			sim40.memory[Simulator.XREG_ADDRESS]++;
 			i++;
 			break;
 		case 10: /* xdec */
-			m.memory[m.XREG_ADDRESS]--;
+			sim40.memory[Simulator.XREG_ADDRESS]--;
 			i++;
 			break;
 		case 11: /* xpull */
-			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-				m.memory[m.XREG_ADDRESS] = m.memory[m.STACK_PTR]--;
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
 			}
-			else m.getOutput().add("Cannot pull because of underflow");
+			else sim40.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 12: /* xpush */
-			if(m.memory[m.STACK_PTR] != m.STACK_END) {
-				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.XREG_ADDRESS];
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.XREG_ADDRESS];
 			}
-			else m.getOutput().add("Cannot pull because of overflow");
+			else sim40.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 13: /* push */
-			if(m.memory[m.STACK_PTR] != m.STACK_END) {
-				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.ACCUMULATOR_ADDRESS];
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.ACCUMULATOR_ADDRESS];
 			}
-			else m.getOutput().add("Cannot pull because of overflow");
+			else sim40.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 14: /* ypush */
-			if(m.memory[m.STACK_PTR] != m.STACK_END) {
-				m.memory[++m.memory[m.STACK_PTR]] = m.memory[m.YREG_ADDRESS];
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.YREG_ADDRESS];
 			}
-			else m.getOutput().add("Cannot pull because of overflow");
+			else sim40.getOutput().add("Cannot pull because of overflow");
 			i++;
 			break;
 		case 15: /* ypull */
-			if(m.memory[m.STACK_PTR] != m.STACK_BEGIN) {
-				m.memory[m.YREG_ADDRESS] = m.memory[m.STACK_PTR]--;
+			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
 			}
-			else m.getOutput().add("Cannot pull because of underflow");
+			else sim40.getOutput().add("Cannot pull because of underflow");
 			i++;
 			break;
 		case 16: /* yinc */
-			m.memory[m.YREG_ADDRESS]++;
+			sim40.memory[Simulator.YREG_ADDRESS]++;
 			i++;
 			break;
 		case 17: /* ydec */
-			m.memory[m.YREG_ADDRESS]--;
+			sim40.memory[Simulator.YREG_ADDRESS]--;
 			i++;
 			break;
 
 			/* Binary Instructions */	
 		case 18: /* load */
 			if(checkInsert(i))	{
-				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[++i];
 				i++;
 			}
 
 			else {
 			
-				m.getOutput().add("Instruction has to be insert");
+				sim40.getOutput().add("Instruction has to be insert");
 
 			}
 
 			break;
 		case 19: /* store */
 			if(checkInsert(i))	
-				m.memory[m.memory[++i]] = m.memory[m.ACCUMULATOR_ADDRESS];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.ACCUMULATOR_ADDRESS];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 20: /* add */
 			if(checkInsert(i))	{
-				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-				m.memory[m.ACCUMULATOR_ADDRESS] += m.memory[m.memory[++i]];
+				sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] += sim40.memory[sim40.memory[++i]];
 			}
-			else m.getOutput().add("Instruction has to be insert");
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 21: /* sub */
 			if(checkInsert(i)) {	
-				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-				m.memory[m.ACCUMULATOR_ADDRESS] -= m.memory[m.memory[++i]];
+				sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] -= sim40.memory[sim40.memory[++i]];
 			}
-			else m.getOutput().add("Instruction has to be insert");
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 22: /* and */
 			if(checkInsert(i)) {	
-				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-				m.memory[m.ACCUMULATOR_ADDRESS] &= m.memory[m.memory[++i]];
+				sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] &= sim40.memory[sim40.memory[++i]];
 			}
-			else m.getOutput().add("Instruction has to be insert");
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 23: /* or */
 			if(checkInsert(i)) {	
-				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-				m.memory[m.ACCUMULATOR_ADDRESS] |= m.memory[m.memory[++i]];
+				sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] |= sim40.memory[sim40.memory[++i]];
 			}
-			else m.getOutput().add("Instruction has to be insert");
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 24: /* xor */
 			if(checkInsert(i)) {	
-				m.memory[m.memory[i+1]] = m.memory[m.memory[i+1] + 1];
-				m.memory[m.ACCUMULATOR_ADDRESS] ^= m.memory[m.memory[++i]];
+				sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] ^= sim40.memory[sim40.memory[++i]];
 			}
-			else m.getOutput().add("Instruction has to be insert");
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 25: /* jump */
-			i = m.memory[i+1];
+			i = sim40.memory[i+1];
 			break;
 		case 26: /* comp */
-			zeroflagstatus(m.ACCUMULATOR_ADDRESS);
-			negativeflagstatus(m.ACCUMULATOR_ADDRESS, m.memory[++i]);
+			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS);
+			negativeflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
 			break;
 		case 27: /* jineg */
 			/* Description If the negative flag is set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
-			if(isBitSet(m.memory[m.STATUS_ADDRESS], 1))
-				i = m.memory[i+1];
+			if(isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 1))
+				i = sim40.memory[i+1];
 			break;
 		case 28 : /* jipos */
 			/*Description If neither the carry or negative flags are set, THEN jump to a different part of the program (change the program counter to the labelled address), otherwise do nothing.*/
-			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 1) &&  !isBitSet(m.memory[m.STATUS_ADDRESS], 2))
-				i = m.memory[i+1];
+			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 1) &&  !isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 2))
+				i = sim40.memory[i+1];
 			break;
 		case 29: /* jizero */
-			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 0))
-				i = m.memory[i+1];
+			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 0))
+				i = sim40.memory[i+1];
 			break;
 		case 30: /* jmptosr */
-			m.memory[m.memory[m.STACK_PTR]] = m.memory[i];
-			i = m.memory[i+1];
+			sim40.memory[sim40.memory[Simulator.STACK_PTR]] = sim40.memory[i];
+			i = sim40.memory[i+1];
 			break;
 		case 31: /* jicarry */
-			if(!isBitSet(m.memory[m.STATUS_ADDRESS], 2))
-				i = m.memory[i+1];
+			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 2))
+				i = sim40.memory[i+1];
 			break;
 		case 32: /* xload */
 			if(checkInsert(i))	
-				m.memory[m.XREG_ADDRESS] = m.memory[++i];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[++i];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 33: /* xstore */
 			if(checkInsert(i))	
-				m.memory[m.memory[++i]] = m.memory[m.XREG_ADDRESS];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.XREG_ADDRESS];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 34: /* loadmx */
 			if(checkInsert(i))	
-				m.memory[m.ACCUMULATOR_ADDRESS] = m.memory[++i] + m.memory[m.XREG_ADDRESS];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[++i] + sim40.memory[Simulator.XREG_ADDRESS];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 35: /* xcomp */
-			zeroflagstatus(m.XREG_ADDRESS);		
-			negativeflagstatus(m.XREG_ADDRESS, m.memory[++i]);
+			zeroflagstatus(Simulator.XREG_ADDRESS);		
+			negativeflagstatus(Simulator.XREG_ADDRESS, sim40.memory[++i]);
 			break;
 		case 36: /* yload */
 			if(checkInsert(i))	
-				m.memory[m.YREG_ADDRESS] = m.memory[++i];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[++i];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 37: /* ystore */
 			if(checkInsert(i))	
-				m.memory[m.memory[++i]] = m.memory[m.YREG_ADDRESS];
-			else m.getOutput().add("Instruction has to be insert");
+				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.YREG_ADDRESS];
+			else sim40.getOutput().add("Instruction has to be insert");
 			break;
 		case 38: /* insert */
 			
-			m.memory[i] = m.memory[++i];
+			sim40.memory[i] = sim40.memory[++i];
 			break;
 		case 39: /* ycomp */
-			zeroflagstatus(m.YREG_ADDRESS);		
-			negativeflagstatus(m.YREG_ADDRESS, m.memory[++i]);
+			zeroflagstatus(Simulator.YREG_ADDRESS);		
+			negativeflagstatus(Simulator.YREG_ADDRESS, sim40.memory[++i]);
 			break;
 		}
 	
@@ -324,25 +324,25 @@ public class Runner {
 	private void checkStatusFlags() {
 		/* checking carry flag status */
 		
-		if((m.memory[m.ACCUMULATOR_ADDRESS] != -1 && m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] >= 1024)
-				|| (m.memory[m.YREG_ADDRESS] != -1 && m.memory[m.memory[m.YREG_ADDRESS]] >= 1024)
-				|| (m.memory[m.XREG_ADDRESS] != -1 && m.memory[m.memory[m.XREG_ADDRESS]] >= 1024)) {
-			if(m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] >= 1024)
-				setRegToMax(m.ACCUMULATOR_ADDRESS);
+		if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] >= 1024)
+				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] >= 1024)
+				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] >= 1024)) {
+			if(sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] >= 1024)
+				setRegToMax(Simulator.ACCUMULATOR_ADDRESS);
 
-			if( m.memory[m.memory[m.XREG_ADDRESS]] >= 1024) 
-				setRegToMax(m.XREG_ADDRESS);
+			if( sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] >= 1024) 
+				setRegToMax(Simulator.XREG_ADDRESS);
 
-			if(m.memory[m.memory[m.YREG_ADDRESS]] >= 1024)
-				setRegToMax(m.YREG_ADDRESS);
+			if(sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] >= 1024)
+				setRegToMax(Simulator.YREG_ADDRESS);
 		}
 
 		/* checking negative flag status */
-		else if((m.memory[m.ACCUMULATOR_ADDRESS] != -1 && m.memory[m.memory[m.ACCUMULATOR_ADDRESS]] == 0)
-				|| (m.memory[m.YREG_ADDRESS] != -1 && m.memory[m.memory[m.YREG_ADDRESS]] == 0)
-				|| (m.memory[m.XREG_ADDRESS] != -1 && m.memory[m.memory[m.XREG_ADDRESS]] == 0)) {
-			m.memory[m.STATUS_ADDRESS] |= (1<<1);
-			m.memory[m.STATUS_ADDRESS] |= 1;
+		else if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] == 0)
+				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] == 0)
+				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] == 0)) {
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
+			sim40.memory[Simulator.STATUS_ADDRESS] |= 1;
 		}
 
 	}
@@ -352,8 +352,8 @@ public class Runner {
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
-		m.memory[m.memory[register]] = 1024;
-		m.memory[m.STATUS_ADDRESS] |= (1<<2);
+		sim40.memory[sim40.memory[register]] = 1024;
+		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 	}
 	/**
 	 * 
@@ -361,18 +361,18 @@ public class Runner {
 	 * @return
 	 */
 	private boolean checkInsert(int i) {
-		return (compiler.getInstructionField().containsKey(m.memory[i+1]) && compiler.getInstructionField().get(m.memory[i+1]).equals("insert"));
+		return (compiler.getInstructionField().containsKey(sim40.memory[i+1]) && compiler.getInstructionField().get(sim40.memory[i+1]).equals("insert"));
 	}
 
 	/**
 	 * 
 	 */
 	private void zeroflagstatus(int register){
-		if(m.memory[register] == 0){
-			m.memory[m.STATUS_ADDRESS] |= 1;
+		if(sim40.memory[register] == 0){
+			sim40.memory[Simulator.STATUS_ADDRESS] |= 1;
 		}
 		else {
-			m.memory[m.STATUS_ADDRESS] &= 0;
+			sim40.memory[Simulator.STATUS_ADDRESS] &= 0;
 		}
 	}
 
@@ -381,11 +381,11 @@ public class Runner {
 	 * @param register
 	 */
 	private void negativeflagstatus(int register, int address){
-		if(m.memory[register] <= m.memory[address]){
-			m.memory[m.STATUS_ADDRESS] |= (1<<1);
+		if(sim40.memory[register] <= sim40.memory[address]){
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
 		}
 		else {
-			m.memory[m.STATUS_ADDRESS] &= (0<<1);
+			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<1);
 		}
 	}
 

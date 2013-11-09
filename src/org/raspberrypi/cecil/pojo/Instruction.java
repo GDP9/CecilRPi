@@ -309,19 +309,50 @@ package org.raspberrypi.cecil.pojo;
 */
 public class Instruction {
 
-	private String instructionName;
+	/**
+	 * name, tool-tip description, machine code mnemonic fields
+	 */
+	private String name;
 	private String description;
+	private int mnemonic;
 	
-	public String getInstructionName() {
-		return instructionName;
-	}
-	public void setInstructionName(String instructionName) {
-		this.instructionName = instructionName;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
+	/**
+	 * Parametric Constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param mnemonic
+	 */
+	public Instruction(String name, String description, int mnemonic) {
+		this.name = name;
 		this.description = description;
+		this.mnemonic = mnemonic;
+	}
+	
+	/**
+	 * Getter method for this instruction's name
+	 * 
+	 * @return name: String
+	 */
+	public String getName() {
+		return this.name;
+	}
+	
+	/**
+	 * Getter method for this instruction's tool-tip description
+	 * 
+	 * @return description: String
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+	
+	/**
+	 * Getter method for this instruction's machine mnemonic code
+	 * 
+	 * @return mnemonic: int
+	 */
+	public int getMnemonic() {
+		return this.mnemonic;
 	}
 }

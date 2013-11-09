@@ -24,12 +24,4 @@ public class Program {
 	public ArrayList<ArrayList<String>> getProgramStatements() {
 		return programStatements;
 	}
-	
-	/**
-	 * 
-	 * @param programStatements
-	 */
-	public void setProgramStatements(ArrayList<ArrayList<String>> programStatements) {
-		this.programStatements = programStatements;
-	}
 }

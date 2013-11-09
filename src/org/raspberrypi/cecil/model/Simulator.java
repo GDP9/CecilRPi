@@ -18,16 +18,16 @@ import java.util.ArrayList;
  *  x-reg : 1027
  *  y-reg : 1028
  */
-public class MemoryModel {
+public class Simulator {
 	
-	static private ArrayList<Integer> xReg;
-	static private ArrayList<Integer> yReg;
-	static private ArrayList<Integer> acc;
-	static private boolean carryFlag;
-	static private boolean zeroFlag;
-	static private boolean negativeFlag;
-	static private ArrayList<String> output;
-	static private boolean successCompile;
+	private ArrayList<Integer> xReg;
+	private ArrayList<Integer> yReg;
+	private ArrayList<Integer> acc;
+	private boolean carryFlag;
+	private boolean zeroFlag;
+	private boolean negativeFlag;
+	private ArrayList<String> output;
+	private boolean successCompile;
 	
 	static final int STATUS_ADDRESS = 1025;
 	static final int PROGRAM_COUNTER = 1024;
@@ -39,7 +39,7 @@ public class MemoryModel {
 	static final int STACK_END = 1006;
 	static final int STACK_PTR = 1007;
 	
-	public static int[] memory = new int[MEMORY_LENGTH];
+	public int[] memory = new int[MEMORY_LENGTH];
 	
 	public void updateViewVars() {
 		
@@ -67,7 +67,7 @@ public class MemoryModel {
 	/**
 	 * Constuctor: initialse memory to store -1
 	 */
-	public MemoryModel() {
+	public Simulator() {
 		for(int i = 0 ; i < MEMORY_LENGTH; i++)
 			memory[i] = -1;
 		
@@ -81,85 +81,85 @@ public class MemoryModel {
 		zeroFlag = carryFlag = negativeFlag = false;
 	}
 
-	public static boolean isCarryFlag() {
+	public boolean isCarryFlag() {
 		return carryFlag;
 	}
 
-	public static void setCarryFlag(boolean carryFlag) {
-		MemoryModel.carryFlag = carryFlag;
+	public void setCarryFlag(boolean carryFlag) {
+		this.carryFlag = carryFlag;
 	}
 
-	public static boolean isZeroFlag() {
+	public boolean isZeroFlag() {
 		return zeroFlag;
 	}
 
-	public static void setZeroFlag(boolean zeroFlag) {
-		MemoryModel.zeroFlag = zeroFlag;
+	public void setZeroFlag(boolean zeroFlag) {
+		this.zeroFlag = zeroFlag;
 	}
 
-	public static boolean isNegativeFlag() {
+	public boolean isNegativeFlag() {
 		return negativeFlag;
 	}
 
-	public static void setNegativeFlag(boolean negativeFlag) {
-		MemoryModel.negativeFlag = negativeFlag;
+	public void setNegativeFlag(boolean negativeFlag) {
+		this.negativeFlag = negativeFlag;
 	}
 
-	public static boolean isSuccessCompile() {
-		return successCompile;
+	public boolean isSuccessCompile() {
+		return this.successCompile;
 	}
 
-	public static void setSuccessCompile(boolean successCompile) {
-		MemoryModel.successCompile = successCompile;
+	public void setSuccessCompile(boolean successCompile) {
+		this.successCompile = successCompile;
 	}
 
-	public static ArrayList<String> getOutput() {
-		return output;
+	public ArrayList<String> getOutput() {
+		return this.output;
 	}
 
-	public static void setOutput(ArrayList<String> output) {
-		MemoryModel.output = output;
+	public void setOutput(ArrayList<String> output) {
+		this.output = output;
 	}
 
 	/**
 	 * @return the xReg
 	 */
-	public static ArrayList<Integer> getxReg() {
-		return xReg;
+	public ArrayList<Integer> getxReg() {
+		return this.xReg;
 	}
 
 	/**
 	 * @param xReg the xReg to set
 	 */
-	public static void setxReg(ArrayList<Integer> xReg) {
-		MemoryModel.xReg = xReg;
+	public void setxReg(ArrayList<Integer> xReg) {
+		this.xReg = xReg;
 	}
 
 	/**
 	 * @return the yReg
 	 */
-	public static ArrayList<Integer> getyReg() {
-		return yReg;
+	public ArrayList<Integer> getyReg() {
+		return this.yReg;
 	}
 
 	/**
 	 * @param yReg the yReg to set
 	 */
-	public static void setyReg(ArrayList<Integer> yReg) {
-		MemoryModel.yReg = yReg;
+	public void setyReg(ArrayList<Integer> yReg) {
+		this.yReg = yReg;
 	}
 
 	/**
 	 * @return the acc
 	 */
-	public static ArrayList<Integer> getAcc() {
-		return acc;
+	public ArrayList<Integer> getAcc() {
+		return this.acc;
 	}
 
 	/**
 	 * @param acc the acc to set
 	 */
-	public static void setAcc(ArrayList<Integer> acc) {
-		MemoryModel.acc = acc;
+	public void setAcc(ArrayList<Integer> acc) {
+		this.acc = acc;
 	}	
 }

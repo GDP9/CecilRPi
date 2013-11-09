@@ -74,8 +74,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.raspberrypi.cecil.controller.CecilController;
-import org.raspberrypi.cecil.pojo.CecilInstruction;
+import org.raspberrypi.cecil.controller.Controller;
+import org.raspberrypi.cecil.pojo.Instruction;
 
 /**
  * Controller class for interfacing between the model and view.
@@ -90,15 +90,15 @@ import org.raspberrypi.cecil.pojo.CecilInstruction;
  * @date 07/11/2013
  *
  */
-public class Frame extends JFrame implements CecilViewInterface {
+public class Frame extends JFrame implements ViewInterface {
 	private static final int WIDTH = 1100;
 	private static final int HEIGHT = 750;
 	
 	//Controller
-	private CecilController controller;
+	private Controller controller;
 	
 	//Instructions
-	private ArrayList<CecilInstruction> instructions;
+	private ArrayList<Instruction> instructions;
 	private ArrayList<String> instructionList;
 	
 	//Panels
@@ -159,7 +159,7 @@ public class Frame extends JFrame implements CecilViewInterface {
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
-	public Frame(CecilController controller) {
+	public Frame(Controller controller) {
 		this.controller = controller;
 		drawFrame();
 	}
@@ -1251,12 +1251,12 @@ public class Frame extends JFrame implements CecilViewInterface {
 	}
 
 	@Override
-	public void setInstructionList(ArrayList<CecilInstruction> instructions) {
+	public void setInstructionList(ArrayList<Instruction> instructions) {
 		this.instructions = instructions;
 		instructionList = new ArrayList<String>();
-		for (CecilInstruction instruction : instructions) {
-			if (instruction != null && instruction.getInstructionName() != null) {
-				instructionList.add(instruction.getInstructionName());
+		for (Instruction instruction : instructions) {
+			if (instruction != null && instruction.getName() != null) {
+				instructionList.add(instruction.getName());
 			}
 		}
 		drawFrame();

@@ -2,11 +2,12 @@ package org.raspberrypi.cecil.model;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.raspberrypi.cecil.model.grammar.CecilLexer;
+import org.raspberrypi.cecil.model.grammar.CecilParser;
 
 /**
  * CECIL assembly language Compiler
@@ -22,36 +23,40 @@ import org.antlr.runtime.RecognitionException;
 public class Compiler {
 	
 	private CecilParser parser;
-	private MemoryModel m;
+	private Simulator sim40;
 	
+	/**
+	 * Parametric Constructor
+	 * @param filepath
+	 */
 	public Compiler(String filepath) {
 		try {
 			CommonTokenStream tokens  =  new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath)));
 			
-			parser = new CecilParser(tokens);
-			parser.initialseCommandList();
+			this.parser = new CecilParser(tokens);
+			this.parser.initialse();
 			
-			m = parser.getMemoryModel();
+			this.sim40 = parser.getSimulator();
 
-			/* Parsing!!! */
+			/* Parsing */
 			parser.program();
 			
 			/* type checking for labels */
 			for(String key : parser.getDatafield().keySet()) {
 				if(parser.getLabelfield().keySet().contains(key)) 
-					m.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
+					sim40.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
 			
-				else m.getOutput().add("Error, Label not found");
+				else sim40.getOutput().add("Error, Label not found");
 			}
 			
 			/* checking for stop instruction */
 			if(!parser.getInstructionfield().containsValue("stop")) {
-				m.getOutput().add("Program needs a stop instruction!");
+				sim40.getOutput().add("Program needs a stop instruction!");
 			}
 			
-			if(m.getOutput().isEmpty()) {
-				m.getOutput().add("Successful Compilation"); 
-				m.setSuccessCompile(true);
+			if(sim40.getOutput().isEmpty()) {
+				sim40.getOutput().add("Successful Compilation"); 
+				sim40.setSuccessCompile(true);
 			}
 			
 		} catch (IOException | RecognitionException e) {
@@ -72,8 +77,8 @@ public class Compiler {
 	 * 
 	 * @return
 	 */
-	public MemoryModel getMemoryModel() {
-		return m;
+	public Simulator getSimulator() {
+		return this.sim40;
 	}
 	
 	/**
