@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -142,6 +143,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JMenu fileMenu;
 	private JMenu settingsMenu;
 	private JMenu helpMenu;
+	private JMenuItem menuNew;
 	private JMenuItem menuOpen;
 	private JMenuItem menuSave;
 	private JMenuItem menuExit;
@@ -215,6 +217,14 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		
+		menuNew = new JMenuItem("New");
+		menuNew.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				onNewClicked();
+			}
+		});
+		
 		menuOpen = new JMenuItem("Open");
 		menuOpen.addActionListener(new ActionListener() {
 			@Override
@@ -222,6 +232,7 @@ public class Frame extends JFrame implements ViewInterface {
 				onOpenClicked();
 			}
 		});
+		
 		menuSave = new JMenuItem("Save");
 		menuSave.addActionListener(new ActionListener() {
 			@Override
@@ -229,8 +240,16 @@ public class Frame extends JFrame implements ViewInterface {
 				onSaveClicked();
 			}
 		});
-		menuExit = new JMenuItem("Exit");
 		
+		menuExit = new JMenuItem("Exit");
+		menuExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				onExitClicked();
+			}
+		});
+		
+		fileMenu.add(menuNew);
 		fileMenu.add(menuOpen);
 		fileMenu.add(menuSave);
 		fileMenu.addSeparator();
@@ -789,6 +808,7 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu.setFont(font);
 		settingsMenu.setFont(font);
 		helpMenu.setFont(font);
+		menuNew.setFont(font);
 		menuOpen.setFont(font);
 		menuSave.setFont(font);
 		menuExit.setFont(font);
@@ -1129,6 +1149,36 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 	
 	/**
+	 * Clears the code in the input editor.
+	 */
+	private void onNewClicked() {
+		System.out.println(currentProgram.toString());
+		System.out.println(getProgramCode().toString());
+		if (!currentProgram.equals(getProgramCode())) {
+			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
+			if (returnValue == JOptionPane.OK_OPTION) {
+				ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
+				ArrayList<String> newLine = new ArrayList<String>();
+				newLine.add("");
+				newLine.add("");
+				newLine.add("");
+				newLine.add("");
+				code.add(newLine);
+				setProgramCode(code);
+			}
+		} else {
+			ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
+			ArrayList<String> newLine = new ArrayList<String>();
+			newLine.add("");
+			newLine.add("");
+			newLine.add("");
+			newLine.add("");
+			code.add(newLine);
+			setProgramCode(code);
+		}
+	}
+	
+	/**
 	 * Opens a JFileChooser dialog to open a .cecil file.
 	 */
 	private void onOpenClicked() {
@@ -1152,7 +1202,15 @@ public class Frame extends JFrame implements ViewInterface {
 		int returnValue = fileChooser.showSaveDialog(this);
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			controller.saveToFile(code, fileChooser.getSelectedFile().getAbsolutePath());
+			currentProgram = getProgramCode();
 		}
+	}
+	
+	/**
+	 * Exits the application.
+	 */
+	private void onExitClicked() {
+		System.exit(0);
 	}
 	
 	/**
@@ -1174,6 +1232,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		}
 		model.fireTableDataChanged();
+		currentProgram = getProgramCode();
 	}
 	
 	/**
@@ -1298,7 +1357,8 @@ public class Frame extends JFrame implements ViewInterface {
 	
 	@Override
 	public void setProgramCode(ArrayList<ArrayList<String>> program) {
-		loadProgramCode(program);
+		currentProgram = program;
+		loadProgramCode(currentProgram);
 	}
 
 	@Override

@@ -35,17 +35,20 @@ public class Controller implements ControllerInterface {
 		line.add(".start");
 		line.add("load");
 		line.add("num1");
+		line.add("");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add("");
 		line.add("add");
 		line.add("num2");
+		line.add("");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add("");
 		line.add("print");
+		line.add("");
 		line.add("");
 		program.add(line);
 		
@@ -53,11 +56,13 @@ public class Controller implements ControllerInterface {
 		line.add("");
 		line.add("printch");
 		line.add("");
+		line.add("");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add("");
 		line.add("stop");
+		line.add("");
 		line.add("");
 		program.add(line);
 		
@@ -65,12 +70,14 @@ public class Controller implements ControllerInterface {
 		line.add(".num1");
 		line.add("insert");
 		line.add("63");
+		line.add("");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
+		line.add("");
 		program.add(line);
 		
 		view = new Frame(this);		
