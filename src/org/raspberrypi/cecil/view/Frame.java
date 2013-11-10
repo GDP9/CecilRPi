@@ -492,7 +492,8 @@ public class Frame extends JFrame implements ViewInterface {
 		mdlInput.addColumn("Label");
 		mdlInput.addColumn("Instruction");
 		mdlInput.addColumn("Data");
-		mdlInput.addRow(new Object[]{1,"","",""});
+		mdlInput.addColumn("Comments");
+		mdlInput.addRow(new Object[]{1,"","","",""});
 		
 		tblInput = new JTable(mdlInput);
 		tblInput.getTableHeader().setReorderingAllowed(false);
@@ -508,13 +509,14 @@ public class Frame extends JFrame implements ViewInterface {
        	tblInput.setRowHeight(25);                
        	tblInput.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(input));
        	tblInput.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(input));
+       	tblInput.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(input));
        	tblInput.setFillsViewportHeight(true);
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (tblInput.getSelectedRow() + 1 == (tblInput.getRowCount())) {
 
-						mdlInput.addRow(new Object[] {tblInput.getSelectedRow()+2, "", "", "" });
+						mdlInput.addRow(new Object[] {tblInput.getSelectedRow()+2, "", "", "",""});
 					}
 				}
 			}
