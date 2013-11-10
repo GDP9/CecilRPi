@@ -217,7 +217,9 @@ public class Controller implements ControllerInterface {
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
 		if (program != null && program.getProgramStatements() != null) {
+			view.clearVisualisations();
 			view.setProgramCode(program.getProgramStatements());
+			view.setFilename(file.getName());
 		}
 	}
 	
@@ -226,6 +228,7 @@ public class Controller implements ControllerInterface {
 		if (code != null && filename != null) {
 			Program program = new Program(code);
 			File file = model.programToFile(program, filename);
+			view.setFilename(file.getName());
 		}
 	}
 	

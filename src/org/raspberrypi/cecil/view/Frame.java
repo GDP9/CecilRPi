@@ -292,7 +292,7 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		centerLeftPanel = new JPanel();
 		centerLeftPanel.setLayout(new GridLayout(1,1));
-		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Program", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Program - Untitled", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		
 		centerRightPanel = new JPanel();
 		centerRightPanel.setLayout(new GridLayout(2,1));
@@ -1108,6 +1108,9 @@ public class Frame extends JFrame implements ViewInterface {
 	 * Retrieves the program code from the input editor and passes it to the controller.
 	 */
 	private void onCompileClicked() {
+		if (tblInput.getCellEditor() != null) {
+			tblInput.getCellEditor().stopCellEditing();
+		}
 		setButtonsEnabled(false);
 		controller.compileClicked(getProgramCode());
 	}
@@ -1149,33 +1152,49 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 	
 	/**
-	 * Clears the code in the input editor.
+	 * Loads a new program and sets filename to Untitled.
+	 * The user is also shown a warning if there are unsaved changes.
 	 */
 	private void onNewClicked() {
-		System.out.println(currentProgram.toString());
-		System.out.println(getProgramCode().toString());
+		clearVisualisations();
 		if (!currentProgram.equals(getProgramCode())) {
 			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
 			if (returnValue == JOptionPane.OK_OPTION) {
-				ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
-				ArrayList<String> newLine = new ArrayList<String>();
-				newLine.add("");
-				newLine.add("");
-				newLine.add("");
-				newLine.add("");
-				code.add(newLine);
-				setProgramCode(code);
+				loadNewProgram();
+				setFilename("Untitled");
 			}
 		} else {
-			ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
-			ArrayList<String> newLine = new ArrayList<String>();
-			newLine.add("");
-			newLine.add("");
-			newLine.add("");
-			newLine.add("");
-			code.add(newLine);
-			setProgramCode(code);
+			loadNewProgram();
+			setFilename("Untitled");
 		}
+	}
+	
+	public void clearVisualisations() {
+		setProgramCode(null);
+		setFilename(null);
+		setXStack(null);
+		setYStack(null);
+		setAccStack(null);
+		setConsoleText(null);
+		setCarryFlag(false);
+		setZeroFlag(false);
+		setNegativeFlag(false);
+		setMemoryAllocation(null);
+		repaint();
+	}
+	
+	/**
+	 * Loads the input editor with an empty row.
+	 */
+	private void loadNewProgram() {
+		ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
+		ArrayList<String> newLine = new ArrayList<String>();
+		newLine.add("");
+		newLine.add("");
+		newLine.add("");
+		newLine.add("");
+		code.add(newLine);
+		setProgramCode(code);
 	}
 	
 	/**
@@ -1235,6 +1254,15 @@ public class Frame extends JFrame implements ViewInterface {
 		currentProgram = getProgramCode();
 	}
 	
+	public void setFilename(String filename) {
+		if (filename != null) {
+			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - "+filename);
+		} else {
+			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - Untitled");
+		}
+		repaint();
+	}
+	
 	/**
 	 * Change the application font size.
 	 * 
@@ -1251,32 +1279,44 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	@Override
 	public void setAccStack(ArrayList<String> values) {
-		ArrayList<String> temp = new ArrayList<String>(values);
-		Collections.reverse(temp);
-		String[] list = new String[temp.size()];
-		temp.toArray(list);
-		accRegister.setListData(list);
-		accRegister.setSelectedIndex(0);
+		if (values != null) {
+			ArrayList<String> temp = new ArrayList<String>(values);
+			Collections.reverse(temp);
+			String[] list = new String[temp.size()];
+			temp.toArray(list);
+			accRegister.setListData(list);
+			accRegister.setSelectedIndex(0);
+		} else {
+			accRegister.setListData(new String[0]);
+		}
 	}
 
 	@Override
 	public void setXStack(ArrayList<String> values) {
-		ArrayList<String> temp = new ArrayList<String>(values);
-		Collections.reverse(temp);
-		String[] list = new String[temp.size()];
-		temp.toArray(list);
-		xRegister.setListData(list);
-		xRegister.setSelectedIndex(0);
+		if (values != null) {
+			ArrayList<String> temp = new ArrayList<String>(values);
+			Collections.reverse(temp);
+			String[] list = new String[temp.size()];
+			temp.toArray(list);
+			xRegister.setListData(list);
+			xRegister.setSelectedIndex(0);
+		} else {
+			xRegister.setListData(new String[0]);
+		}
 	}
 
 	@Override
 	public void setYStack(ArrayList<String> values) {
-		ArrayList<String> temp = new ArrayList<String>(values);
-		Collections.reverse(temp);
-		String[] list = new String[temp.size()];
-		temp.toArray(list);
-		yRegister.setListData(list);
-		yRegister.setSelectedIndex(0);
+		if (values != null) {
+			ArrayList<String> temp = new ArrayList<String>(values);
+			Collections.reverse(temp);
+			String[] list = new String[temp.size()];
+			temp.toArray(list);
+			yRegister.setListData(list);
+			yRegister.setSelectedIndex(0);
+		} else {
+			yRegister.setListData(new String[0]);
+		}
 	}
 
 	@Override
@@ -1326,8 +1366,8 @@ public class Frame extends JFrame implements ViewInterface {
 
 	@Override
 	public void setConsoleText(ArrayList<String> text) {
+		txtConsole.setText("");
 		if (text != null) {
-			txtConsole.setText("");
 			for (int i = 0; i < text.size(); i++) {
 				txtConsole.setText(txtConsole.getText()+text.get(i)+System.getProperty("line.separator"));
 			}
@@ -1337,10 +1377,17 @@ public class Frame extends JFrame implements ViewInterface {
 	@Override
 	public void setMemoryAllocation(HashMap<String, String> values) {
 		DefaultTableModel mdlMemory = new DefaultTableModel();
-		for (Map.Entry<String, String> entry : values.entrySet()) {
-			mdlMemory.addColumn(entry.getKey(), new Object[]{entry.getValue()});
+		if (values != null) {
+			for (Map.Entry<String, String> entry : values.entrySet()) {
+				mdlMemory.addColumn(entry.getKey(), new Object[]{entry.getValue()});
+			}
+			tblMemory.setModel(mdlMemory);
+		} else {
+			for (int i = 0; i < 1024; i++) {
+				mdlMemory.addColumn(i, new Object[]{""});
+			}
+			tblMemory.setModel(mdlMemory);
 		}
-		tblMemory.setModel(mdlMemory);
 	}
 
 	@Override
@@ -1357,8 +1404,12 @@ public class Frame extends JFrame implements ViewInterface {
 	
 	@Override
 	public void setProgramCode(ArrayList<ArrayList<String>> program) {
-		currentProgram = program;
-		loadProgramCode(currentProgram);
+		if (program != null && program.size() > 0) {
+			currentProgram = program;
+			loadProgramCode(currentProgram);
+		} else {
+			loadNewProgram();
+		}
 	}
 
 	@Override

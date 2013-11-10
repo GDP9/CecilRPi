@@ -33,6 +33,13 @@ public interface ViewInterface {
 	public void setProgramCode(ArrayList<ArrayList<String>> program);
 	
 	/**
+	 * Set the filename of the current program.
+	 * 
+	 * @param filename Filename of current program.
+	 */
+	public void setFilename(String filename);
+	
+	/**
 	 * Set the values to be displayed in the accumulator register visualisation.
 	 * Uses an ArrayList to show the history of values from oldest to newest.
 	 * 
@@ -100,4 +107,9 @@ public interface ViewInterface {
 	 * @param isEnabled The state to be displayed.
 	 */
 	public void setButtonsEnabled(boolean isEnabled);
+	
+	/**
+	 * Clear all visualisation views of their current values.
+	 */
+	public void clearVisualisations();
 }
