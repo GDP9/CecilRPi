@@ -1,5 +1,7 @@
-  loa d1  
-  print   ;This is a sample comment
-  printch   ;This is a sample comment
+.start load num2  
+  add num2  
+  print    
+  printch    
   stop    
-.d1 insert 65  
+.num1 insert 63  
+.num2 insert 2  

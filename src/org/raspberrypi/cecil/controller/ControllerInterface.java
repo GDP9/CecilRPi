@@ -38,4 +38,11 @@ public interface ControllerInterface {
 	 * Notify the controller that a file has been opened.
 	 */
 	public void fileOpened(File file);
+	
+	/**
+	 * Notify the controller that the save button has been clicked.
+	 * 
+	 * @param code An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
+	 */
+	public void saveToFile(ArrayList<ArrayList<String>> code, String filename);
 }

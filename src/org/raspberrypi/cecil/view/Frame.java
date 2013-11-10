@@ -223,6 +223,12 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		menuSave = new JMenuItem("Save");
+		menuSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				onSaveClicked();
+			}
+		});
 		menuExit = new JMenuItem("Exit");
 		
 		fileMenu.add(menuOpen);
@@ -1083,16 +1089,29 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	private void onCompileClicked() {
 		setButtonsEnabled(false);
-		//TODO Remove empty lines?
+		controller.compileClicked(getProgramCode());
+	}
+	
+	/**
+	 * Retrieve the program code from the input editor
+	 * 
+	 * @return The code in the input editor
+	 */
+	private ArrayList<ArrayList<String>> getProgramCode() {
 		ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < tblInput.getRowCount(); i++) {
 			ArrayList<String> line = new ArrayList<String>();
 			for (int j = 1; j < tblInput.getColumnCount(); j++) {
-				line.add((String) tblInput.getValueAt(i, j));
+				String value = (String) tblInput.getValueAt(i, j);
+				if (value != null && !value.isEmpty()) {
+					line.add((String) value);
+				} else {
+					line.add(" ");
+				}
 			}
 			code.add(line);
 		}
-		controller.compileClicked(code);
+		return code;
 	}
 	
 	/**
@@ -1110,7 +1129,7 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 	
 	/**
-	 * Opens a JFileChooser dialog in which the user can open a .cecil file.
+	 * Opens a JFileChooser dialog to open a .cecil file.
 	 */
 	private void onOpenClicked() {
 		JFileChooser fileChooser = new JFileChooser();
@@ -1118,8 +1137,21 @@ public class Frame extends JFrame implements ViewInterface {
 		fileChooser.setFileFilter(filter);
 		int returnValue = fileChooser.showOpenDialog(this);
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			System.out.println(fileChooser.getSelectedFile().getName());
-			//TODO Send to model to parse
+			controller.fileOpened(fileChooser.getSelectedFile());
+		}
+	}
+	
+	/**
+	 * Opens a JFileChooser dialog to save to a .cecil file.
+	 */
+	private void onSaveClicked() {
+		ArrayList<ArrayList<String>> code = getProgramCode();
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
+		fileChooser.setFileFilter(filter);
+		int returnValue = fileChooser.showSaveDialog(this);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			controller.saveToFile(code, fileChooser.getSelectedFile().getAbsolutePath());
 		}
 	}
 	
