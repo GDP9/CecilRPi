@@ -166,6 +166,9 @@ public class Frame extends JFrame implements ViewInterface {
 		drawFrame();
 	}
 	
+	/**
+	 * 
+	 */
 	private void drawFrame() {
 		setupDefaultFrame();
 		setupColours();
@@ -173,6 +176,7 @@ public class Frame extends JFrame implements ViewInterface {
 		setupFlagIcons();
 		setupFonts(font1);
 		setupProgramCode();
+		repaint();
 		setVisible(true);
 	}
 
@@ -212,8 +216,11 @@ public class Frame extends JFrame implements ViewInterface {
 		JMenuItem iconItem = new JMenuItem();
 		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
 		iconItem.setIcon(icon);
-		iconItem.setMaximumSize(new Dimension(170, 120));
+		Dimension iconSize = new Dimension(170, 120);
+		iconItem.setMaximumSize(iconSize);
+		iconItem.setMinimumSize(iconSize);
 		menuBar.add(iconItem);
+		repaint();
 		
 		fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
@@ -528,7 +535,7 @@ public class Frame extends JFrame implements ViewInterface {
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(30);
 		
 		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
-		input = new JTextField();      
+		input = new JTextField();
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
        	aligncenter.setHorizontalAlignment(JLabel.CENTER);
        	tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
