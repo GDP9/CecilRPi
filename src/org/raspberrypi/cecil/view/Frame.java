@@ -212,6 +212,7 @@ public class Frame extends JFrame implements ViewInterface {
 		JMenuItem iconItem = new JMenuItem();
 		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
 		iconItem.setIcon(icon);
+		iconItem.setMaximumSize(new Dimension(170, 120));
 		menuBar.add(iconItem);
 		
 		fileMenu = new JMenu("File");
@@ -622,7 +623,17 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.setBackground(innerPanel);
 	}
 	
-	private void setupButtonIcons() {		
+	private void setupButtonIcons() {
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
+			menuOpen.setIcon(new ImageIcon(img));
+			
+			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
+			menuOpen.setRolloverIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		
 		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
