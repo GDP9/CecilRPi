@@ -18,8 +18,11 @@ import java.util.ArrayList;
  *  x-reg : 1027
  *  y-reg : 1028
  */
-public class Simulator {
+public class Simulator implements CecilOutputInterface {
 	
+	/*
+	 * View output variables
+	 */
 	private ArrayList<Integer> xReg;
 	private ArrayList<Integer> yReg;
 	private ArrayList<Integer> acc;
@@ -29,8 +32,11 @@ public class Simulator {
 	private ArrayList<String> output;
 	private boolean successCompile;
 	
-	static final int STATUS_ADDRESS = 1025;
+	/*
+	 * Model vaiables
+	 */
 	static final int PROGRAM_COUNTER = 1024;
+	static final int STATUS_ADDRESS = 1025;
 	static final int ACCUMULATOR_ADDRESS = 1026;
 	static final int XREG_ADDRESS = 1027;
 	static final int YREG_ADDRESS = 1028;
@@ -41,6 +47,26 @@ public class Simulator {
 	
 	public int[] memory = new int[MEMORY_LENGTH];
 	
+	/**
+	 * Constuctor: initialse memory to store -1
+	 */
+	public Simulator() {
+		for(int i = 0 ; i < MEMORY_LENGTH; i++)
+			memory[i] = -1;
+		
+		memory[STACK_PTR] = 908;
+		output = new ArrayList<String>();
+		
+		xReg = new ArrayList<Integer>();
+		yReg = new ArrayList<Integer>();
+		acc = new ArrayList<Integer>();
+		
+		zeroFlag = carryFlag = negativeFlag = false;
+	}
+	
+	/**
+	 * Method to update the view variables
+	 */
 	public void updateViewVars() {
 		
 		if(memory[XREG_ADDRESS] != -1)
@@ -64,63 +90,6 @@ public class Simulator {
 
 	}
 	
-	/**
-	 * Constuctor: initialse memory to store -1
-	 */
-	public Simulator() {
-		for(int i = 0 ; i < MEMORY_LENGTH; i++)
-			memory[i] = -1;
-		
-		memory[STACK_PTR] = 908;
-		output = new ArrayList<String>();
-		
-		xReg = new ArrayList<Integer>();
-		yReg = new ArrayList<Integer>();
-		acc = new ArrayList<Integer>();
-		
-		zeroFlag = carryFlag = negativeFlag = false;
-	}
-
-	public boolean isCarryFlag() {
-		return carryFlag;
-	}
-
-	public void setCarryFlag(boolean carryFlag) {
-		this.carryFlag = carryFlag;
-	}
-
-	public boolean isZeroFlag() {
-		return zeroFlag;
-	}
-
-	public void setZeroFlag(boolean zeroFlag) {
-		this.zeroFlag = zeroFlag;
-	}
-
-	public boolean isNegativeFlag() {
-		return negativeFlag;
-	}
-
-	public void setNegativeFlag(boolean negativeFlag) {
-		this.negativeFlag = negativeFlag;
-	}
-
-	public boolean isSuccessCompile() {
-		return this.successCompile;
-	}
-
-	public void setSuccessCompile(boolean successCompile) {
-		this.successCompile = successCompile;
-	}
-
-	public ArrayList<String> getOutput() {
-		return this.output;
-	}
-
-	public void setOutput(ArrayList<String> output) {
-		this.output = output;
-	}
-
 	/**
 	 * @return the xReg
 	 */
@@ -161,5 +130,82 @@ public class Simulator {
 	 */
 	public void setAcc(ArrayList<Integer> acc) {
 		this.acc = acc;
-	}	
+	}
+
+	/**
+	 * @return the carryFlag
+	 */
+	public boolean isCarryFlag() {
+		return carryFlag;
+	}
+
+	/**
+	 * @param carryFlag the carryFlag to set
+	 */
+	public void setCarryFlag(boolean carryFlag) {
+		this.carryFlag = carryFlag;
+	}
+
+	/**
+	 * @return the zeroFlag
+	 */
+	public boolean isZeroFlag() {
+		return zeroFlag;
+	}
+
+	/**
+	 * @param zeroFlag the zeroFlag to set
+	 */
+	public void setZeroFlag(boolean zeroFlag) {
+		this.zeroFlag = zeroFlag;
+	}
+
+	/**
+	 * @return the negativeFlag
+	 */
+	public boolean isNegativeFlag() {
+		return negativeFlag;
+	}
+
+	/**
+	 * @param negativeFlag the negativeFlag to set
+	 */
+	public void setNegativeFlag(boolean negativeFlag) {
+		this.negativeFlag = negativeFlag;
+	}
+
+	/**
+	 * @return the output
+	 */
+	public ArrayList<String> getOutput() {
+		return output;
+	}
+
+	/**
+	 * @param output the output to set
+	 */
+	public void setOutput(ArrayList<String> output) {
+		this.output = output;
+	}
+
+	/**
+	 * @return the successCompile
+	 */
+	public boolean isSuccessCompile() {
+		return successCompile;
+	}
+
+	/**
+	 * @param successCompile the successCompile to set
+	 */
+	public void setSuccessCompile(boolean successCompile) {
+		this.successCompile = successCompile;
+	}
+
+	/**
+	 * @return the memory
+	 */
+	public int[] getMemory() {
+		return memory;
+	}
 }

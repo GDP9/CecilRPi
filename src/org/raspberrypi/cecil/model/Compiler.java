@@ -51,7 +51,7 @@ public class Compiler {
 			
 			/* checking for stop instruction */
 			if(!parser.getInstructionfield().containsValue("stop")) {
-				sim40.getOutput().add("Program needs a stop instruction!");
+				sim40.getOutput().add("Program needs at least one stop instruction");
 			}
 			
 			if(sim40.getOutput().isEmpty()) {
