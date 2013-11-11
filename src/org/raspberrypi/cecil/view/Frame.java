@@ -530,19 +530,19 @@ public class Frame extends JFrame implements ViewInterface {
 		/*
 		 * Input editor
 		 */
-		final DefaultTableModel mdlInput = new DefaultTableModel();
+		final InputTableModel mdlInput = new InputTableModel();
 		mdlInput.addColumn("#");
 		mdlInput.addColumn("Label");
 		mdlInput.addColumn("Instruction");
 		mdlInput.addColumn("Data");
 		mdlInput.addColumn("Comments");
-		mdlInput.addRow(new Object[]{1,"","","",""});
+		mdlInput.addRow(new Object[]{0,"","","",""});
 		
 		tblInput = new JTable(mdlInput);
 		tblInput.getTableHeader().setReorderingAllowed(false);
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
-		tblInput.getColumnModel().getColumn(0).setMinWidth(30);
-		tblInput.getColumnModel().getColumn(0).setMaxWidth(30);
+		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
+		tblInput.getColumnModel().getColumn(0).setMaxWidth(35);
 		
 		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
 		input = new JTextField();
@@ -556,12 +556,24 @@ public class Frame extends JFrame implements ViewInterface {
        	tblInput.setFillsViewportHeight(true);
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (tblInput.getSelectedRow() + 1 == (tblInput.getRowCount())) {
-
-						mdlInput.addRow(new Object[] {tblInput.getSelectedRow()+2, "", "", "",""});
+				int selectedRow = tblInput.getSelectedRow();
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_ENTER:
+					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",""});
+					break;
+				case KeyEvent.VK_BACK_SPACE:
+					if (selectedRow > 0) {
+						mdlInput.removeRow(selectedRow);
+						tblInput.setRowSelectionInterval(selectedRow-1, selectedRow-1);
+						tblInput.getCellEditor().cancelCellEditing();
+					} else {
+						mdlInput.removeRow(selectedRow);
+						mdlInput.addRow(new Object[] {0, "", "", "", ""});
+						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
+						tblInput.getCellEditor().cancelCellEditing();
 					}
-				}
+					break;
+				} 
 			}
 
 			public void keyReleased(KeyEvent e) {}
@@ -1165,6 +1177,32 @@ public class Frame extends JFrame implements ViewInterface {
 			g2d.fillRect(0, 0, getWidth()-1,  getHeight()-1);
 		}
 	}
+	
+	/**
+	 * Custom DefaultTableModel class which displays the row numbers in the first column.
+	 * 
+	 * MIT Open Source License
+	 * @author Cathy Jin (cj8g10)
+	 * Southampton University, United Kingdom
+	 * @version 1.1
+	 * 
+	 * @date 11/11/2013
+	 *
+	 */
+	private class InputTableModel extends DefaultTableModel {
+		/**
+		 * Serial version UID to stop the warning.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public Object getValueAt(int row, int column) {
+			if (column == 0) {
+				return row;
+			}
+			return super.getValueAt(row, column);
+		}	
+	}
 
 	/**
 	 * Retrieves the program code from the input editor and passes it to the controller.
@@ -1286,7 +1324,7 @@ public class Frame extends JFrame implements ViewInterface {
 	 * @param program An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
 	 */
 	private void loadProgramCode(ArrayList<ArrayList<String>> program) {
-		DefaultTableModel model = (DefaultTableModel) tblInput.getModel();
+		InputTableModel model = (InputTableModel) tblInput.getModel();
 		model.setRowCount(0);
 		if (program != null && program.size() > 0) {
 			for (ArrayList<String> line : program) {
