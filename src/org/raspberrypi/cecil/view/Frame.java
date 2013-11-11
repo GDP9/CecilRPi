@@ -79,9 +79,7 @@ import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.pojo.Instruction;
 
 /**
- * Controller class for interfacing between the model and view.
- * This class creates an instance of the view (Frame) and model (Cecil) classes.
- * This class contains the main method.
+ * View class for creating and displaying the GUI and handling user inputs.
  * 
  * MIT Open Source License
  * @author Karishma Nune (kkn1g10), Cathy Jin (cj8g10)
@@ -94,6 +92,12 @@ import org.raspberrypi.cecil.pojo.Instruction;
 public class Frame extends JFrame implements ViewInterface {
 	private static final int WIDTH = 1100;
 	private static final int HEIGHT = 750;
+	
+	private static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
+	
+	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
+	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
+	private static final FontUIResource FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
 	
 	//Controller
 	private Controller controller;
@@ -155,31 +159,37 @@ public class Frame extends JFrame implements ViewInterface {
 	//Misc
 	private JTextField input;
 	private Java2sAutoComboBox comboBox;
-	private FontUIResource font1 = new FontUIResource("Arial", Font.PLAIN, 18);
+	private FontUIResource currentFont;
 	private ArrayList<ArrayList<String>> currentProgram;
+	private Color[] currentTheme;
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
 	public Frame(Controller controller) {
 		this.controller = controller;
+		currentTheme = ORANGE_THEME;
+		currentFont = FONT_MEDIUM;
 		drawFrame();
 	}
 	
 	/**
-	 * 
+	 * Draw the application GUI.
 	 */
 	private void drawFrame() {
 		setupDefaultFrame();
 		setupColours();
 		setupButtonIcons();
 		setupFlagIcons();
-		setupFonts(font1);
+		setupFonts();
 		setupProgramCode();
 		repaint();
 		setVisible(true);
 	}
 
+	/**
+	 * Setup the frame layout and contents.
+	 */
 	private void setupDefaultFrame() {
 		/*
 		 * Setup main frame and panels
@@ -589,12 +599,14 @@ public class Frame extends JFrame implements ViewInterface {
 		southPanel.add(memoryScroll);
 	}
 	
+	/**
+	 * Set the colours to the current theme.
+	 * A theme consists of three colours; background, highlight, and inner panel colours.
+	 */
 	private void setupColours() {
-		//Color background = new Color(248, 255, 125);
-		//Color highlight = new Color(66, 227, 77);
-		Color background = new Color(255, 230, 214);
-		Color highlight = new Color(255, 148, 82);
-		Color innerPanel = new Color(255, 255, 255);
+		Color background = currentTheme[0];
+		Color highlight = currentTheme[1];
+		Color inner = currentTheme[2];
 		getContentPane().setBackground(background);
 		menuBar.setColour(highlight);
 		LineBorder border = new LineBorder(highlight, 3, true);
@@ -609,38 +621,32 @@ public class Frame extends JFrame implements ViewInterface {
 		btnCompile.setBackground(background);
 		
 		registerPanel.setBackground(background);
-		xRegister.setBackground(innerPanel);
-		yRegister.setBackground(innerPanel);
-		accRegister.setBackground(innerPanel);
+		xRegister.setBackground(inner);
+		yRegister.setBackground(inner);
+		accRegister.setBackground(inner);
 		
 		accRegister.setSelectionBackground(highlight);
 		xRegister.setSelectionBackground(highlight);
 		yRegister.setSelectionBackground(highlight);
 
 		flagPanel.setBackground(background);
-		lblCarry.setBackground(innerPanel);
-		lblZero.setBackground(innerPanel);
-		lblNegative.setBackground(innerPanel);
+		lblCarry.setBackground(inner);
+		lblZero.setBackground(inner);
+		lblNegative.setBackground(inner);
 
 		consolePanel.setBackground(background);
-		txtConsole.setBackground(innerPanel);
+		txtConsole.setBackground(inner);
 
-		tblInput.setBackground(innerPanel);
+		tblInput.setBackground(inner);
 		tblInput.setSelectionBackground(highlight);
-		tblMemory.setBackground(innerPanel);
+		tblMemory.setBackground(inner);
 	}
 	
-	private void setupButtonIcons() {
-		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
-			menuOpen.setIcon(new ImageIcon(img));
-			
-			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
-			menuOpen.setRolloverIcon(new ImageIcon(img));
-		} catch (IOException e) {
-			System.out.println("Error creating buttons: could not set button icon");
-		}
-		
+	/**
+	 * Set the icons for the menu bar buttons and action buttons.
+	 * These icons change colour when hovered over.
+	 */
+	private void setupButtonIcons() {		
 		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
@@ -789,6 +795,10 @@ public class Frame extends JFrame implements ViewInterface {
 		});
 	}
 	
+	/**
+	 * Set the icons for the status flags.
+	 * These icons change colour depending on the flag state.
+	 */
 	private void setupFlagIcons() {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
@@ -812,59 +822,67 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 	
-	private void setupFonts(Font font) {
-		UIManager.put("ToolTip.font", new FontUIResource(font));
-        UIManager.put("Table.font", font);
+	/**
+	 * Set font of all text components.
+	 * The font sizes can be changed from small, medium, and large.
+	 */
+	private void setupFonts() {
+		UIManager.put("ToolTip.font", new FontUIResource(currentFont));
+        UIManager.put("Table.font", currentFont);
         
-		input.setFont(font);
-		comboBox.setFont(font);
+		input.setFont(currentFont);
+		comboBox.setFont(currentFont);
 		
-		btnCompile.setFont(font);
-		btnRun.setFont(font);
-		btnStepThrough.setFont(font);
+		btnCompile.setFont(currentFont);
+		btnRun.setFont(currentFont);
+		btnStepThrough.setFont(currentFont);
 		
-		fileMenu.setFont(font);
-		settingsMenu.setFont(font);
-		helpMenu.setFont(font);
-		menuNew.setFont(font);
-		menuOpen.setFont(font);
-		menuSave.setFont(font);
-		menuExit.setFont(font);
-		menuPreferences.setFont(font);
-		menuWelcome.setFont(font);
-		menuDocumentation.setFont(font);
-		menuAbout.setFont(font);
+		fileMenu.setFont(currentFont);
+		settingsMenu.setFont(currentFont);
+		helpMenu.setFont(currentFont);
+		menuNew.setFont(currentFont);
+		menuOpen.setFont(currentFont);
+		menuSave.setFont(currentFont);
+		menuExit.setFont(currentFont);
+		menuPreferences.setFont(currentFont);
+		menuWelcome.setFont(currentFont);
+		menuDocumentation.setFont(currentFont);
+		menuAbout.setFont(currentFont);
 		
-		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(font);
-		lblCarry.setFont(font);
-		lblZero.setFont(font);
-		lblNegative.setFont(font);
-		((TitledBorder)((CompoundBorder) registerPanel.getBorder()).getInsideBorder()).setTitleFont(font);
-		xRegister.setFont(font);
-		((TitledBorder)((CompoundBorder) xScroll.getBorder()).getInsideBorder()).setTitleFont(font);
-		yRegister.setFont(font);
-		((TitledBorder)((CompoundBorder) yScroll.getBorder()).getInsideBorder()).setTitleFont(font);	
-		accRegister.setFont(font);
-		((TitledBorder)((CompoundBorder) accScroll.getBorder()).getInsideBorder()).setTitleFont(font);
-		((TitledBorder)((CompoundBorder) consolePanel.getBorder()).getInsideBorder()).setTitleFont(font);
-		txtConsole.setFont(font);
-		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(font);
-		tblInput.getTableHeader().setFont(font);
+		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		lblCarry.setFont(currentFont);
+		lblZero.setFont(currentFont);
+		lblNegative.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) registerPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		xRegister.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) xScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		yRegister.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) yScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);	
+		accRegister.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) accScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		((TitledBorder)((CompoundBorder) consolePanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		txtConsole.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		tblInput.getTableHeader().setFont(currentFont);
 		tblInput.setRowHeight(40);
-		tblInput.setFont(font);
-		((TitledBorder)((CompoundBorder) southPanel.getBorder()).getInsideBorder()).setTitleFont(font);
-		tblMemory.getTableHeader().setFont(font);
-		tblMemory.setFont(font);
+		tblInput.setFont(currentFont);
+		((TitledBorder)((CompoundBorder) southPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		tblMemory.getTableHeader().setFont(currentFont);
+		tblMemory.setFont(currentFont);
 		tblMemory.setRowHeight(40);
 	}
 	
+	/**
+	 * Set the current program code to display in the input editor.
+	 */
 	private void setupProgramCode() {		
 		if (currentProgram != null && currentProgram.size() > 0) {
 			loadProgramCode(currentProgram);
 		}
 	}
 	
-	public void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
+	//TODO Javadocing needed
+	private void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
 		comboBox = new Java2sAutoComboBox(instructionList);
 		comboBox.setEditable(true);
 		ActionListener actionListener = new ActionListener() {
@@ -877,11 +895,13 @@ public class Frame extends JFrame implements ViewInterface {
 		instructionColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	}
 	
+	//TODO Javadocing needed?
 	static private String selectedString(ItemSelectable is) {
 		Object selected[] = is.getSelectedObjects();
 		return ((selected.length == 0) ? "null" : (String)selected[0]);
 	} 
-	 
+	
+	//TODO Javadocing needed
 	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			if (isSelected) {	
@@ -905,6 +925,7 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 	
+	//TODO Javadocing needed for everything in here
 	public class Java2sAutoTextField extends JTextField {
 		class AutoDocument extends PlainDocument {
 			public void replace(int i, int j, String s, AttributeSet attributeset) throws BadLocationException {
@@ -1036,6 +1057,7 @@ public class Frame extends JFrame implements ViewInterface {
 		private Java2sAutoComboBox autoComboBox;
 	}
 	
+	//TODO Javadocing needed
 	 /*JComboBox auto-complete*/
 	private class Java2sAutoComboBox extends JComboBox {
 		private class AutoTextFieldEditor extends BasicComboBoxEditor {
@@ -1108,8 +1130,30 @@ public class Frame extends JFrame implements ViewInterface {
 
 	}
 
-	public class BackgroundMenuBar extends JMenuBar {
+	/**
+	 * Custom JMenuBar class which allows the background colour to be changed.
+	 * Call setColour to change the background colour.
+	 * 
+	 * MIT Open Source License
+	 * @author Cathy Jin (cj8g10)
+	 * Southampton University, United Kingdom
+	 * @version 1.1
+	 * 
+	 * @date 07/11/2013
+	 *
+	 */
+	private class BackgroundMenuBar extends JMenuBar {
+		/**
+		 * Serial version UID to stop the warning.
+		 */
+		private static final long serialVersionUID = 1L;
 		private Color bgColour = Color.WHITE;
+		
+		/**
+		 * Set the background colour.
+		 * 
+		 * @param colour Background colour.
+		 */
 		public void setColour(Color colour) {
 			bgColour = colour;
 		}
@@ -1187,20 +1231,6 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 	
-	public void clearVisualisations() {
-		setProgramCode(null);
-		setFilename(null);
-		setXStack(null);
-		setYStack(null);
-		setAccStack(null);
-		setConsoleText(null);
-		setCarryFlag(false);
-		setZeroFlag(false);
-		setNegativeFlag(false);
-		setMemoryAllocation(null);
-		repaint();
-	}
-	
 	/**
 	 * Loads the input editor with an empty row.
 	 */
@@ -1272,15 +1302,6 @@ public class Frame extends JFrame implements ViewInterface {
 		currentProgram = getProgramCode();
 	}
 	
-	public void setFilename(String filename) {
-		if (filename != null) {
-			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - "+filename);
-		} else {
-			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - Untitled");
-		}
-		repaint();
-	}
-	
 	/**
 	 * Change the application font size.
 	 * 
@@ -1288,7 +1309,8 @@ public class Frame extends JFrame implements ViewInterface {
 	 * 
 	 */
 	public void setNewFont(Font font){
-		setupFonts(font);
+		currentFont = new FontUIResource(font);
+		setupFonts();
 	}
 
 	/*
@@ -1434,5 +1456,30 @@ public class Frame extends JFrame implements ViewInterface {
 	public void setButtonsEnabled(boolean enabled) {
 		btnRun.setEnabled(enabled);
 		btnStepThrough.setEnabled(enabled);
+	}
+	
+	@Override
+	public void clearVisualisations() {
+		setProgramCode(null);
+		setFilename(null);
+		setXStack(null);
+		setYStack(null);
+		setAccStack(null);
+		setConsoleText(null);
+		setCarryFlag(false);
+		setZeroFlag(false);
+		setNegativeFlag(false);
+		setMemoryAllocation(null);
+		repaint();
+	}
+	
+	@Override
+	public void setFilename(String filename) {
+		if (filename != null) {
+			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - "+filename);
+		} else {
+			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - Untitled");
+		}
+		repaint();
 	}
 }
