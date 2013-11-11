@@ -83,6 +83,15 @@ public class Compiler {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public CecilParser getParser() {
+		return parser;
+	}
+
+	
+	/**
+	 * 
 	 * @param memory
 	 * @param key
 	 * @return

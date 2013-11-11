@@ -1,14 +1,13 @@
+/**
+ * 
+ */
+
 package org.raspberrypi.cecil.model.test.junit;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import org.raspberrypi.cecil.model.Compiler;
 import org.raspberrypi.cecil.model.Model;
-import org.raspberrypi.cecil.model.Simulator;
-import org.raspberrypi.cecil.model.test.TestInput;
 import org.raspberrypi.cecil.pojo.Program;
 
 import org.junit.Test;
@@ -23,14 +22,24 @@ public class TestingCompiler {
 		Compiler c = getCorrect();
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), true);
+		for(String key : c.getParser().getDatafield().keySet()){
+			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),true);
+			org.junit.Assert.assertEquals((int)c.getSimulator().memory[c.getParser().getDatafield().get(key)],(int)c.getParser().getLabelfield().get(key));
+		}
+
 	}
-	
+
 	@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
+		for(String key : c.getParser().getDatafield().keySet()){
+			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),false);
+			org.junit.Assert.assertEquals(c.getSimulator().memory[c.getParser().getDatafield().get(key)], -1);
+			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(key));
+		}
 	}
-	
+
 	private Compiler getIncorrect(){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
@@ -54,24 +63,24 @@ public class TestingCompiler {
 		input.add(" ");
 		input.add(";This is a sample comment");
 		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(".d1");
-		input.add("insert");
-		input.add("65");
-		input.add(" ");
-		userinput.add(input);
+//		input  = new ArrayList<String>();
+//
+//		input.add(".d2");
+//		input.add("insert");
+//		input.add("65");
+//		input.add(" ");
+//		userinput.add(input);
 
 		Program program = new Program(userinput);
 		Model m = new Model();
-		
+
 		File sample  = m.programToFile(program, "sample.cecil");
 		Compiler c = new Compiler(sample.getAbsolutePath());
-		
+
 		return c;
-		
+
 	}
-	
+
 	private Compiler getCorrect(){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
@@ -112,113 +121,11 @@ public class TestingCompiler {
 
 		Program program = new Program(userinput);
 		Model m = new Model();
-		
+
 		File sample  = m.programToFile(program, "sample.cecil");
 		Compiler c = new Compiler(sample.getAbsolutePath());
-		
+
 		return c;
 	}
-	
-	/*public void testCompilerInputCorrect(){
-		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
-		ArrayList<String> input = new ArrayList<String>();
 
-		input.add(" ");
-		input.add("load");
-		input.add("d1");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("print");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("printch");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("stop");
-		input.add(" ");
-		input.add(" ");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(".d1");
-		input.add("insert");
-		input.add("65");
-		input.add(" ");
-		userinput.add(input);
-
-		String sample = new String();
-		for(ArrayList<String> a: userinput)
-			for(int i=0; i<a.size();i++) {
-				sample += a.get(i) + " ";
-			}
-
-
-		File samplefile = new File("sample.cecil");
-		FileWriter fw;
-		try {
-			fw = new FileWriter(samplefile.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(sample);
-			bw.close();
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		assertEquals("C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\sample.cecil",samplefile.getAbsolutePath());	
-	}
-
-	public void testCompilerStop(){
-		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
-		ArrayList<String> input = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("load");
-		input.add("d1");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("print");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("printch");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("stop");
-		input.add(" ");
-		input.add(" ");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(".d1");
-		input.add("insert");
-		input.add("65");
-		input.add(" ");
-		userinput.add(input);
-
-		
-	
-		assertEquals(true,c.getInstructionField().containsValue("stop"));	
-	}*/
 }
