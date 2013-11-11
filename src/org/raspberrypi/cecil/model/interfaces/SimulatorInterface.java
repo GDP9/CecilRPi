@@ -1,14 +1,15 @@
-package org.raspberrypi.cecil.model;
+package org.raspberrypi.cecil.model.interfaces;
 
 import java.util.ArrayList;
 
 /**
  * This class limits the access to the Simulator and allows only the getters to be 
  * invoked from the view/controller
+ * 
  * @author sa10g10
  *
  */
-public interface CecilOutputInterface {
+public interface SimulatorInterface {
 
 	public boolean isCarryFlag();
 	public boolean isZeroFlag();

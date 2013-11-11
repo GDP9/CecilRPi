@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.model.test;
+package org.raspberrypi.cecil.model.test.manual;
 
 import java.io.BufferedWriter;
 import java.io.File;

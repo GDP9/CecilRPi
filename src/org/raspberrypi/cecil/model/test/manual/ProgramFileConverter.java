@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.raspberrypi.cecil.model.test;
+package org.raspberrypi.cecil.model.test.manual;
 
 import java.io.BufferedReader;
 import java.io.File;

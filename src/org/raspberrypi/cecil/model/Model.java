@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.pojo.Instruction;
 import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
@@ -25,7 +26,7 @@ public class Model implements ModelInterface {
 	private Compiler compiler;
 	private Runner runner;
 	private static int ptr;
-
+	
 	/**
 	 * Default model constructor
 	 */
@@ -40,7 +41,6 @@ public class Model implements ModelInterface {
 	 */
 	@Override
 	public ArrayList<Instruction> getInstructions() {
-		
 		return (new InstructionList()).getInstructions();
 	}
 
@@ -61,8 +61,8 @@ public class Model implements ModelInterface {
 	}
 
 	@Override
-	public void compile(Program program) {
-		File file = programToFile(program, "sample.cecil");
+	public void compile(Program program) {	
+		File file = programToFile(program, "temp.cecil");
 		
 		compiler = new Compiler(file.getAbsolutePath());
 		sim40 = compiler.getSimulator();
@@ -81,8 +81,14 @@ public class Model implements ModelInterface {
 		File file = new File(fileName);
 		
 		/* Formatting input */
-		for(ArrayList<String> a: program.getProgramStatements()) {
+		for(int line = 0; line < program.getProgramStatements().size(); line++) {
+			ArrayList<String> a = program.getProgramStatements().get(line);
+			
+			/* Generate the input file string */
 			input += a.get(0) + " " + a.get(1) + " " + a.get(2) + " " + a.get(3) + "\n";
+			
+			/* Save the instruction corresponding to the line number */
+			sim40.getInstructionLineNumber().put(line, a.get(1));
 		}
 
 		/* Writing to file */

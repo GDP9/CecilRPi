@@ -1,6 +1,9 @@
 package org.raspberrypi.cecil.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
 
 /**
  * CECIL assembly language Memory Model - Static final variables declaration
@@ -18,7 +21,7 @@ import java.util.ArrayList;
  *  x-reg : 1027
  *  y-reg : 1028
  */
-public class Simulator implements CecilOutputInterface {
+public class Simulator implements SimulatorInterface {
 	
 	/*
 	 * View output variables
@@ -31,9 +34,10 @@ public class Simulator implements CecilOutputInterface {
 	private boolean negativeFlag;
 	private ArrayList<String> output;
 	private boolean successCompile;
+	private HashMap<Integer, String> instructionLine;
 	
 	/*
-	 * Model vaiables
+	 * Model variables
 	 */
 	static final int PROGRAM_COUNTER = 1024;
 	static final int STATUS_ADDRESS = 1025;
@@ -207,5 +211,12 @@ public class Simulator implements CecilOutputInterface {
 	 */
 	public int[] getMemory() {
 		return memory;
+	}
+
+	/**
+	 * @return the instructionLine
+	 */
+	public HashMap<Integer, String> getInstructionLineNumber() {
+		return instructionLine;
 	}
 }

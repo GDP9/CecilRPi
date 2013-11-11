@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.raspberrypi.cecil.model.test;
+package org.raspberrypi.cecil.model.test.manual;
 
 import java.util.ArrayList;
 
@@ -78,12 +78,12 @@ public class TestInput {
 		incorrectInput.add(input);
 		input  = new ArrayList<String>();
 
-		input.add(" ");
-		input.add("stop");
-		input.add(" ");
-		input.add(" ");
-		incorrectInput.add(input);
-		input  = new ArrayList<String>();
+//		input.add(" ");
+//		input.add("stop");
+//		input.add(" ");
+//		input.add(" ");
+//		incorrectInput.add(input);
+//		input  = new ArrayList<String>();
 
 		input.add(".d1");
 		input.add("insert");

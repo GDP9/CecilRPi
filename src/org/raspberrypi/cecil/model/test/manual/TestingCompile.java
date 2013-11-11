@@ -1,4 +1,4 @@
-package org.raspberrypi.cecil.model.test;
+package org.raspberrypi.cecil.model.test.manual;
 
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.model.Simulator;
