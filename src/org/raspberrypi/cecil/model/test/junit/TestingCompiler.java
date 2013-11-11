@@ -20,23 +20,59 @@ public class TestingCompiler {
 
 	@Test
 	public void compiles(){
-		Compiler c = correctInput();
+		Compiler c = getCorrect();
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
-		System.out.println(c.getSimulator().isSuccessCompile());
-		//org.junit.Assert.assertEquals(c.getSimulator().getOutput(), 10);
+		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), true);
 	}
 	
 	@Test
 	public void doesntCompile(){
-
+		Compiler c = getIncorrect();
+		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
 	}
 	
-	private Compiler incorrectInput(){
-		return null;
+	private Compiler getIncorrect(){
+		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
+		ArrayList<String> input = new ArrayList<String>();
+
+		input.add(" ");
+		input.add("load");
+		input.add("d1");
+		input.add(";This is a sample comment");
+		userinput.add(input);
+		input  = new ArrayList<String>();
+
+		input.add(" ");
+		input.add("print");
+		input.add(" ");
+		input.add(";This is a sample comment");
+		userinput.add(input);
+		input  = new ArrayList<String>();
+
+		input.add(" ");
+		input.add("printch");
+		input.add(" ");
+		input.add(";This is a sample comment");
+		userinput.add(input);
+		input  = new ArrayList<String>();
+
+		input.add(".d1");
+		input.add("insert");
+		input.add("65");
+		input.add(" ");
+		userinput.add(input);
+
+		Program program = new Program(userinput);
+		Model m = new Model();
+		
+		File sample  = m.programToFile(program, "sample.cecil");
+		Compiler c = new Compiler(sample.getAbsolutePath());
+		
+		return c;
 		
 	}
 	
-	private Compiler correctInput(){
+	private Compiler getCorrect(){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
