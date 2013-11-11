@@ -13,8 +13,7 @@ public class FontChooser extends JDialog{
 
 
 JComboBox fontName;
-JCheckBox fontBold, fontItalic;
-JTextField fontSize;
+JComboBox fontSize;
 JLabel sampleText;
 public Font newFont;
 Color newColor;
@@ -37,6 +36,7 @@ public FontChooser(Frame frame) {
 
  Container c = getContentPane();
  c.setLayout(new GridBagLayout());
+ c.setBackground(new Color(255,230,214));
  
  JPanel fontPanel = new JPanel();
  fontName = new JComboBox(new String[] {"TimesRoman", 
@@ -47,35 +47,22 @@ public FontChooser(Frame frame) {
 		    updateFont();
 		   }
 		 });
- fontSize = new JTextField("12", 4);
- fontSize.setHorizontalAlignment(SwingConstants.RIGHT);
+ fontSize = new JComboBox(new String[] {"Small", 
+	       "Medium", "Large"});
  fontSize.addActionListener(new ActionListener() {
 	   public void actionPerformed(ActionEvent ae) {
 		    updateFont();
 		   }
 		 });
- fontBold = new JCheckBox("Bold");
- fontBold.setSelected(true);
- fontBold.addActionListener(new ActionListener() {
-	   public void actionPerformed(ActionEvent ae) {
-		    updateFont();
-		   }
-		 });
- fontItalic = new JCheckBox("Italic");
- fontItalic.addActionListener(new ActionListener() {
-	   public void actionPerformed(ActionEvent ae) {
-		    updateFont();
-		   }
-		 });
-
+ 
+//Color(255,230,214)
+fontPanel.setBackground(new Color(255,148,82));				 
  fontPanel.add(fontName);
  fontPanel.add(new JLabel(" Size: "));
  fontPanel.add(fontSize);
- fontPanel.add(fontBold);
- fontPanel.add(fontItalic);
 
  JPanel fontPreview = new JPanel(new GridBagLayout());
- 
+ fontPreview.setBackground(new Color(255,148,82));
  sampleText = new JLabel("The Text looks like this");
 sampleText.setFont(new Font("Courier", Font.BOLD, 12));
 GridBagConstraints gbc_fontPanel = new GridBagConstraints();
@@ -84,7 +71,7 @@ gbc_fontPanel.gridx = 0;
 gbc_fontPanel.gridy = 0;
 gbc_fontPanel.weightx = 1;
 gbc_fontPanel.weighty = 0;
-fontPreview.add(fontPanel, gbc_fontPanel);
+fontPreview.add(fontPanel, gbc_fontPanel); 
 
 GridBagConstraints gbc_fontlabel = new GridBagConstraints();
 gbc_fontlabel.fill = GridBagConstraints.RELATIVE;
@@ -97,7 +84,7 @@ fontPreview.add(sampleText, gbc_fontlabel);
 
 colourName = new JComboBox(new String[] {"Pink", 
        "Orange", "Green"});
-colourName.setSelectedIndex(2);
+colourName.setSelectedIndex(1);
 colourName.addActionListener(new ActionListener() {
 	   public void actionPerformed(ActionEvent ae) {
 		      updateColour();
@@ -105,7 +92,7 @@ colourName.addActionListener(new ActionListener() {
 		 });
 JPanel colourPreview = new JPanel(new BorderLayout());
 image = new JTextArea();
-image.setBackground(Color.GREEN);
+image.setBackground(Color.ORANGE);
 colourPreview.add(colourName, BorderLayout.NORTH);
 colourPreview.add(image, BorderLayout.CENTER);
 
@@ -146,6 +133,7 @@ c.add(fontPreview, gbc_font);
  JPanel controlPanel = new JPanel();
  controlPanel.add(okButton);
  controlPanel.add(cancelButton);
+ controlPanel.setBackground(new Color(255,230,214));
  GridBagConstraints gbc_buttons = new GridBagConstraints();
  gbc_buttons.fill = GridBagConstraints.REMAINDER;
  gbc_buttons.gridx = 0;
@@ -160,12 +148,17 @@ c.add(fontPreview, gbc_font);
 protected void updateFont() {
 	
  String name = fontName.getSelectedItem().toString();
- boolean bold = fontBold.isSelected();
- boolean ital = fontItalic.isSelected();
- int size = Integer.parseInt(fontSize.getText());
-
- Font f = new Font(name, (bold ? Font.BOLD : 0) +
-                         (ital ? Font.ITALIC : 0), size);
+ int size = 16;
+ if(fontSize.getSelectedItem().toString()=="Small"){
+ size = 14;
+ }
+ else if(fontSize.getSelectedItem().toString()=="Medium"){
+	 size = 18;
+	 }
+ else if(fontSize.getSelectedItem().toString()=="Large"){
+	 size = 22;
+	 }
+ Font f = new Font(name, Font.PLAIN, size);
  sampleText.setFont(f);
  newFont = sampleText.getFont(); 
 }
