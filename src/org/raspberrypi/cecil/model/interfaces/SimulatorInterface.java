@@ -15,7 +15,6 @@ public interface SimulatorInterface {
 	public boolean isZeroFlag();
 	public boolean isNegativeFlag();
 	public boolean isSuccessCompile();
-	public ArrayList<String> getOutput();
 	public ArrayList<Integer> getxReg();
 	public ArrayList<Integer> getyReg();
 	public ArrayList<Integer> getAcc();

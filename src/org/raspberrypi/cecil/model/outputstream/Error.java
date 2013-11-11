@@ -13,6 +13,11 @@ public class Error {
 	private int line;
 	private String message;
 	
+	public Error(int line, String message){
+		this.line=line;
+		this.message = message;
+	}
+	
 	/**
 	 * @return the line
 	 */

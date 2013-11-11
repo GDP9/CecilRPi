@@ -16,8 +16,8 @@ public class StandardOutputStream {
 	/**
 	 * @param output
 	 */
-	public StandardOutputStream(ArrayList<String> output) {
-		this.output = output;
+	public StandardOutputStream() {
+		this.output = new ArrayList<String>();
 	}
 
 	/**

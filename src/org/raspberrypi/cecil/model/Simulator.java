@@ -32,7 +32,6 @@ public class Simulator implements SimulatorInterface {
 	private boolean carryFlag;
 	private boolean zeroFlag;
 	private boolean negativeFlag;
-	private ArrayList<String> output;
 	private boolean successCompile;
 	private HashMap<Integer, String> instructionLine;
 	
@@ -59,7 +58,6 @@ public class Simulator implements SimulatorInterface {
 			memory[i] = -1;
 		
 		memory[STACK_PTR] = 908;
-		output = new ArrayList<String>();
 		
 		xReg = new ArrayList<Integer>();
 		yReg = new ArrayList<Integer>();
@@ -176,20 +174,6 @@ public class Simulator implements SimulatorInterface {
 	 */
 	public void setNegativeFlag(boolean negativeFlag) {
 		this.negativeFlag = negativeFlag;
-	}
-
-	/**
-	 * @return the output
-	 */
-	public ArrayList<String> getOutput() {
-		return output;
-	}
-
-	/**
-	 * @param output the output to set
-	 */
-	public void setOutput(ArrayList<String> output) {
-		this.output = output;
 	}
 
 	/**

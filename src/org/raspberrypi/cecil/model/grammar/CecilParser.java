@@ -4,6 +4,8 @@
   import java.util.HashMap;
   import java.util.ArrayList;
   import org.raspberrypi.cecil.model.*;
+  import org.raspberrypi.cecil.model.outputstream.*;
+import org.raspberrypi.cecil.model.outputstream.Error;
   import org.raspberrypi.cecil.pojo.*;
 
 
@@ -116,12 +118,12 @@ public class CecilParser extends Parser {
 	    private HashMap<String, Integer> labelfield;
 	    private HashMap<Integer, String> instructionfield;
 	    
-	    private List<String> output;
+	    private ErrorOutputStream stream;
 	    
 	    /*
 	    * Method to be invoked before call to .program method
 	    */
-	    public void initialse() {
+	    public void initialise() {
 	      pointer = 0;
 	      
 	      sim40 = new Simulator();
@@ -130,13 +132,18 @@ public class CecilParser extends Parser {
 	      labelfield = new HashMap<String, Integer>();
 	      instructionfield = new HashMap<Integer, String>();
 	      
-	      output = sim40.getOutput();
+	      stream = new ErrorOutputStream();
 	      instructionList = new InstructionList();
 	    }
 	    
 	    /* Getter for Simulator Model */
 	    public Simulator getSimulator() {
 	      return this.sim40;
+	    }
+	    
+	    /* Getter for ErrorOutputStream stream */
+	    public ErrorOutputStream getErrorStream() {
+	      return this.stream;
 	    }
 	    
 	    /* Getters for fields */
@@ -148,11 +155,8 @@ public class CecilParser extends Parser {
 	    * Implicitly invoked by the parser. The error is appended in the output console. 
 	    */
 	    @Override
-	    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-	        String error = "Error:"+e.line +" unrecognised token "+ e.token;
-	        //String msg = getErrorMessage(e, tokenNames);
-	        
-	        this.output.add(error);
+	    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {        
+	        this.stream.getErrors().add(new Error(e.line, " unrecognised token " + e.token));
 	    }
 
 

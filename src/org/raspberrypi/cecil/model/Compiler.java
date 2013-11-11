@@ -8,6 +8,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.raspberrypi.cecil.model.grammar.CecilLexer;
 import org.raspberrypi.cecil.model.grammar.CecilParser;
+import org.raspberrypi.cecil.model.outputstream.Error;
+import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
+import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 
 /**
  * CECIL assembly language Compiler
@@ -24,6 +27,8 @@ public class Compiler {
 	
 	private CecilParser parser;
 	private Simulator sim40;
+	private StandardOutputStream stdStream;
+	private ErrorOutputStream errorStream;
 	
 	/**
 	 * Parametric Constructor
@@ -34,9 +39,11 @@ public class Compiler {
 			CommonTokenStream tokens  =  new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath)));
 			
 			this.parser = new CecilParser(tokens);
-			this.parser.initialse();
-			
+			this.parser.initialise();
 			this.sim40 = parser.getSimulator();
+			
+			stdStream = new StandardOutputStream();
+			errorStream = new ErrorOutputStream();
 
 			/* Parsing */
 			parser.program();
@@ -46,7 +53,7 @@ public class Compiler {
 				if(parser.getLabelfield().keySet().contains(key)) 
 					sim40.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
 			
-				else sim40.getOutput().add("Error, Label not found");
+				else errorStream.getErrors().add(new Error(sim40.getInstructionLineNumber().g, "Error, label matching datafield not found"));
 			}
 			
 			/* checking for stop instruction */
