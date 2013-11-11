@@ -1,21 +1,3 @@
-/**
-*
-* CECIL Compiler JUnit tests.
-* Performs JUnit assertion tests to Compiler.
-* Takes correct and incorrect input.
-*
-* The MIT License (MIT)
-* Copyright (c) 2013 Southampton University group GDP9
-*
-* 
-* @authors Carolina Ferreira (cf4g09)
-* Southampton University, United Kingdom
-* @version 1.1
-* 
-* @date 11/11/2013
-*
-*/
-
 package org.raspberrypi.cecil.model.test.junit;
 
 import java.io.File;
@@ -28,9 +10,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+
+/**
+*
+* CECIL Compiler JUnit tests.
+* Performs JUnit assertion tests to Compiler.
+* Takes correct and incorrect input.
+* Uses JUnit4.
+*
+* The MIT License (MIT)
+* Copyright (c) 2013 Southampton University group GDP9
+*
+* 
+* @authors Carolina Ferreira (cf4g09)
+* Southampton University, United Kingdom
+* @version 1.1
+* 
+* @date 11/11/2013
+*
+*/
 @RunWith (JUnit4.class)
 public class TestingCompiler {
 
+	/**
+	 * Set of tests which compile correctly.
+	 */
 	@Test
 	public void compiles(){
 		Compiler c = getCorrect();
@@ -43,6 +47,9 @@ public class TestingCompiler {
 
 	}
 
+	/**
+	 * Set of tests which do not compile.
+	 */
 	@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
@@ -55,6 +62,10 @@ public class TestingCompiler {
 		}
 	}
 
+	/**
+	 * Incorrect input used in compiler test.
+	 * @return Compiler object using incorrect input
+	 */
 	private Compiler getIncorrect(){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
@@ -96,6 +107,10 @@ public class TestingCompiler {
 
 	}
 
+	/**
+	 * Correct input used in compiler test.
+	 * @return Compiler object using correct input
+	 */
 	private Compiler getCorrect(){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
