@@ -1,20 +1,33 @@
-/**
- * 
- */
 package org.raspberrypi.cecil.pojo;
-
 import java.util.ArrayList;
 
 /**
- * @author Shreeprabha
- *
- */
+*
+* CECIL assembly language instructions list.
+* CECIL instructions list is created in this class.
+* This list constitutes data on the name, description of CECIL instructions and their respective machine code (mnemonic).
+* Supplies the necessary information for the instructions tool tips employed by the interface. 
+*
+* The MIT License (MIT)
+* Copyright (c) 2013 Southampton University group GDP9
+* 
+* @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+* Southampton University, United Kingdom
+* @version 1.1
+* 
+* @date 09/11/2013
+*  
+*/
 public class InstructionList {
 
 	private static ArrayList<Instruction> instructions;
 	
 	/**
-	 * Instantiating InstructionList
+	 * InstructionList Constructor.
+	 * Initiates the Instruction list and adds the necessary data:
+	 * 	- instruction name
+	 *  - instruction description
+	 * 	- instruction machine code (mnemonic)
 	 */
 	public InstructionList() {
 		instructions = new ArrayList<Instruction>();
@@ -70,18 +83,17 @@ public class InstructionList {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns the instructions object list constructed.
+	 * @return ArrayList<Instruction> instructions
 	 */
 	public ArrayList<Instruction> getInstructions() {
 		return instructions;
 	}
 	
 	/**
-	 * Return the machine code of the given instruction
-	 * 
-	 * @param name
-	 * @return
+	 * Returns the machine code of the given instruction.
+	 * @param instruction name
+	 * @return instruction mnemonic
 	 */
 	public int instructionToMnemonic(String name) {
 		for(Instruction i: instructions) {

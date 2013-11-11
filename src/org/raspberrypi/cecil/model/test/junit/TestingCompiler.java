@@ -1,6 +1,20 @@
 /**
- * 
- */
+*
+* CECIL Compiler JUnit tests.
+* Performs JUnit assertion tests to Compiler.
+* Takes correct and incorrect input.
+*
+* The MIT License (MIT)
+* Copyright (c) 2013 Southampton University group GDP9
+*
+* 
+* @authors Carolina Ferreira (cf4g09)
+* Southampton University, United Kingdom
+* @version 1.1
+* 
+* @date 11/11/2013
+*
+*/
 
 package org.raspberrypi.cecil.model.test.junit;
 
@@ -20,8 +34,8 @@ public class TestingCompiler {
 	@Test
 	public void compiles(){
 		Compiler c = getCorrect();
-		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), true);
+		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 		for(String key : c.getParser().getDatafield().keySet()){
 			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),true);
 			org.junit.Assert.assertEquals((int)c.getSimulator().memory[c.getParser().getDatafield().get(key)],(int)c.getParser().getLabelfield().get(key));
@@ -32,6 +46,7 @@ public class TestingCompiler {
 	@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
+		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), false);
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
 		for(String key : c.getParser().getDatafield().keySet()){
 			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),false);
