@@ -92,7 +92,7 @@ options {
  * Reserved Keywords: all-instructions
  */
 program 
-  : instruction*
+  : '.start' instruction*
   ;
 
 instruction 
