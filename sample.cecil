@@ -1,4 +1,0 @@
-  load d1  
-  print   ;This is a sample comment
-  printch   ;This is a sample comment
-.d1 insert 65  

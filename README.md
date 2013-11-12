@@ -1,8 +1,6 @@
 CecilRPi
 =========================================
 Description:
-Cecil based Raspberry Pi framework
-=========================================
 Cecil is designed to be the assembly language for a virtual processor called SIM. 
 We are developing a grammar for it including a lexer, parser and compiler.
 Its virtual machine has its own memory and I/O ports. 
@@ -12,6 +10,9 @@ These can be used to create more complicated sub-routines like loops and if-else
 This is particularly useful to understand how the machine breaks down a seemingly atomic for-loop statement into multiple operations. 
 To add a fun element, we are also going to add an interactive LED display by using the physical GPIO ports on the PI. 
 They will depict the value at the current memory location.
+
+Cecil based Raspberry Pi framework
+=========================================
 
 Basic GitHub Shell commands for Developers: 
 
