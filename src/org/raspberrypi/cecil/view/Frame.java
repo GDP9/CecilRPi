@@ -562,9 +562,24 @@ public class Frame extends JFrame implements ViewInterface {
 		mdlInput.addColumn("Instruction");
 		mdlInput.addColumn("Data");
 		mdlInput.addColumn("Comments");
-		mdlInput.addRow(new Object[]{0,"","","",""});
+		mdlInput.addRow(new Object[]{0,"","","",";"});
 		
-		tblInput = new JTable(mdlInput);
+		tblInput = new JTable(mdlInput) {
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void changeSelection(int row, int column, boolean toggle, boolean extend) {
+				super.changeSelection(row, column, toggle, extend);
+				
+				if (editCellAt(row, column)) {
+					Component editor = getEditorComponent();
+					editor.requestFocusInWindow();
+				}
+			}
+		};
 		tblInput.getTableHeader().setReorderingAllowed(false);
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
 		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
@@ -615,6 +630,8 @@ public class Frame extends JFrame implements ViewInterface {
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				int selectedRow = tblInput.getSelectedRow();
+				int selectedColumn = tblInput.getSelectedColumn();
+				
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_ENTER:
 					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",";"});
@@ -633,6 +650,14 @@ public class Frame extends JFrame implements ViewInterface {
 						mdlInput.removeRow(selectedRow);
 						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
 						tblInput.getCellEditor().cancelCellEditing();
+					}
+					break;
+				case KeyEvent.VK_TAB:
+					if (selectedColumn == 1) {
+						System.out.println("Hello");
+						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
+						tblInput.setColumnSelectionInterval(selectedColumn, selectedColumn);
+						tblInput.requestFocus();
 					}
 					break;
 				}
@@ -1177,7 +1202,7 @@ public class Frame extends JFrame implements ViewInterface {
 		newLine.add("");
 		newLine.add("");
 		newLine.add("");
-		newLine.add("");
+		newLine.add(";");
 		code.add(newLine);
 		setProgramCode(code);
 	}
