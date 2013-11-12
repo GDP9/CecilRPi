@@ -69,6 +69,7 @@ import java.io.IOException;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -93,8 +94,8 @@ public class Frame extends JFrame implements ViewInterface {
 	
 	private static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
 	private static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
-	private static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(119, 255, 77),new Color(255, 255, 255)};
-	private static final Color[] Default_THEME = {new Color(224, 224, 224), new Color(224, 224, 224), new Color(224, 224, 224)};
+	private static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
+	private static final Color[] DEFAULT_THEME = null;
 	
 	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
@@ -560,16 +561,20 @@ public class Frame extends JFrame implements ViewInterface {
 				int selectedRow = tblInput.getSelectedRow();
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_ENTER:
-					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",""});
+					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",";"});
 					break;
 				case KeyEvent.VK_BACK_SPACE:
 					if (selectedRow > 0) {
 						mdlInput.removeRow(selectedRow);
 						tblInput.setRowSelectionInterval(selectedRow-1, selectedRow-1);
 						tblInput.getCellEditor().cancelCellEditing();
-					} else {
+					} else if (selectedRow == 0 && selectedRow+1 == tblInput.getRowCount()){
 						mdlInput.removeRow(selectedRow);
-						mdlInput.addRow(new Object[] {0, "", "", "", ""});
+						mdlInput.addRow(new Object[] {0, "", "", "", ";"});
+						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
+						tblInput.getCellEditor().cancelCellEditing();
+					} else if (selectedRow == 0 && selectedRow+1 < tblInput.getRowCount()) {
+						mdlInput.removeRow(selectedRow);
 						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
 						tblInput.getCellEditor().cancelCellEditing();
 					}
@@ -618,47 +623,73 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	private void setupColours() {
 		if (currentTheme != null && currentTheme[0] != null && currentTheme[1] != null && currentTheme[2] != null) {
-			   Color background = currentTheme[0];
-			   Color highlight = currentTheme[1];
-			   Color inner = currentTheme[2];
-			   getContentPane().setBackground(background);
-			   menuBar.setColour(highlight);
-			   LineBorder border = new LineBorder(highlight, 3, true);
-			   UIManager.put("TitledBorder.border", border);
-			   UIManager.put("Label.disabledForeground", Color.BLACK);
-			   
-			   northPanel.setBackground(background);
-			   centerLeftPanel.setBackground(background);
-			   centerRightPanel.setBackground(background);
-			   southPanel.setBackground(background);
-			 
-			   btnCompile.setBackground(background);
-			   
-			   registerPanel.setBackground(background);
-			   xRegister.setBackground(inner);
-			   yRegister.setBackground(inner);
-			   accRegister.setBackground(inner);
-			   
-			   accRegister.setSelectionBackground(highlight);
-			   xRegister.setSelectionBackground(highlight);
-			   yRegister.setSelectionBackground(highlight);
-			 
-			   flagPanel.setBackground(background);
-			   lblCarry.setBackground(inner);
-			   lblZero.setBackground(inner);
-			   lblNegative.setBackground(inner);
-			 
-			   consolePanel.setBackground(background);
-			   txtConsole.setBackground(inner);
-			 
-			   tblInput.setBackground(inner);
-			   tblInput.setSelectionBackground(highlight);
-			   tblMemory.setBackground(inner);
-			  }
-		else{
-		
+			Color background = currentTheme[0];
+			Color highlight = currentTheme[1];
+			Color inner = currentTheme[2];
+			getContentPane().setBackground(background);
+			menuBar.setColour(highlight);
+			LineBorder border = new LineBorder(highlight, 3, true);
+			UIManager.put("TitledBorder.border", border);
+			UIManager.put("Label.disabledForeground", Color.BLACK);
+
+			northPanel.setBackground(background);
+			centerLeftPanel.setBackground(background);
+			centerRightPanel.setBackground(background);
+			southPanel.setBackground(background);
+
+			registerPanel.setBackground(background);
+			xRegister.setBackground(inner);
+			yRegister.setBackground(inner);
+			accRegister.setBackground(inner);
+
+			accRegister.setSelectionBackground(highlight);
+			xRegister.setSelectionBackground(highlight);
+			yRegister.setSelectionBackground(highlight);
+
+			flagPanel.setBackground(background);
+			lblCarry.setBackground(inner);
+			lblZero.setBackground(inner);
+			lblNegative.setBackground(inner);
+
+			consolePanel.setBackground(background);
+			txtConsole.setBackground(inner);
+
+			tblInput.setBackground(inner);
+			tblInput.setSelectionBackground(highlight);
+			tblMemory.setBackground(inner);
+		} else {
+			getContentPane().setBackground(UIManager.getColor("Panel.background"));
+			menuBar.setColour(UIManager.getColor("Panel.background"));
+			EtchedBorder border = new EtchedBorder();
+			UIManager.put("TitledBorder.border", border);
+			UIManager.put("Label.disabledForeground", Color.BLACK);
+
+			northPanel.setBackground(UIManager.getColor("Panel.background"));
+			centerLeftPanel.setBackground(UIManager.getColor("Panel.background"));
+			centerRightPanel.setBackground(UIManager.getColor("Panel.background"));
+			southPanel.setBackground(UIManager.getColor("Panel.background"));
+
+			registerPanel.setBackground(UIManager.getColor("Panel.background"));
+			xRegister.setBackground(Color.WHITE);
+			yRegister.setBackground(Color.WHITE);
+			accRegister.setBackground(Color.WHITE);
+
+			accRegister.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
+			xRegister.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
+			yRegister.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
+
+			flagPanel.setBackground(UIManager.getColor("Panel.background"));
+			lblCarry.setBackground(Color.WHITE);
+			lblZero.setBackground(Color.WHITE);
+			lblNegative.setBackground(Color.WHITE);
+
+			consolePanel.setBackground(UIManager.getColor("Panel.background"));
+			txtConsole.setBackground(Color.WHITE);
+
+			tblInput.setBackground(Color.WHITE);
+			tblInput.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
+			tblMemory.setBackground(Color.WHITE);
 		}
-		
 	}
 	
 	/**
@@ -1205,10 +1236,18 @@ public class Frame extends JFrame implements ViewInterface {
 		@Override
 		public Object getValueAt(int row, int column) {
 			if (column == 0) {
-				return row;
+				return row+1;
 			}
 			return super.getValueAt(row, column);
-		}	
+		}
+		
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			if (column == 0) {
+				return false;
+			}
+			return true;
+		}
 	}
 
 	/**
@@ -1338,7 +1377,12 @@ public class Frame extends JFrame implements ViewInterface {
 				Object[] data = new Object[line.size()+1];
 				data[0] = program.indexOf(line)+1;
 				for (int i = 0; i < line.size(); i++) {
-					data[i+1] = line.get(i);
+					if (!line.get(i).isEmpty()) {
+						line.set(i, line.get(i).trim());
+						data[i+1] = line.get(i);
+					} else {
+						data[i+1] = "";
+					}
 				}
 				model.addRow(data);
 			}
@@ -1356,26 +1400,22 @@ public class Frame extends JFrame implements ViewInterface {
 	public void setNewFont(String font){
 		if(font == "Small"){
 			currentFont = FONT_SMALL;
-		}
-		else if(font == "Medium"){
+		} else if(font == "Medium"){
 			currentFont = FONT_MEDIUM;
-		}
-		else if(font == "Large"){
+		} else if(font == "Large"){
 			currentFont = FONT_LARGE;
 		}
 		setupFonts();
 	}
-	public void setNewColour(String color){
-		if(color == "Default"){
-			currentTheme = Default_THEME;			
-		}
-		else if(color == "Orange"){
+	
+	public void setNewColour(String color) {
+		if (color == "Default") {
+			currentTheme = DEFAULT_THEME;
+		} else if (color == "Orange") {
 			currentTheme = ORANGE_THEME;
-		}
-		else if(color == "Blue"){
+		} else if (color == "Blue") {
 			currentTheme = BLUE_THEME;
-		}
-		else if(color == "Green"){
+		} else if (color == "Green") {
 			currentTheme = GREEN_THEME;
 		}
 		setupColours();
@@ -1387,6 +1427,7 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	@Override
 	public void setAccStack(ArrayList<String> values) {
+		accRegister.setListData(new String[0]);
 		if (values != null) {
 			ArrayList<String> temp = new ArrayList<String>(values);
 			Collections.reverse(temp);
@@ -1394,13 +1435,12 @@ public class Frame extends JFrame implements ViewInterface {
 			temp.toArray(list);
 			accRegister.setListData(list);
 			accRegister.setSelectedIndex(0);
-		} else {
-			accRegister.setListData(new String[0]);
 		}
 	}
 
 	@Override
 	public void setXStack(ArrayList<String> values) {
+		xRegister.setListData(new String[0]);
 		if (values != null) {
 			ArrayList<String> temp = new ArrayList<String>(values);
 			Collections.reverse(temp);
@@ -1408,13 +1448,12 @@ public class Frame extends JFrame implements ViewInterface {
 			temp.toArray(list);
 			xRegister.setListData(list);
 			xRegister.setSelectedIndex(0);
-		} else {
-			xRegister.setListData(new String[0]);
 		}
 	}
 
 	@Override
 	public void setYStack(ArrayList<String> values) {
+		yRegister.setListData(new String[0]);
 		if (values != null) {
 			ArrayList<String> temp = new ArrayList<String>(values);
 			Collections.reverse(temp);
@@ -1422,8 +1461,6 @@ public class Frame extends JFrame implements ViewInterface {
 			temp.toArray(list);
 			yRegister.setListData(list);
 			yRegister.setSelectedIndex(0);
-		} else {
-			yRegister.setListData(new String[0]);
 		}
 	}
 
@@ -1484,20 +1521,20 @@ public class Frame extends JFrame implements ViewInterface {
 
 	@Override
 	public void setMemoryAllocation(int[] memory) {
-		DefaultTableModel mdlMemory = new DefaultTableModel();
-		
-		if (memory[0] != -1) {
-			for(int i = 0; i < 1024; i++) {
-				mdlMemory.addColumn(i, new Object[]{memory[i]});
+		if (memory != null && memory.length > 0) {
+			DefaultTableModel mdlMemory = new DefaultTableModel();
+			
+			if (memory[0] != -1) {
+				for(int i = 0; i < 1024; i++) {
+					mdlMemory.addColumn(i, new Object[]{memory[i]});
+				}
+				tblMemory.setModel(mdlMemory);
+			} else {
+				for (int i = 0; i < 1024; i++) {
+					mdlMemory.addColumn(i, new Object[]{""});
+				}
+				tblMemory.setModel(mdlMemory);
 			}
-			tblMemory.setModel(mdlMemory);
-		} 
-		
-		else {
-			for (int i = 0; i < 1024; i++) {
-				mdlMemory.addColumn(i, new Object[]{""});
-			}
-			tblMemory.setModel(mdlMemory);
 		}
 	}
 

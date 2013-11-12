@@ -130,9 +130,7 @@ public class Controller implements ControllerInterface {
 				accStack.add(Integer.toString(model.getAcc().get(i)));
 			}
 			view.setAccStack(accStack);
-		} 
-		
-		else {
+		} else {
 			view.setAccStack(new ArrayList<String>());
 		}
 
@@ -142,9 +140,7 @@ public class Controller implements ControllerInterface {
 				xStack.add(Integer.toString(model.getXReg().get(i)));
 			}
 			view.setXStack(xStack);
-		} 
-		
-		else {
+		} else {
 			view.setXStack(new ArrayList<String>());
 		}
 
@@ -154,9 +150,7 @@ public class Controller implements ControllerInterface {
 				yStack.add(Integer.toString(model.getYReg().get(i)));
 			}
 			view.setYStack(yStack);
-		} 
-		
-		else {
+		} else {
 			view.setYStack(new ArrayList<String>());
 		}
 
@@ -170,7 +164,7 @@ public class Controller implements ControllerInterface {
 		 * Currently, it is only adding standard output.
 		 */
 		view.setConsoleText(model.getStdStream().getOutput());
-	
+//		model.getStdStream().getOutput().addAll(model.getErrorStream().getErrors().g);
 		view.setButtonsEnabled(model.isCompileSuccess());
 	}
 	
