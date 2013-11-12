@@ -315,38 +315,38 @@ public class Runner {
 			break;
 
 		case 26: /* comp */
-			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS, i+1);
+			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[i+1]);
 			negativeflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
 			break;
 
 		case 27: /* jineg */
-			if(isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 1))
+			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 1)
 				i = sim40.memory[i+1];
 			break;
 
 		case 28 : /* jipos */
-			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 1) &&  !isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 2))
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
 				i = sim40.memory[i+1];
 			break;
 
 		case 29: /* jizero */
-			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 0))
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 1))
 				i = sim40.memory[i+1];
 			break;
 
-		case 30: /* jmptosr */
-			sim40.memory[sim40.memory[Simulator.STACK_PTR]] = sim40.memory[i];
-			i = sim40.memory[i+1];
-			break;
+//		case 30: /* jmptosr */
+//			sim40.memory[sim40.memory[Simulator.STACK_PTR]] = sim40.memory[i];
+//			i = sim40.memory[i+1];
+//			break;
 
 		case 31: /* jicarry */
-			if(!isBitSet(sim40.memory[Simulator.STATUS_ADDRESS], 2))
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 1))
 				i = sim40.memory[i+1];
 			break;
 
 		case 32: /* xload */
 			if(checkInsert(i))	
-				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[++i];
+				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[sim40.memory[++i]];
 
 			else 
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
@@ -361,13 +361,13 @@ public class Runner {
 
 		case 34: /* loadmx */
 			if(checkInsert(i))	
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[++i] + sim40.memory[Simulator.XREG_ADDRESS];
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[sim40.memory[++i]] + sim40.memory[Simulator.XREG_ADDRESS];
 			else
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
 
 		case 35: /* xcomp */
-			zeroflagstatus(Simulator.XREG_ADDRESS, i+1);		
+			zeroflagstatus(Simulator.XREG_ADDRESS, sim40.memory[i+1]);		
 			negativeflagstatus(Simulator.XREG_ADDRESS, sim40.memory[++i]);
 			break;
 
@@ -392,7 +392,7 @@ public class Runner {
 			break;
 
 		case 39: /* ycomp */
-			zeroflagstatus(Simulator.YREG_ADDRESS, i+1);		
+			zeroflagstatus(Simulator.YREG_ADDRESS, sim40.memory[i+1]);		
 			negativeflagstatus(Simulator.YREG_ADDRESS, sim40.memory[++i]);
 			break;
 		}
@@ -477,17 +477,6 @@ public class Runner {
 		else {
 			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<1);
 		}
-	}
-
-	/**
-	 * 
-	 * @param b
-	 * @param pos
-	 * @return
-	 */
-	private boolean isBitSet(int b, int pos)
-	{
-		return (b & (1 << pos)) != 0;
 	}
 
 	/**
