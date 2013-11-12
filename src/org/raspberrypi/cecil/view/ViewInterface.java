@@ -1,7 +1,6 @@
 package org.raspberrypi.cecil.view;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.raspberrypi.cecil.pojo.Instruction;
 

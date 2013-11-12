@@ -2,7 +2,6 @@ package org.raspberrypi.cecil.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.pojo.Program;
