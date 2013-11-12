@@ -613,7 +613,7 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		memoryScroll.setOpaque(true);
+		memoryScroll.setOpaque(false);
 		southPanel.add(memoryScroll);
 	}
 	
