@@ -50,7 +50,7 @@ public class TestingCompiler {
 	/**
 	 * Set of tests which do not compile.
 	 */
-	@Test
+	/*@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
 		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
@@ -60,7 +60,7 @@ public class TestingCompiler {
 			org.junit.Assert.assertEquals(c.getSimulator().memory[c.getParser().getDatafield().get(key)], -1);
 			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(key));
 		}
-	}
+	}*/
 
 	/**
 	 * Incorrect input used in compiler test.
@@ -70,7 +70,7 @@ public class TestingCompiler {
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
-		input.add(" ");
+		input.add("");
 		input.add("load");
 		input.add("d1");
 		input.add(";This is a sample comment");
@@ -89,13 +89,13 @@ public class TestingCompiler {
 		input.add(" ");
 		input.add(";This is a sample comment");
 		userinput.add(input);
-//		input  = new ArrayList<String>();
-//
-//		input.add(".d2");
-//		input.add("insert");
-//		input.add("65");
-//		input.add(" ");
-//		userinput.add(input);
+		input  = new ArrayList<String>();
+
+		input.add(".d1");
+		input.add("insert");
+		input.add("65");
+		input.add(" ");
+		userinput.add(input);
 
 		Program program = new Program(userinput);
 		Model m = new Model();
@@ -115,7 +115,8 @@ public class TestingCompiler {
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
-		input.add(" ");
+	/*	
+		input.add(".start");
 		input.add("load");
 		input.add("d1");
 		input.add(";This is a sample comment");
@@ -147,6 +148,54 @@ public class TestingCompiler {
 		input.add("insert");
 		input.add("65");
 		input.add(" ");
+		userinput.add(input);*/
+		
+		input.add(".start");
+		input.add("load");
+		input.add("num1");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(" ");
+		input.add("add");
+		input.add("num2");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(" ");
+		input.add("print");
+		input.add(" ");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(" ");
+		input.add("printch");
+		input.add(" ");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(" ");
+		input.add("stop");
+		input.add(" ");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(".num1");
+		input.add("insert");
+		input.add("63");
+		input.add(";");
+		userinput.add(input);
+		
+		input = new ArrayList<String>();
+		input.add(".num2");
+		input.add("insert");
+		input.add("2");
+		input.add(";");
 		userinput.add(input);
 
 		Program program = new Program(userinput);

@@ -56,19 +56,23 @@ public class Compiler {
 					this.errorStream.getErrors().add(new Error(program.getDataLine(key), "Error, label matching datafield not found"));
 					this.sim40.setSuccessCompile(false);
 				}
-
-				/* checking for stop instruction */
-				if(!parser.getInstructionfield().containsValue("stop")) {
-					this.errorStream.getErrors().add(new Error(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
-					this.sim40.setSuccessCompile(false);
-				}
-
-				/* Writing successful compilation to std stream */
-				if(this.sim40.isCompileSuccess()) {
-					this.stdStream.getOutput().add("Program has successfully compiled"); 
-					this.sim40.setSuccessCompile(true);
-				}
 			}
+			/* checking for stop instruction */
+			if(!parser.getInstructionfield().containsValue("stop")) {
+				this.errorStream.getErrors().add(new Error(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
+				this.sim40.setSuccessCompile(false);
+			}
+
+			/* Writing successful compilation to std stream */
+			if(this.sim40.isCompileSuccess()) {
+				this.stdStream.getOutput().add("Program has successfully compiled"); 
+				this.sim40.setSuccessCompile(true);
+			}
+			for(Error e : this.errorStream.getErrors())
+				System.out.println(e.getLine() + "   " + e.getMessage());
+
+			for(String e : this.stdStream.getOutput())
+				System.out.println(e);
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();
 		}

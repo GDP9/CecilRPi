@@ -46,8 +46,7 @@ options {
     private static int pointer;
     private HashMap<String, Integer> datafield;
     private HashMap<String, Integer> labelfield;
-    private HashMap<Integer, String> instructionfield;
-       
+    private HashMap<Integer, String> instructionfield;    
     private ErrorOutputStream stream;
     
     /*
@@ -86,7 +85,10 @@ options {
     */
     @Override
     public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-          this.stream.getErrors().add(new Error(e.line, " unrecognised token " + e.token));
+          String hdr = getErrorHeader(e);
+          String msg = getErrorMessage(e, tokenNames);
+          System.out.println(hdr + "   "+ msg);
+          this.stream.getErrors().add(new Error(e.line, msg));
     }
 }
 
