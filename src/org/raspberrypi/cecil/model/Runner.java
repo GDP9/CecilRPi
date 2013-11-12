@@ -361,7 +361,7 @@ public class Runner {
 		case 34: /* loadmx */
 			if(checkInsert(i))	
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[sim40.memory[++i]] + sim40.memory[Simulator.XREG_ADDRESS];
-			else
+			else 
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
 
@@ -437,10 +437,10 @@ public class Runner {
 	 * @param register
 	 */
 	private void setRegToMin(int register) {
-		if(sim40.memory[register]==0)
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
-		else
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
+		if(sim40.memory[register] < 0)
+			sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<1);
+		
+		sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<0);
 		sim40.memory[register] = 0;
 	}
 
