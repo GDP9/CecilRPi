@@ -53,7 +53,6 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 import java.awt.GridLayout;
 
-import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
 import java.awt.Dimension;
@@ -64,6 +63,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.io.IOException;
 
 import javax.swing.border.BevelBorder;
@@ -72,9 +72,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.raspberrypi.cecil.controller.Controller;
+import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Instruction;
 
 /**
@@ -126,7 +129,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JScrollPane accScroll;
 	
 	//Console
-	private JTextPane txtConsole;
+	private JList<String> txtConsole;
 	
 	//Input
 	private JTable tblInput;
@@ -164,6 +167,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private FontUIResource currentFont;
 	private ArrayList<ArrayList<String>> currentProgram;
 	private Color[] currentTheme;
+	private ArrayList<OutputError> errors;
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
@@ -324,7 +328,7 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		southPanel = new JPanel();
 		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 20, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		southPanel.setLayout(new GridLayout(1,1));
+		southPanel.setLayout(new GridBagLayout());
 		
 		/*
 		 * Add north panel
@@ -522,11 +526,25 @@ public class Frame extends JFrame implements ViewInterface {
 		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Result", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		centerRightPanel.add(consolePanel);
 					
-		txtConsole = new JTextPane();
+		txtConsole = new JList<String>();
+		txtConsole.setToolTipText("Output console");
+		txtConsole.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				highlightError();
+			}
+		});
 		JScrollPane consoleScroll = new JScrollPane(txtConsole);
 		consoleScroll.setOpaque(false);
 		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		txtConsole.setEditable(false);
 		consolePanel.add(consoleScroll);
 		
 		/*
@@ -611,10 +629,22 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
+//		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+//		memoryScroll.setOpaque(false);
+//		southPanel.add(memoryScroll);
+		
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		memoryScroll.setOpaque(false);
-		southPanel.add(memoryScroll);
+		  memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		  memoryScroll.setOpaque(true);
+		  
+		  GridBagConstraints gbc_south_table = new GridBagConstraints();
+		  gbc_south_table.fill = GridBagConstraints.BOTH;
+		  gbc_south_table.gridx = 0;
+		  gbc_south_table.gridy = 0;
+		  gbc_south_table.weightx = 1;
+		  gbc_south_table.weighty = 1;
+		  southPanel.add(memoryScroll, gbc_south_table);
 	}
 	
 	/**
@@ -911,7 +941,7 @@ public class Frame extends JFrame implements ViewInterface {
 		accRegister.setFont(currentFont);
 		((TitledBorder)((CompoundBorder) accScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		((TitledBorder)((CompoundBorder) consolePanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
-		txtConsole.setFont(currentFont);
+		txtConsole.setFont(new Font("Consolas", Font.PLAIN, currentFont.getSize()));
 		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblInput.getTableHeader().setFont(currentFont);
 		tblInput.setRowHeight(40);
@@ -1392,6 +1422,21 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 	
 	/**
+	 * Highlight and jump to the error line in the input editor.
+	 * 
+	 * @param errorNo Error index in errors.
+	 */
+	private void highlightError() {
+		int errorNo = txtConsole.getSelectedIndex();
+		if (errors != null && errors.size() > 0) {
+			int lineNo = errors.get(errorNo).getLine() - 1;
+			tblInput.setRowSelectionInterval(lineNo, lineNo);
+			txtConsole.removeSelectionInterval(errorNo, errorNo);
+			tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(lineNo, 0, true)));
+		}
+	}
+	
+	/**
 	 * Change the application font size.
 	 * 
 	 * @param font The new font.
@@ -1510,12 +1555,28 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 
 	@Override
-	public void setConsoleText(ArrayList<String> text) {
-		txtConsole.setText("");
+	public void setConsoleResult(ArrayList<String> text) {
+		errors = null;
+		txtConsole.setListData(new String[0]);
+		txtConsole.setForeground(Color.BLACK);
 		if (text != null) {
-			for (int i = 0; i < text.size(); i++) {
-				txtConsole.setText(txtConsole.getText()+text.get(i)+System.getProperty("line.separator"));
+			String[] list = new String[text.size()];
+			text.toArray(list);
+			txtConsole.setListData(list);
+		}
+	}
+	
+	@Override
+	public void setConsoleError(ArrayList<OutputError> errors) {
+		txtConsole.setListData(new String[0]);
+		txtConsole.setForeground(Color.RED);
+		if (errors != null) {
+			String[] list = new String[errors.size()];
+			for (int i = 0; i < errors.size(); i++) {
+				list[i] = "Error at line "+errors.get(i).getLine()+": "+errors.get(i).getMessage();
 			}
+			txtConsole.setListData(list);
+			this.errors = errors;
 		}
 	}
 
@@ -1524,13 +1585,10 @@ public class Frame extends JFrame implements ViewInterface {
 		if (memory != null && memory.length > 0) {
 			DefaultTableModel mdlMemory = new DefaultTableModel();
 			
-			if (memory[0] != -1) {
-				for(int i = 0; i < 1024; i++) {
+			for(int i = 0; i < memory.length; i++) {
+				if (memory[i] > -1) {
 					mdlMemory.addColumn(i, new Object[]{memory[i]});
-				}
-				tblMemory.setModel(mdlMemory);
-			} else {
-				for (int i = 0; i < 1024; i++) {
+				} else {
 					mdlMemory.addColumn(i, new Object[]{""});
 				}
 				tblMemory.setModel(mdlMemory);
@@ -1573,7 +1631,8 @@ public class Frame extends JFrame implements ViewInterface {
 		setXStack(null);
 		setYStack(null);
 		setAccStack(null);
-		setConsoleText(null);
+		setConsoleResult(null);
+		setConsoleError(null);
 		setCarryFlag(false);
 		setZeroFlag(false);
 		setNegativeFlag(false);

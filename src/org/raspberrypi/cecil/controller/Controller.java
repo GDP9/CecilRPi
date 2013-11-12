@@ -159,12 +159,12 @@ public class Controller implements ControllerInterface {
 		view.setNegativeFlag(model.isNegativeFlag());
 
 		view.setMemoryAllocation(model.getMemory());
-		/* 
-		 * Need to amend the method to add both the error stream and standard output stream 
-		 * Currently, it is only adding standard output.
-		 */
-		view.setConsoleText(model.getStdStream().getOutput());
-//		model.getStdStream().getOutput().addAll(model.getErrorStream().getErrors().g);
+
+		if (!model.isCompileSuccess() && model.getErrorStream() != null && model.getErrorStream().getErrors() != null) {
+			view.setConsoleError(model.getErrorStream().getErrors());
+		} else {
+			view.setConsoleResult(model.getStdStream().getOutput());
+		}
 		view.setButtonsEnabled(model.isCompileSuccess());
 	}
 	

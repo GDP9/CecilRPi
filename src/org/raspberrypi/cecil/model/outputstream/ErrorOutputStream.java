@@ -11,23 +11,23 @@ import java.util.ArrayList;
  */
 public class ErrorOutputStream {
 	
-	private ArrayList<Error> errors;
+	private ArrayList<OutputError> errors;
 	
 	public ErrorOutputStream() {
-		this.errors = new ArrayList<Error>();
+		this.errors = new ArrayList<OutputError>();
 	}
 
 	/**
 	 * @return the errors
 	 */
-	public ArrayList<Error> getErrors() {
+	public ArrayList<OutputError> getErrors() {
 		return errors;
 	}
 
 	/**
 	 * @param errors the errors to set
 	 */
-	public void setErrors(ArrayList<Error> errors) {
+	public void setErrors(ArrayList<OutputError> errors) {
 		this.errors = errors;
 	}
 }

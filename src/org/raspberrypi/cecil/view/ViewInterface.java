@@ -2,6 +2,7 @@ package org.raspberrypi.cecil.view;
 
 import java.util.ArrayList;
 
+import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Instruction;
 
 /**
@@ -84,13 +85,18 @@ public interface ViewInterface {
 	public void setNegativeFlag(boolean flagIsOn);
 	
 	/**
-	 * Set the values to be displayed in the console output visualisation.
-	 * If the compile or run is successful it will display a list of results.
-	 * If unsuccessful it will display an error.
+	 * Set the successful results to be displayed in the console output.
 	 * 
-	 * @param text Result or error strings.
+	 * @param text Result strings.
 	 */
-	public void setConsoleText(ArrayList<String> text);
+	public void setConsoleResult(ArrayList<String> text);
+	
+	/**
+	 * Set the errors to be displayed in the console output.
+	 * 
+	 * @param errors Error strings
+	 */
+	public void setConsoleError(ArrayList<OutputError> errors);
 	
 	/**
 	 * Set the values to be displayed in the memory visualisation.

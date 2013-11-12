@@ -5,7 +5,7 @@ package org.raspberrypi.cecil.model.outputstream;
  *  
  * @author sa10g10
  */
-public class Error {
+public class OutputError {
 
 	/**
 	 * Private Variables
@@ -13,7 +13,7 @@ public class Error {
 	private int line;
 	private String message;
 	
-	public Error(int line, String message){
+	public OutputError(int line, String message){
 		this.line=line;
 		this.message = message;
 	}
