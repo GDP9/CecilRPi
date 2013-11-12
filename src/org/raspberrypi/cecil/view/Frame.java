@@ -1479,14 +1479,17 @@ public class Frame extends JFrame implements ViewInterface {
 	}
 
 	@Override
-	public void setMemoryAllocation(HashMap<String, String> values) {
+	public void setMemoryAllocation(int[] memory) {
 		DefaultTableModel mdlMemory = new DefaultTableModel();
-		if (values != null) {
-			for (Map.Entry<String, String> entry : values.entrySet()) {
-				mdlMemory.addColumn(entry.getKey(), new Object[]{entry.getValue()});
+		
+		if (memory[0] != -1) {
+			for(int i = 0; i < 1024; i++) {
+				mdlMemory.addColumn(i, new Object[]{memory[i]});
 			}
 			tblMemory.setModel(mdlMemory);
-		} else {
+		} 
+		
+		else {
 			for (int i = 0; i < 1024; i++) {
 				mdlMemory.addColumn(i, new Object[]{""});
 			}

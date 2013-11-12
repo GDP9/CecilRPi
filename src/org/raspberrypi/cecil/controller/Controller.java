@@ -55,49 +55,49 @@ public class Controller implements ControllerInterface {
 		line.add(".start");
 		line.add("load");
 		line.add("num1");
-		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
-		line.add("");
+		line.add(" ");
 		line.add("add");
 		line.add("num2");
-		line.add("");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
-		line.add("");
+		line.add(" ");
 		line.add("print");
-		line.add("");
-		line.add("");
+		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printch");
 		line.add(" ");
-		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
-		line.add("");
+		line.add(" ");
 		line.add("stop");
 		line.add(" ");
-		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(".num1");
 		line.add("insert");
 		line.add("63");
-		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
-		line.add(" ");
+		line.add(";");
 		program.add(line);
 		
 		return program;
@@ -165,21 +165,7 @@ public class Controller implements ControllerInterface {
 		view.setZeroFlag(model.isZeroFlag());
 		view.setNegativeFlag(model.isNegativeFlag());
 
-		if (model.getMemory()[0] !=  -1) {
-			HashMap<String, String> memoryValues = new HashMap<String, String>();
-			int i = 0;
-			while(model.getMemory()[i] != -1) {
-				memoryValues.put(Integer.toString(i), Integer.toString(model.getMemory()[i]));
-				i++;
-			}
-
-			view.setMemoryAllocation(memoryValues);
-		} 
-
-		else {
-			view.setMemoryAllocation(new HashMap<String, String>());
-		}
-
+		view.setMemoryAllocation(model.getMemory());
 		/* 
 		 * Need to amend the method to add both the error stream and standard output stream 
 		 * Currently, it is only adding standard output.

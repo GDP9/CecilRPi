@@ -98,7 +98,7 @@ public interface ViewInterface {
 	 * 
 	 * @param values The values to be displayed.
 	 */
-	public void setMemoryAllocation(HashMap<String, String> values);
+	public void setMemoryAllocation(int[] memory);
 	
 	/**
 	 * Set the state of the run and step through buttons to be enabled or disabled.
