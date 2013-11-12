@@ -31,7 +31,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -72,10 +71,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Instruction;
@@ -564,7 +562,12 @@ public class Frame extends JFrame implements ViewInterface {
 		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(35);
 		
-		setUpInstructionColumn(tblInput, tblInput.getColumnModel().getColumn(2));
+		comboBox = new Java2sAutoComboBox(instructionList);
+		comboBox.setEditable(true);
+		comboBox.setRenderer(new MyComboBoxRenderer());
+//		AutoCompleteDecorator.decorate(comboBox);
+		tblInput.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
+		
 		input = new JTextField();
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
        	aligncenter.setHorizontalAlignment(JLabel.CENTER);
@@ -959,20 +962,6 @@ public class Frame extends JFrame implements ViewInterface {
 		if (currentProgram != null && currentProgram.size() > 0) {
 			loadProgramCode(currentProgram);
 		}
-	}
-	
-	//TODO Javadocing needed
-	private void setUpInstructionColumn(JTable table, TableColumn instructionColumn) {
-		comboBox = new Java2sAutoComboBox(instructionList);
-		comboBox.setEditable(true);
-		ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				actionEvent.getSource();
-			}
-		};
-		comboBox.addActionListener(actionListener);
-		comboBox.setRenderer(new MyComboBoxRenderer());        
-		instructionColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	}
 	
 	//TODO Javadocing needed?
