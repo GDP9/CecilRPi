@@ -18,9 +18,6 @@ options {
     language = Java;
 }
 
-tokens {
-STOP = 'stop';
-}
 /* package and import declaration for parser */
 @header { 
   package org.raspberrypi.cecil.model.grammar;
@@ -101,7 +98,7 @@ STOP = 'stop';
  * Reserved Keywords: all-instructions
  */
 program 
-  : '.start' mnemonicdata instruction* STOP
+  : '.start' mnemonicdata instruction* stop
   ;
 
 instruction 
@@ -155,7 +152,7 @@ mnemonicdata
   ;
 
 unaryinstruction
-  : (STOP|'print'|'printch'|'printb'|'cclear'|'cset'|'xdec'|'xinc'|'ydec'|'yinc')
+  : (stop|'print'|'printch'|'printb'|'cclear'|'cset'|'xdec'|'xinc'|'ydec'|'yinc')
   ;
   
 binaryinstruction
@@ -163,6 +160,14 @@ binaryinstruction
   |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp'|'insert'|'ycomp')
   ;
   
+stop
+  :'stop'
+  {
+    instructionfield.put(pointer, "stop");
+    sim40.memory[pointer++] = 0;
+  }
+  
+  ;
   
 datafield 
   : NAME

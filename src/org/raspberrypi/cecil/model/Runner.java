@@ -3,7 +3,6 @@ package org.raspberrypi.cecil.model;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
-import org.raspberrypi.cecil.model.outputstream.OutputError;
 
 /**
  * 

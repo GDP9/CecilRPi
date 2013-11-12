@@ -106,6 +106,13 @@ public class Controller implements ControllerInterface {
 		line.add(";");
 		program.add(line);
 		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("stop");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
 		return program;
 	}
 	
