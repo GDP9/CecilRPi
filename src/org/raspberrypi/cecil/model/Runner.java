@@ -438,9 +438,9 @@ public class Runner {
 	 */
 	private void setRegToMin(int register) {
 		if(sim40.memory[register] < 0)
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<1);
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
 		
-		sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<0);
+		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
 		sim40.memory[register] = 0;
 	}
 
@@ -458,7 +458,7 @@ public class Runner {
 	 */
 	private void zeroflagstatus(int register, int address){
 		if(sim40.memory[register] == sim40.memory[address]){
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<0);
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
 		}
 		else {
 			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<0);
@@ -471,7 +471,7 @@ public class Runner {
 	 */
 	private void negativeflagstatus(int register, int address){
 		if(sim40.memory[register] <= sim40.memory[address]){
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (1<<1);
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
 		}
 		else {
 			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<1);
