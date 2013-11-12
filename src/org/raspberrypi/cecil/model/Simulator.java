@@ -1,9 +1,9 @@
 package org.raspberrypi.cecil.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
+import org.raspberrypi.cecil.pojo.InstructionList;
+import org.raspberrypi.cecil.pojo.Program;
 
 /**
  * CECIL assembly language Memory Model - Static final variables declaration
@@ -21,8 +21,8 @@ import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
  *  x-reg : 1027
  *  y-reg : 1028
  */
-public class Simulator implements SimulatorInterface {
-	
+public class Simulator {
+
 	/*
 	 * View output variables
 	 */
@@ -33,8 +33,6 @@ public class Simulator implements SimulatorInterface {
 	private boolean zeroFlag;
 	private boolean negativeFlag;
 	private boolean successCompile;
-	private HashMap<Integer, String> instructionLine;
-	
 	/*
 	 * Model variables
 	 */
@@ -47,55 +45,68 @@ public class Simulator implements SimulatorInterface {
 	static final int STACK_BEGIN = 908;
 	static final int STACK_END = 1006;
 	static final int STACK_PTR = 1007;
-	
-	public int[] memory = new int[MEMORY_LENGTH];
-	
+
+	public int[] memory = new int[MEMORY_LENGTH]; 
+	public int[] lines = new int[MEMORY_LENGTH];
+
 	/**
 	 * Constuctor: initialse memory to store -1
 	 */
 	public Simulator() {
 		for(int i = 0 ; i < MEMORY_LENGTH; i++)
 			memory[i] = -1;
-		
+
 		memory[STACK_PTR] = 908;
-		
+
 		xReg = new ArrayList<Integer>();
 		yReg = new ArrayList<Integer>();
 		acc = new ArrayList<Integer>();
-		
+
 		zeroFlag = carryFlag = negativeFlag = false;
 	}
-	
+
 	/**
 	 * Method to update the view variables
 	 */
 	public void updateViewVars() {
-		
+
 		if(memory[XREG_ADDRESS] != -1)
 			xReg.add(memory[memory[XREG_ADDRESS]]);
 		if(memory[YREG_ADDRESS] != -1)
 			yReg.add(memory[memory[YREG_ADDRESS]]);
 		if(memory[ACCUMULATOR_ADDRESS] != -1)
 			acc.add(memory[memory[ACCUMULATOR_ADDRESS]]);
-		
+
 		if( (memory[STATUS_ADDRESS] << 0) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
-		
+
 		if( (memory[STATUS_ADDRESS] << 1) == 0)
 			negativeFlag = false;
 		else negativeFlag = true;
-		
+
 		if( (memory[STATUS_ADDRESS] << 2) == 0)
 			carryFlag = false;
 		else carryFlag = true;
 
 	}
-	
+
+	public void setLineNumbers(Program program) {
+		for(int line = 0, ctr = 0; line < program.getProgramStatements().size(); line++) {
+			for(int j = 1; j < 2; j++) {
+				if(program.getProgramStatements().get(line).get(j) != null 
+						&& !program.getProgramStatements().get(line).get(j).equals(" ")
+						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr])
+
+					lines[ctr++] = line;
+			}
+		}
+	}
+
 	/**
 	 * @return the xReg
 	 */
-	public ArrayList<Integer> getxReg() {
+	public ArrayList<Integer> getXReg() {
 		return this.xReg;
 	}
 
@@ -109,7 +120,7 @@ public class Simulator implements SimulatorInterface {
 	/**
 	 * @return the yReg
 	 */
-	public ArrayList<Integer> getyReg() {
+	public ArrayList<Integer> getYReg() {
 		return this.yReg;
 	}
 
@@ -179,7 +190,7 @@ public class Simulator implements SimulatorInterface {
 	/**
 	 * @return the successCompile
 	 */
-	public boolean isSuccessCompile() {
+	public boolean isCompileSuccess() {
 		return successCompile;
 	}
 
@@ -195,12 +206,5 @@ public class Simulator implements SimulatorInterface {
 	 */
 	public int[] getMemory() {
 		return memory;
-	}
-
-	/**
-	 * @return the instructionLine
-	 */
-	public HashMap<Integer, String> getInstructionLineNumber() {
-		return instructionLine;
 	}
 }

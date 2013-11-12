@@ -38,7 +38,7 @@ public class TestingCompiler {
 	@Test
 	public void compiles(){
 		Compiler c = getCorrect();
-		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), true);
+		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), true);
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 		for(String key : c.getParser().getDatafield().keySet()){
 			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),true);
@@ -53,7 +53,7 @@ public class TestingCompiler {
 	@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
-		org.junit.Assert.assertEquals(c.getSimulator().isSuccessCompile(), false);
+		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
 		for(String key : c.getParser().getDatafield().keySet()){
 			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),false);
@@ -101,7 +101,7 @@ public class TestingCompiler {
 		Model m = new Model();
 
 		File sample  = m.programToFile(program, "sample.cecil");
-		Compiler c = new Compiler(sample.getAbsolutePath());
+		Compiler c = new Compiler(sample.getAbsolutePath(), program);
 
 		return c;
 
@@ -153,7 +153,7 @@ public class TestingCompiler {
 		Model m = new Model();
 
 		File sample  = m.programToFile(program, "sample.cecil");
-		Compiler c = new Compiler(sample.getAbsolutePath());
+		Compiler c = new Compiler(sample.getAbsolutePath(), program);
 
 		return c;
 	}

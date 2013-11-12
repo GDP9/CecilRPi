@@ -95,7 +95,7 @@ public class InstructionList {
 	 * @param instruction name
 	 * @return instruction mnemonic
 	 */
-	public int instructionToMnemonic(String name) {
+	public static int instructionToMnemonic(String name) {
 		for(Instruction i: instructions) {
 			if(i.getName().equals(name))
 				return i.getMnemonic();

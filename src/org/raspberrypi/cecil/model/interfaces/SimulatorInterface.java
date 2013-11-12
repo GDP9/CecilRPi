@@ -14,9 +14,10 @@ public interface SimulatorInterface {
 	public boolean isCarryFlag();
 	public boolean isZeroFlag();
 	public boolean isNegativeFlag();
-	public boolean isSuccessCompile();
-	public ArrayList<Integer> getxReg();
-	public ArrayList<Integer> getyReg();
+	public boolean isCompileSuccess();
+	public ArrayList<Integer> getXReg();
+	public ArrayList<Integer> getYReg();
 	public ArrayList<Integer> getAcc();
 	public int[] getMemory();
+	
 }

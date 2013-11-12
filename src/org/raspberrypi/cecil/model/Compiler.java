@@ -11,6 +11,7 @@ import org.raspberrypi.cecil.model.grammar.CecilParser;
 import org.raspberrypi.cecil.model.outputstream.Error;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
+import org.raspberrypi.cecil.pojo.Program;
 
 /**
  * CECIL assembly language Compiler
@@ -22,55 +23,57 @@ import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
  * 
  * @date 01/11/2013
  */
- 
+
 public class Compiler {
-	
+
 	private CecilParser parser;
 	private Simulator sim40;
 	private StandardOutputStream stdStream;
 	private ErrorOutputStream errorStream;
-	
+
 	/**
 	 * Parametric Constructor
 	 * @param filepath
 	 */
-	public Compiler(String filepath) {
+	public Compiler(String filepath, Program program) {
 		try {
-			CommonTokenStream tokens  =  new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath)));
-			
-			this.parser = new CecilParser(tokens);
+			this.parser = new CecilParser(new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath))));
 			this.parser.initialise();
 			this.sim40 = parser.getSimulator();
-			
-			stdStream = new StandardOutputStream();
-			errorStream = new ErrorOutputStream();
 
 			/* Parsing */
-			parser.program();
-			
+			this.parser.program();
+			this.sim40.setLineNumbers(program);
+			this.stdStream = new StandardOutputStream();
+			this.errorStream = this.parser.getErrorStream();
+
 			/* type checking for labels */
 			for(String key : parser.getDatafield().keySet()) {
 				if(parser.getLabelfield().keySet().contains(key)) 
-					sim40.memory[parser.getDatafield().get(key)] = parser.getLabelfield().get(key);
-			
-				else errorStream.getErrors().add(new Error(sim40.getInstructionLineNumber().g, "Error, label matching datafield not found"));
+					this.sim40.memory[parser.getDatafield().get(key)] = this.parser.getLabelfield().get(key);
+
+				else { 
+					this.errorStream.getErrors().add(new Error(program.getDataLine(key), "Error, label matching datafield not found"));
+					this.sim40.setSuccessCompile(false);
+				}
+
+				/* checking for stop instruction */
+				if(!parser.getInstructionfield().containsValue("stop")) {
+					this.errorStream.getErrors().add(new Error(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
+					this.sim40.setSuccessCompile(false);
+				}
+
+				/* Writing successful compilation to std stream */
+				if(this.sim40.isCompileSuccess()) {
+					this.stdStream.getOutput().add("Program has successfully compiled"); 
+					this.sim40.setSuccessCompile(true);
+				}
 			}
-			
-			/* checking for stop instruction */
-			if(!parser.getInstructionfield().containsValue("stop")) {
-				sim40.getOutput().add("Program needs at least one stop instruction");
-			}
-			
-			if(sim40.getOutput().isEmpty()) {
-				sim40.getOutput().add("Successful Compilation"); 
-				sim40.setSuccessCompile(true);
-			}
-			
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -78,8 +81,8 @@ public class Compiler {
 	public HashMap<Integer, String> getInstructionField() {
 		return parser.getInstructionfield();
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @return
@@ -87,7 +90,7 @@ public class Compiler {
 	public Simulator getSimulator() {
 		return this.sim40;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -96,7 +99,7 @@ public class Compiler {
 		return parser;
 	}
 
-	
+
 	/**
 	 * 
 	 * @param memory
@@ -110,5 +113,19 @@ public class Compiler {
 			i = memory[key];
 		}
 		return i;
+	}
+
+	/**
+	 * @return the stdStream
+	 */
+	public StandardOutputStream getStdStream() {
+		return stdStream;
+	}
+
+	/**
+	 * @return the errorStream
+	 */
+	public ErrorOutputStream getErrorStream() {
+		return errorStream;
 	}
 }

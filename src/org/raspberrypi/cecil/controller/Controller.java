@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.raspberrypi.cecil.model.Model;
-import org.raspberrypi.cecil.model.Simulator;
 import org.raspberrypi.cecil.pojo.Program;
 import org.raspberrypi.cecil.view.Frame;
 
@@ -15,11 +14,11 @@ import org.raspberrypi.cecil.view.Frame;
  * This class contains the main method.
  * 
  * MIT Open Source License
- * @author Cathy Jin (cj8g10)
+ * @author Cathy Jin (cj8g10), Shreeprabha Aggarwal (sa10g10)
  * Southampton University, United Kingdom
  * @version 1.1
  * 
- * @date 07/11/2013
+ * @date 11/11/2013
  *
  */
 public class Controller implements ControllerInterface {
@@ -27,15 +26,36 @@ public class Controller implements ControllerInterface {
 	private Model model;
 
 	/**
+	 * Launches the application by creating a new CecilController.
+	 */
+	public static void main(String[] args) {
+		new Controller();
+	}
+	
+	
+	/**
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
 	 */
 	public Controller() {
+		view = new Frame(this);		
+		model = new Model();
+		
+		view.setInstructionList(model.getInstructions());
+		view.setProgramCode(this.getDefaultInput());
+	}
+
+	/**
+	 * Private method to generate default input editor program
+	 * @return Program 
+	 */
+	private ArrayList<ArrayList<String>> getDefaultInput() {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = new ArrayList<String>();
+		
 		line.add(".start");
 		line.add("load");
 		line.add("num1");
-		line.add("");
+		line.add(" ");
 		program.add(line);
 		
 		line = new ArrayList<String>();
@@ -53,145 +73,103 @@ public class Controller implements ControllerInterface {
 		program.add(line);
 		
 		line = new ArrayList<String>();
-		line.add("");
+		line.add(" ");
 		line.add("printch");
-		line.add("");
-		line.add("");
+		line.add(" ");
+		line.add(" ");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add("");
 		line.add("stop");
-		line.add("");
-		line.add("");
+		line.add(" ");
+		line.add(" ");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(".num1");
 		line.add("insert");
 		line.add("63");
-		line.add("");
+		line.add(" ");
 		program.add(line);
 		
 		line = new ArrayList<String>();
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
-		line.add("");
+		line.add(" ");
 		program.add(line);
 		
-		view = new Frame(this);		
-		model = new Model();
-		view.setInstructionList(model.getInstructions());
-		view.setProgramCode(program);
+		return program;
 	}
-
+	
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		Program program = new Program(code);
-		
-		model.compile(program);
-		Simulator result = model.getSimulator();
-
-		if (result.getAcc() != null) {
-			ArrayList<String> accStack = new ArrayList<String>();
-			for (int i = 0; i < result.getAcc().size(); i++) {
-				accStack.add(Integer.toString(result.getAcc().get(i)));
-			}
-			view.setAccStack(accStack);
-		} else {
-			view.setAccStack(new ArrayList<String>());
-		}
-
-		if (result.getxReg() != null && result.getxReg().size() > 0) {
-			ArrayList<String> xStack = new ArrayList<String>();
-			for (int i = 0; i < result.getxReg().size(); i++) {
-				xStack.add(Integer.toString(result.getxReg().get(i)));
-			}
-			view.setXStack(xStack);
-		} else {
-			view.setXStack(new ArrayList<String>());
-		}
-
-		if (result.getyReg() != null && result.getyReg().size() > 0) {
-			ArrayList<String> yStack = new ArrayList<String>();
-			for (int i = 0; i < result.getyReg().size(); i++) {
-				yStack.add(Integer.toString(result.getyReg().get(i)));
-			}
-			view.setYStack(yStack);
-		} else {
-			view.setYStack(new ArrayList<String>());
-		}
-
-		view.setCarryFlag(result.isCarryFlag());
-		view.setZeroFlag(result.isZeroFlag());
-		view.setNegativeFlag(result.isNegativeFlag());
-
-		if (result.memory[0] !=  -1) {
-			HashMap<String, String> memoryValues = new HashMap<String, String>();
-			int i = 0;
-			while(result.memory[i] != -1) {
-				memoryValues.put(Integer.toString(i), Integer.toString(result.memory[i]));
-				i++;
-			}
-
-			view.setMemoryAllocation(memoryValues);
-		} 
-
-		else {
-			view.setMemoryAllocation(new HashMap<String, String>());
-		}
-
-		view.setConsoleText(result.getOutput());
-		view.setButtonsEnabled(result.isSuccessCompile());
+		model.compile(new Program(code));
+		this.setViewOutput();
 	}
 
 	@Override
 	public void runClicked() {
-
 		model.run();
-		
-		Simulator result = model.getSimulator();
+		this.setViewOutput();
+	}
 
-		if (result.getAcc() != null) {
+	@Override
+	public void stepThroughClicked() {
+		model.stepThrough();
+		this.setViewOutput();
+	}
+
+	/**
+	 * Refreshes the View output using the current snapshot of the memory
+	 */
+	private void setViewOutput() {
+		if (model.getAcc() != null) {
 			ArrayList<String> accStack = new ArrayList<String>();
-			for (int i = 0; i < result.getAcc().size(); i++) {
-				accStack.add(Integer.toString(result.getAcc().get(i)));
+			for (int i = 0; i < model.getAcc().size(); i++) {
+				accStack.add(Integer.toString(model.getAcc().get(i)));
 			}
 			view.setAccStack(accStack);
-		} else {
+		} 
+		
+		else {
 			view.setAccStack(new ArrayList<String>());
 		}
 
-		if (result.getxReg() != null && result.getxReg().size() > 0) {
+		if (model.getXReg() != null && model.getXReg().size() > 0) {
 			ArrayList<String> xStack = new ArrayList<String>();
-			for (int i = 0; i < result.getxReg().size(); i++) {
-				xStack.add(Integer.toString(result.getxReg().get(i)));
+			for (int i = 0; i < model.getXReg().size(); i++) {
+				xStack.add(Integer.toString(model.getXReg().get(i)));
 			}
 			view.setXStack(xStack);
-		} else {
+		} 
+		
+		else {
 			view.setXStack(new ArrayList<String>());
 		}
 
-		if (result.getyReg() != null && result.getyReg().size() > 0) {
+		if (model.getYReg() != null && model.getYReg().size() > 0) {
 			ArrayList<String> yStack = new ArrayList<String>();
-			for (int i = 0; i < result.getyReg().size(); i++) {
-				yStack.add(Integer.toString(result.getyReg().get(i)));
+			for (int i = 0; i < model.getYReg().size(); i++) {
+				yStack.add(Integer.toString(model.getYReg().get(i)));
 			}
 			view.setYStack(yStack);
-		} else {
+		} 
+		
+		else {
 			view.setYStack(new ArrayList<String>());
 		}
 
-		view.setCarryFlag(result.isCarryFlag());
-		view.setZeroFlag(result.isZeroFlag());
-		view.setNegativeFlag(result.isNegativeFlag());
+		view.setCarryFlag(model.isCarryFlag());
+		view.setZeroFlag(model.isZeroFlag());
+		view.setNegativeFlag(model.isNegativeFlag());
 
-		if (result.memory[0] !=  -1) {
+		if (model.getMemory()[0] !=  -1) {
 			HashMap<String, String> memoryValues = new HashMap<String, String>();
 			int i = 0;
-			while(result.memory[i] != -1) {
-				memoryValues.put(Integer.toString(i), Integer.toString(result.memory[i]));
+			while(model.getMemory()[i] != -1) {
+				memoryValues.put(Integer.toString(i), Integer.toString(model.getMemory()[i]));
 				i++;
 			}
 
@@ -202,17 +180,16 @@ public class Controller implements ControllerInterface {
 			view.setMemoryAllocation(new HashMap<String, String>());
 		}
 
-		view.setConsoleText(result.getOutput());
-		view.setButtonsEnabled(result.isSuccessCompile());
+		/* 
+		 * Need to amend the method to add both the error stream and standard output stream 
+		 * Currently, it is only adding standard output.
+		 */
+		view.setConsoleText(model.getStdStream().getOutput());
+	
+		view.setButtonsEnabled(model.isCompileSuccess());
 	}
-
-
-	@Override
-	public void stepThroughClicked() {
-		// TODO Auto-generated method stub
-
-	}
-
+	
+	
 	@Override
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
@@ -230,12 +207,5 @@ public class Controller implements ControllerInterface {
 			File file = model.programToFile(program, filename);
 			view.setFilename(file.getName());
 		}
-	}
-	
-	/**
-	 * Launches the application by creating a new CecilController.
-	 */
-	public static void main(String[] args) {
-		new Controller();
-	}
+	}	
 }

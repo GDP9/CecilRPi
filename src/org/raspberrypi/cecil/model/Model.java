@@ -11,20 +11,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.raspberrypi.cecil.model.interfaces.ModelInterface;
+import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
+import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
+import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 import org.raspberrypi.cecil.pojo.Instruction;
 import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * @author Shreeprabha Carolina
+ * @author Shreeprabha
  *
  */
-public class Model implements ModelInterface {
+public class Model implements ModelInterface, SimulatorInterface {
 
+	private StandardOutputStream stdStream;
+	private ErrorOutputStream errorStream;
 	private Simulator sim40;
 	private Compiler compiler;
 	private Runner runner;
+	
 	private static int ptr;
 	
 	/**
@@ -45,28 +50,28 @@ public class Model implements ModelInterface {
 	}
 
 	@Override
-	public Simulator getSimulator() {
-		return this.sim40;
-	}
-
-	@Override
 	public void run() {
-		sim40 = runner.getSimulator();
-		runner.run(0);
+		this.runner.run(0);
+		this.sim40 = this.runner.getSimulator();
+		this.errorStream = this.runner.getErrorStream();
+		this.stdStream = this.runner.getStdStream();
 	}
 
 	@Override
 	public void stepThrough() {
-		runner.stepthrough(ptr);
+		this.runner.stepthrough(ptr);
 	}
 
 	@Override
 	public void compile(Program program) {	
 		File file = programToFile(program, "temp.cecil");
 		
-		compiler = new Compiler(file.getAbsolutePath());
-		sim40 = compiler.getSimulator();
-		runner = new Runner(compiler, compiler.getSimulator());
+		this.compiler = new Compiler(file.getAbsolutePath(), program);
+		this.sim40 = this.compiler.getSimulator();
+		this.errorStream = this.compiler.getErrorStream();
+		this.stdStream = this.compiler.getStdStream();
+		
+		this.runner = new Runner(this.compiler);
 	}
 	
 	/**
@@ -88,7 +93,7 @@ public class Model implements ModelInterface {
 			input += a.get(0) + " " + a.get(1) + " " + a.get(2) + " " + a.get(3) + "\n";
 			
 			/* Save the instruction corresponding to the line number */
-			sim40.getInstructionLineNumber().put(line, a.get(1));
+			//sim40.getInstructionLineNumber().put(line, a.get(1));
 		}
 
 		/* Writing to file */
@@ -176,5 +181,55 @@ public class Model implements ModelInterface {
 		}
 		
 		return new Program(program);
+	}
+
+	@Override
+	public boolean isCarryFlag() {
+		return this.sim40.isCarryFlag();
+	}
+
+	@Override
+	public boolean isZeroFlag() {
+		return this.sim40.isZeroFlag();
+	}
+
+	@Override
+	public boolean isNegativeFlag() {
+		return this.sim40.isNegativeFlag();
+	}
+
+	@Override
+	public boolean isCompileSuccess() {
+		return this.sim40.isCompileSuccess();
+	}
+
+	@Override
+	public ArrayList<Integer> getXReg() {
+		return this.sim40.getXReg();
+	}
+
+	@Override
+	public ArrayList<Integer> getYReg() {
+		return this.sim40.getYReg();
+	}
+
+	@Override
+	public ArrayList<Integer> getAcc() {
+		return this.sim40.getAcc();
+	}
+
+	@Override
+	public int[] getMemory() {
+		return this.sim40.getMemory();
+	}
+
+	@Override
+	public ErrorOutputStream getErrorStream() {
+		return this.errorStream;
+	}
+
+	@Override
+	public StandardOutputStream getStdStream() {
+		return this.stdStream;
 	}
 }

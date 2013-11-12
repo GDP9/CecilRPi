@@ -25,7 +25,8 @@ options {
   import java.util.ArrayList;
   import org.raspberrypi.cecil.model.*;
   import org.raspberrypi.cecil.pojo.*;
-  import org.raspberrypi.cecil.model.outputstream.*;
+  import org.raspberrypi.cecil.model.outputstream.Error;
+  import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 }
 
 /* package and import declaration for lexer */
@@ -95,7 +96,7 @@ options {
  * Reserved Keywords: all-instructions
  */
 program 
-  : '.start' instruction*
+  : '.start' mnemonicdata instruction*
   ;
 
 instruction 
@@ -104,7 +105,7 @@ instruction
     if(labelfield.containsKey($labelfield.text)) throw new RecognitionException();
     else labelfield.put(($labelfield.text),pointer);
   }
-  )? instructiondata
+  )? mnemonicdata
   
   
   ;  
@@ -113,7 +114,7 @@ labelfield
   :  NAME
   ;
 
-instructiondata 
+mnemonicdata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
           System.out.println(" val "+($binaryinstruction.text));
