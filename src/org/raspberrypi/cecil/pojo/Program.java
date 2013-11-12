@@ -27,7 +27,7 @@ public class Program {
 	}
 	
 	/**
-	 * Returns the line number at the first occurence of the data label
+	 * Returns the line number at the first occurrence of the data label
 	 * 
 	 * @param name
 	 * @param col
@@ -35,7 +35,7 @@ public class Program {
 	 */
 	public int getDataLine(String name) {
 		for(int line = 0; line < programStatements.size(); line++)
-			if(programStatements.get(3).equals(name))
+			if(programStatements.get(2).equals(name))
 				return line;
 		
 		return -1;

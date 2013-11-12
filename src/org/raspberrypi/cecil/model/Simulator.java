@@ -62,6 +62,7 @@ public class Simulator {
 		yReg = new ArrayList<Integer>();
 		acc = new ArrayList<Integer>();
 
+		successCompile = true;
 		zeroFlag = carryFlag = negativeFlag = false;
 	}
 
@@ -97,7 +98,6 @@ public class Simulator {
 				if(program.getProgramStatements().get(line).get(j) != null 
 						&& !program.getProgramStatements().get(line).get(j).equals(" ")
 						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr])
-
 					lines[ctr++] = line;
 			}
 		}
