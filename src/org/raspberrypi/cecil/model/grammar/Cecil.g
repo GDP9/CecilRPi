@@ -18,6 +18,9 @@ options {
     language = Java;
 }
 
+tokens {
+STOP = 'stop';
+}
 /* package and import declaration for parser */
 @header { 
   package org.raspberrypi.cecil.model.grammar;
@@ -93,11 +96,12 @@ options {
 
 /**
  * Rules
- * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
+ * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt, ypull, ypush, push, 
+ *       lshift, rshift, pull, printd, xpull, xpush, jmptosr, return
  * Reserved Keywords: all-instructions
  */
 program 
-  : '.start' mnemonicdata instruction*
+  : '.start' mnemonicdata instruction* STOP
   ;
 
 instruction 
@@ -151,13 +155,12 @@ mnemonicdata
   ;
 
 unaryinstruction
-  : ('stop'| 'print'| 'printch'|'printb'|'printd'|'cclear'|'cset'|'lshift'|'rshift'|'pull'
-  |'xdec'|'xinc'|'xpull'|'xpush'|'ydec'|'yinc'|'ypull'|'ypush'|'push')
+  : (STOP|'print'|'printch'|'printb'|'cclear'|'cset'|'xdec'|'xinc'|'ydec'|'yinc')
   ;
   
 binaryinstruction
-  : ('add'|'sub'|'and'|'comp'|'xor'|'or'|'jineg'|'jicarry'|'jipos'|'jizero'|'jmptosr'|'jump'
-  |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp' | 'insert' | 'return'|'ycomp')
+  : ('add'|'sub'|'and'|'comp'|'xor'|'or'|'jineg'|'jicarry'|'jipos'|'jizero'|'jump'
+  |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp'|'insert'|'ycomp')
   ;
   
   
