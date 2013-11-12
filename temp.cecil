@@ -2,7 +2,7 @@
   add num2 ;
   print   ;
   printch   ;
-  add num2 ;
+  printb   ;
   stop   ;
 .num1 insert 63 ;
 .num2 insert 2 ;

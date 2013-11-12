@@ -25,7 +25,7 @@ options {
   import java.util.ArrayList;
   import org.raspberrypi.cecil.model.*;
   import org.raspberrypi.cecil.pojo.*;
-  import org.raspberrypi.cecil.model.outputstream.Error;
+  import org.raspberrypi.cecil.model.outputstream.OutputError;
   import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 }
 
@@ -88,7 +88,7 @@ options {
           String hdr = getErrorHeader(e);
           String msg = getErrorMessage(e, tokenNames);
           System.out.println(hdr + "   "+ msg);
-          this.stream.getErrors().add(new Error(e.line, msg));
+          this.stream.getErrors().add(new OutputError(e.line, msg));
     }
 }
 

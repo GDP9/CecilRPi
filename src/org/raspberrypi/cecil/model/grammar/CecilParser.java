@@ -1,11 +1,11 @@
-// $ANTLR 3.5.1 C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-12 10:55:38
+// $ANTLR 3.5.1 C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-12 15:27:21
  
   package org.raspberrypi.cecil.model.grammar;
   import java.util.HashMap;
   import java.util.ArrayList;
   import org.raspberrypi.cecil.model.*;
   import org.raspberrypi.cecil.pojo.*;
-  import org.raspberrypi.cecil.model.outputstream.Error;
+  import org.raspberrypi.cecil.model.outputstream.OutputError;
   import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 
 
@@ -160,7 +160,7 @@ public class CecilParser extends Parser {
 	          String hdr = getErrorHeader(e);
 	          String msg = getErrorMessage(e, tokenNames);
 	          System.out.println(hdr + "   "+ msg);
-	          this.stream.getErrors().add(new Error(e.line, msg));
+	          this.stream.getErrors().add(new OutputError(e.line, msg));
 	    }
 
 

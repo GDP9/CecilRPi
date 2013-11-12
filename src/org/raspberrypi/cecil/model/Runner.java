@@ -1,8 +1,9 @@
 package org.raspberrypi.cecil.model;
 
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
+import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
-import org.raspberrypi.cecil.model.outputstream.Error;
+import org.raspberrypi.cecil.model.outputstream.OutputError;
 
 /**
  * 
@@ -134,21 +135,20 @@ public class Runner {
 			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 			i++;
 			break;
-		case 6: /* lshift */
-			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
-			i++;
-			break;
-		case 7: /* rshift */
-			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
-			i++;
-			break;
+//		case 6: /* lshift */
+//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
+//			i++;
+//			break;
+//		case 7: /* rshift */
+//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
+//			i++;
+//			break;
 		case 8: /* pull */
 			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
 			}
-
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot pull because of underflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
 
 			i++;
 			break;
@@ -170,7 +170,7 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot pull because of underflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
 
 			i++;
 			break;
@@ -181,19 +181,21 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot push because of overflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
 
 			i++;
 			break;
 
 		case 13: /* push */
+			System.out.println("before   " + sim40.memory[Simulator.STACK_PTR]);
 			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.ACCUMULATOR_ADDRESS];
+				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[sim40.memory[i++]];
 			}
-
+		
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot push because of overflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
 
+			System.out.println("after  " + sim40.memory[Simulator.STACK_PTR]);
 			i++;
 			break;
 
@@ -203,7 +205,7 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot push because of overflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
 			i++;
 			break;
 
@@ -213,7 +215,7 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[i],"Cannot pull because of underflow"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
 
 			i++;
 			break;
@@ -236,8 +238,8 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+			
 			break;
 
 		case 19: /* store */
@@ -246,11 +248,12 @@ public class Runner {
 				i++;
 			}
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
 		case 20: /* add */
+			
 			if(checkInsert(i))	{
 				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] += sim40.memory[sim40.memory[++i]];
@@ -258,8 +261,11 @@ public class Runner {
 			}
 
 			else
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
+			{
+			System.out.println("ssiimm  " + sim40.memory[i+1]);
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+			}
+			
 			break;
 
 		case 21: /* sub */
@@ -269,7 +275,7 @@ public class Runner {
 				i++;
 			}
 			else
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 		case 22: /* and */
@@ -280,7 +286,7 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
@@ -292,19 +298,18 @@ public class Runner {
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
 		case 24: /* xor */
 			if(checkInsert(i)) {	
-				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] ^= sim40.memory[sim40.memory[++i]];
 				i++;
 			}
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
@@ -347,21 +352,21 @@ public class Runner {
 				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[++i];
 
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
 
 		case 33: /* xstore */
 			if(checkInsert(i))	
 				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.XREG_ADDRESS];
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
 
 		case 34: /* loadmx */
 			if(checkInsert(i))	
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[++i] + sim40.memory[Simulator.XREG_ADDRESS];
 			else
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
 
 		case 35: /* xcomp */
@@ -373,7 +378,7 @@ public class Runner {
 			if(checkInsert(i))	
 				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[++i];
 			else 
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
@@ -381,7 +386,7 @@ public class Runner {
 			if(checkInsert(i))	
 				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.YREG_ADDRESS];
 			else
-				this.errorStream.getErrors().add(new Error(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
+				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
 
@@ -401,25 +406,24 @@ public class Runner {
 	 * 
 	 */
 	private void checkStatusFlags() {
-		/* checking carry flag status */
-
-		if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] >= 1024)
-				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] >= 1024)
-				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] >= 1024)) {
-			if(sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] >= 1024)
+		/* checking zero flag status */
+		if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >= 1024)
+				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[Simulator.YREG_ADDRESS] >= 1024)
+				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[Simulator.XREG_ADDRESS] >= 1024)) {
+			if(sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >= 1024)
 				setRegToMax(Simulator.ACCUMULATOR_ADDRESS);
 
-			if( sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] >= 1024) 
+			if( sim40.memory[Simulator.XREG_ADDRESS] >= 1024) 
 				setRegToMax(Simulator.XREG_ADDRESS);
 
-			if(sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] >= 1024)
+			if(sim40.memory[Simulator.YREG_ADDRESS] >= 1024)
 				setRegToMax(Simulator.YREG_ADDRESS);
 		}
 
 		/* checking negative flag status */
-		else if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.ACCUMULATOR_ADDRESS]] == 0)
-				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.YREG_ADDRESS]] == 0)
-				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[sim40.memory[Simulator.XREG_ADDRESS]] == 0)) {
+		else if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[Simulator.ACCUMULATOR_ADDRESS] == 0)
+				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[Simulator.YREG_ADDRESS] == 0)
+				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[Simulator.XREG_ADDRESS] == 0)) {
 			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
 			sim40.memory[Simulator.STATUS_ADDRESS] |= 1;
 		}
@@ -431,7 +435,8 @@ public class Runner {
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
-		sim40.memory[sim40.memory[register]] = 1024;
+		System.out.println("gets here");
+		sim40.memory[register] = 1024;
 		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 	}
 	/**

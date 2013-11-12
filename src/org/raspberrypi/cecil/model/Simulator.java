@@ -57,6 +57,7 @@ public class Simulator {
 			memory[i] = -1;
 
 		memory[STACK_PTR] = 908;
+		memory[STATUS_ADDRESS] = 0;
 
 		xReg = new ArrayList<Integer>();
 		yReg = new ArrayList<Integer>();
@@ -75,9 +76,9 @@ public class Simulator {
 		if(memory[YREG_ADDRESS] != -1)
 			yReg.add(memory[YREG_ADDRESS]);
 		if(memory[ACCUMULATOR_ADDRESS] != -1) {
-			System.out.println("mem "+memory[ACCUMULATOR_ADDRESS]);
 			acc.add(memory[ACCUMULATOR_ADDRESS]);
 		}
+		
 		if( (memory[STATUS_ADDRESS] << 0) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
@@ -86,8 +87,9 @@ public class Simulator {
 			negativeFlag = false;
 		else negativeFlag = true;
 
-		if( (memory[STATUS_ADDRESS] << 2) == 0)
+		if( (memory[STATUS_ADDRESS] << 2) == 0){
 			carryFlag = false;
+		}
 		else carryFlag = true;
 
 		}
@@ -206,6 +208,14 @@ public class Simulator {
 	 */
 	public int[] getMemory() {
 		return memory;
+	}
+	
+	/**
+	 * 
+	 * @return stack pointer
+	 */
+	public static int getStackPtr() {
+		return STACK_PTR;
 	}
 	
 }

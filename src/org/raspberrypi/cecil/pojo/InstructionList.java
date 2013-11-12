@@ -41,8 +41,8 @@ public class InstructionList {
 		instructions.add(new Instruction("printb", "Prints the contents of Accumulator in binary format", 3));
 		instructions.add(new Instruction("cclear", "Sets the carry flag to 0", 4));
 		instructions.add(new Instruction("cset", "Sets the carry flag to 1", 5));
-		instructions.add(new Instruction("lshift", "Moves all the bits of accumulator on place to the left", 6));
-		instructions.add(new Instruction("rshift", "Moves all the bits of accumulator on place to the right", 7));
+//		instructions.add(new Instruction("lshift", "Moves all the bits of accumulator on place to the left", 6));
+//		instructions.add(new Instruction("rshift", "Moves all the bits of accumulator on place to the right", 7));
 		instructions.add(new Instruction("pull", "Pulls a copy of the number on the top of the stack into the Accumulator", 8));
 		instructions.add(new Instruction("xinc", "Adds 1 to the current value of the X-register", 9));
 		instructions.add(new Instruction("xdec", "Subtracts 1 from the current value of the X-register", 10));

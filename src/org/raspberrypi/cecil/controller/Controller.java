@@ -80,6 +80,13 @@ public class Controller implements ControllerInterface {
 		
 		line = new ArrayList<String>();
 		line.add(" ");
+		line.add("printb");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
