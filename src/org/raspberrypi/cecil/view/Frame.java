@@ -95,6 +95,8 @@ public class Frame extends JFrame implements ViewInterface {
 	
 	private static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
 	
+	private static final Color[] Default_THEME = {new Color(224, 224, 224), new Color(224, 224, 224), new Color(224, 224, 224)};
+	
 	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
 	private static final FontUIResource FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
@@ -616,42 +618,48 @@ public class Frame extends JFrame implements ViewInterface {
 	 * A theme consists of three colours; background, highlight, and inner panel colours.
 	 */
 	private void setupColours() {
-		Color background = currentTheme[0];
-		Color highlight = currentTheme[1];
-		Color inner = currentTheme[2];
-		getContentPane().setBackground(background);
-		menuBar.setColour(highlight);
-		LineBorder border = new LineBorder(highlight, 3, true);
-		UIManager.put("TitledBorder.border", border);
-		UIManager.put("Label.disabledForeground", Color.BLACK);
+		if (currentTheme != null && currentTheme[0] != null && currentTheme[1] != null && currentTheme[2] != null) {
+			   Color background = currentTheme[0];
+			   Color highlight = currentTheme[1];
+			   Color inner = currentTheme[2];
+			   getContentPane().setBackground(background);
+			   menuBar.setColour(highlight);
+			   LineBorder border = new LineBorder(highlight, 3, true);
+			   UIManager.put("TitledBorder.border", border);
+			   UIManager.put("Label.disabledForeground", Color.BLACK);
+			   
+			   northPanel.setBackground(background);
+			   centerLeftPanel.setBackground(background);
+			   centerRightPanel.setBackground(background);
+			   southPanel.setBackground(background);
+			 
+			   btnCompile.setBackground(background);
+			   
+			   registerPanel.setBackground(background);
+			   xRegister.setBackground(inner);
+			   yRegister.setBackground(inner);
+			   accRegister.setBackground(inner);
+			   
+			   accRegister.setSelectionBackground(highlight);
+			   xRegister.setSelectionBackground(highlight);
+			   yRegister.setSelectionBackground(highlight);
+			 
+			   flagPanel.setBackground(background);
+			   lblCarry.setBackground(inner);
+			   lblZero.setBackground(inner);
+			   lblNegative.setBackground(inner);
+			 
+			   consolePanel.setBackground(background);
+			   txtConsole.setBackground(inner);
+			 
+			   tblInput.setBackground(inner);
+			   tblInput.setSelectionBackground(highlight);
+			   tblMemory.setBackground(inner);
+			  }
+		else{
 		
-		northPanel.setBackground(background);
-		centerLeftPanel.setBackground(background);
-		centerRightPanel.setBackground(background);
-		southPanel.setBackground(background);
-
-		btnCompile.setBackground(background);
+		}
 		
-		registerPanel.setBackground(background);
-		xRegister.setBackground(inner);
-		yRegister.setBackground(inner);
-		accRegister.setBackground(inner);
-		
-		accRegister.setSelectionBackground(highlight);
-		xRegister.setSelectionBackground(highlight);
-		yRegister.setSelectionBackground(highlight);
-
-		flagPanel.setBackground(background);
-		lblCarry.setBackground(inner);
-		lblZero.setBackground(inner);
-		lblNegative.setBackground(inner);
-
-		consolePanel.setBackground(background);
-		txtConsole.setBackground(inner);
-
-		tblInput.setBackground(inner);
-		tblInput.setSelectionBackground(highlight);
-		tblMemory.setBackground(inner);
 	}
 	
 	/**
@@ -1346,9 +1354,27 @@ public class Frame extends JFrame implements ViewInterface {
 	 * @param font The new font.
 	 * 
 	 */
-	public void setNewFont(Font font){
-		currentFont = new FontUIResource(font);
+	public void setNewFont(String font){
+		if(font == "Small"){
+			currentFont = FONT_SMALL;
+		}
+		else if(font == "Medium"){
+			currentFont = FONT_MEDIUM;
+		}
+		else if(font == "Large"){
+			currentFont = FONT_LARGE;
+		}
 		setupFonts();
+	}
+	public void setNewColour(String color){
+		if(color == "Default"){
+			currentTheme = Default_THEME;			
+		}
+		else if(color == "Orange"){
+			currentTheme = ORANGE_THEME;
+		}
+		
+		setupColours();
 	}
 
 	/*

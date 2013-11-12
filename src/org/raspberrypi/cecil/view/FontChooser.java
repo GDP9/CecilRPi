@@ -15,8 +15,8 @@ public class FontChooser extends JDialog{
 JComboBox fontName;
 JComboBox fontSize;
 JLabel sampleText;
-public Font newFont;
-Color newColor;
+String newFont;
+String newColor;
 JTextArea image;
 JComboBox colourName;
 Frame frame;
@@ -83,7 +83,7 @@ fontPreview.add(sampleText, gbc_fontlabel);
 
 
 colourName = new JComboBox(new String[] {"Pink", 
-       "Orange", "Green"});
+       "Orange", "Green", "Default"});
 colourName.setSelectedIndex(1);
 colourName.addActionListener(new ActionListener() {
 	   public void actionPerformed(ActionEvent ae) {
@@ -148,31 +148,38 @@ c.add(fontPreview, gbc_font);
 protected void updateFont() {
 	
  String name = fontName.getSelectedItem().toString();
- int size = 16;
+ int size = 12;
  if(fontSize.getSelectedItem().toString()=="Small"){
- size = 14;
+ size = 12;
+ newFont = "Small";
  }
  else if(fontSize.getSelectedItem().toString()=="Medium"){
 	 size = 18;
+	 newFont = "Medium";
 	 }
  else if(fontSize.getSelectedItem().toString()=="Large"){
-	 size = 22;
+	 size = 24;
+	 newFont = "Large";
 	 }
  Font f = new Font(name, Font.PLAIN, size);
  sampleText.setFont(f);
- newFont = sampleText.getFont(); 
-}
+ }
 
 protected void updateColour() {
 	  //Image will be shown here.
 	if(colourName.getSelectedIndex()==1){
 	   image.setBackground(Color.ORANGE);
+	   newColor = "Orange";
 	}
 	else if(colourName.getSelectedIndex()==0){
 		image.setBackground(Color.PINK);
 	}
 	else if(colourName.getSelectedIndex()==2){
 		image.setBackground(Color.GREEN);
+	}
+	else if(colourName.getSelectedIndex()==3){
+		image.setBackground(Color.GRAY);
+		newColor = "Default";
 	}
 	
 	}
@@ -181,16 +188,14 @@ protected void updateColour() {
 
 public void saveandclose() {
  // Save font & color information
- newFont = sampleText.getFont();  
  frame.setNewFont(newFont);
+ frame.setNewColour(newColor);
 setVisible(false);
 //System.out.println("Test in FontChooser?"+new Frame().test);
 
 }
 
-public Font getnewFont(){
-	return newFont;
-}
+
 public void cancelandclose() {
  // Erase any font information and then close the window
  //newFont = null;
