@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Program {
 
 	private ArrayList<ArrayList<String>> programStatements;
-	
+
 	/**
 	 * Constructor
 	 * @param programStatements
@@ -16,8 +16,8 @@ public class Program {
 	public Program(ArrayList<ArrayList<String>> programStatements) {
 		this.programStatements = programStatements;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @return
@@ -25,7 +25,7 @@ public class Program {
 	public ArrayList<ArrayList<String>> getProgramStatements() {
 		return programStatements;
 	}
-	
+
 	/**
 	 * Returns the line number at the first occurrence of the data label
 	 * 
@@ -34,10 +34,12 @@ public class Program {
 	 * @return
 	 */
 	public int getDataLine(String name) {
-		for(int line = 0; line < programStatements.size(); line++)
-			if(programStatements.get(2).equals(name))
-				return line;
-		
-		return -1;
+
+		for(int line = 0; line < programStatements.size(); line++){
+			if(programStatements.get(line).get(2).equals(name))
+				return line+1;
+		}
+
+		return 0;
 	}
 }

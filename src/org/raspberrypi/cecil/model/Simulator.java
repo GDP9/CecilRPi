@@ -93,7 +93,7 @@ public class Simulator {
 	}
 
 	public void setLineNumbers(Program program) {
-		for(int line = 0, ctr = 0; line < program.getProgramStatements().size(); line++) {
+		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
 			for(int j = 1; j < 2; j++) {
 				if(program.getProgramStatements().get(line).get(j) != null 
 						&& !program.getProgramStatements().get(line).get(j).equals(" ")
