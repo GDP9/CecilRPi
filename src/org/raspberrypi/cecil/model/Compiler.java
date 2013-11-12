@@ -8,7 +8,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.raspberrypi.cecil.model.grammar.CecilLexer;
 import org.raspberrypi.cecil.model.grammar.CecilParser;
-import org.raspberrypi.cecil.model.outputstream.OutputError;
+import org.raspberrypi.cecil.model.outputstream.Error;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 import org.raspberrypi.cecil.pojo.Program;
@@ -53,13 +53,13 @@ public class Compiler {
 					this.sim40.memory[parser.getDatafield().get(key)] = this.parser.getLabelfield().get(key);
 
 				else { 
-					this.errorStream.getErrors().add(new OutputError(program.getDataLine(key), "Data " + key + " has no labelfield"));
+					this.errorStream.getErrors().add(new Error(program.getDataLine(key), "Data " + key + " has no labelfield"));
 					this.sim40.setSuccessCompile(false);
 				}
 			}
 			/* checking for stop instruction */
 			if(!parser.getInstructionfield().containsValue("stop")) {
-				this.errorStream.getErrors().add(new OutputError(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
+				this.errorStream.getErrors().add(new Error(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
 				this.sim40.setSuccessCompile(false);
 			}
 
@@ -68,7 +68,7 @@ public class Compiler {
 				this.stdStream.getOutput().add("Program has successfully compiled"); 
 				this.sim40.setSuccessCompile(true);
 			}
-			for(OutputError e : this.errorStream.getErrors())
+			for(Error e : this.errorStream.getErrors())
 				System.out.println(e.getLine() + "   " + e.getMessage());
 
 			for(String e : this.stdStream.getOutput())

@@ -71,12 +71,13 @@ public class Simulator {
 	 */
 	public void updateViewVars() {
 		if(memory[XREG_ADDRESS] != -1)
-			xReg.add(memory[memory[XREG_ADDRESS]]);
+			xReg.add(memory[XREG_ADDRESS]);
 		if(memory[YREG_ADDRESS] != -1)
-			yReg.add(memory[memory[YREG_ADDRESS]]);
-		if(memory[ACCUMULATOR_ADDRESS] != -1)
-			acc.add(memory[memory[ACCUMULATOR_ADDRESS]]);
-
+			yReg.add(memory[YREG_ADDRESS]);
+		if(memory[ACCUMULATOR_ADDRESS] != -1) {
+			System.out.println("mem "+memory[ACCUMULATOR_ADDRESS]);
+			acc.add(memory[ACCUMULATOR_ADDRESS]);
+		}
 		if( (memory[STATUS_ADDRESS] << 0) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
@@ -89,7 +90,7 @@ public class Simulator {
 			carryFlag = false;
 		else carryFlag = true;
 
-	}
+		}
 
 	public void setLineNumbers(Program program) {
 		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
@@ -206,4 +207,5 @@ public class Simulator {
 	public int[] getMemory() {
 		return memory;
 	}
+	
 }

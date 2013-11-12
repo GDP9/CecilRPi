@@ -14,38 +14,83 @@ import org.junit.runners.JUnit4;
 
 
 /**
-*
-* CECIL Compiler JUnit tests.
-* Performs JUnit assertion tests to Compiler.
-* Takes correct and incorrect input.
-* Uses JUnit4.
-*
-* The MIT License (MIT)
-* Copyright (c) 2013 Southampton University group GDP9
-*
-* @authors Carolina Ferreira (cf4g09)
-* Southampton University, United Kingdom
-* @version 1.1
-* 
-* @date 11/11/2013
-*
-*/
+ *
+ * CECIL Compiler JUnit tests.
+ * Performs JUnit assertion tests to Compiler.
+ * Takes correct and incorrect input.
+ * Uses JUnit4.
+ *
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ *
+ * @authors Carolina Ferreira (cf4g09)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 11/11/2013
+ *
+ */
 @RunWith (JUnit4.class)
 public class TestingRunner {
+
+	private ArrayList<String> getbitwise_algebraic_operators() {
+		ArrayList<String> bitwise_algebraic_Operators = new ArrayList<String>();
+		bitwise_algebraic_Operators.add("add");
+		bitwise_algebraic_Operators.add("sub");
+		bitwise_algebraic_Operators.add("and");
+		bitwise_algebraic_Operators.add("or");
+		bitwise_algebraic_Operators.add("xor");
+		return bitwise_algebraic_Operators;
+	}
 
 	/**
 	 * Set of tests which compile correctly.
 	 */
 	@Test
 	public void runs(){
-		Runner r = getCorrect();
-		r.run(0);
-		Simulator sim40 = r.getSimulator();
-		org.junit.Assert.assertEquals(65, Integer.parseInt(r.getStdStream().getOutput().get(0)));
-		org.junit.Assert.assertEquals("A", r.getStdStream().getOutput().get(1));
-		/*sim40.updateViewVars();
-		System.out.println(sim40.getAcc().size()-1);
-		org.junit.Assert.assertEquals(r.result(1), ""+sim40.getAcc().get(sim40.getAcc().size()-1));*/
+		String resultPrint = "";
+		String resulPrintCh = "";
+		String resulPrintB = "";
+		for(String s : getbitwise_algebraic_operators()){
+			Runner r = getCorrect(s);
+			r.run(0);
+			Simulator sim40 = r.getSimulator();
+			switch (s) {
+			case "add":
+				resultPrint = "65";
+				resulPrintCh = Character.toString((char)65);
+				resulPrintB = Integer.toBinaryString(65);
+				break;
+				
+			case "sub":
+				resultPrint = "61";
+				resulPrintCh= Character.toString((char)61);
+				resulPrintB = Integer.toBinaryString(61);
+				break;
+				
+			case "and":
+				resultPrint = "2";
+				resulPrintCh= Character.toString((char)2);
+				resulPrintB = Integer.toBinaryString(2);
+				break;
+				
+			case "or":
+				resultPrint = "63";
+				resulPrintCh= Character.toString((char)63);
+				resulPrintB = Integer.toBinaryString(63);
+				break;
+				
+			case "xor":
+				resultPrint = "61";
+				resulPrintCh= Character.toString((char)61);
+				resulPrintB = Integer.toBinaryString(61);
+				break;
+			}
+			org.junit.Assert.assertEquals(resultPrint, r.getStdStream().getOutput().get(0));
+			org.junit.Assert.assertEquals(resulPrintCh, r.getStdStream().getOutput().get(1));
+			org.junit.Assert.assertEquals(resulPrintB, r.getStdStream().getOutput().get(2));
+			System.out.println(sim40.getAcc());
+		}
 	}
 
 	/**
@@ -70,42 +115,42 @@ public class TestingRunner {
 		input.add("num1");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("add");
 		input.add("num2");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("print");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("printch");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("stop");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(".num1");
 		input.add("insert");
 		input.add("63");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(".num2");
 		input.add("insert");
@@ -128,65 +173,30 @@ public class TestingRunner {
 	 * Correct input used in compiler test.
 	 * @return Compiler object using correct input
 	 */
-	private Runner getCorrect(){
+	private Runner getCorrect(String op){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
-	/*	
-		input.add(".start");
-		input.add("load");
-		input.add("d1");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("print");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("printch");
-		input.add(" ");
-		input.add(";This is a sample comment");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(" ");
-		input.add("stop");
-		input.add(" ");
-		input.add(" ");
-		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(".d1");
-		input.add("insert");
-		input.add("65");
-		input.add(" ");
-		userinput.add(input);*/
-		
 		input.add(".start");
 		input.add("load");
 		input.add("num1");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
-		input.add("add");
+		input.add(op);
 		input.add("num2");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("print");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("printch");
@@ -196,18 +206,25 @@ public class TestingRunner {
 		
 		input = new ArrayList<String>();
 		input.add(" ");
+		input.add("printb");
+		input.add(" ");
+		input.add(";");
+		userinput.add(input);
+
+		input = new ArrayList<String>();
+		input.add(" ");
 		input.add("stop");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(".num1");
 		input.add("insert");
 		input.add("63");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(".num2");
 		input.add("insert");
