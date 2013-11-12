@@ -70,7 +70,6 @@ public class Simulator {
 	 * Method to update the view variables
 	 */
 	public void updateViewVars() {
-
 		if(memory[XREG_ADDRESS] != -1)
 			xReg.add(memory[memory[XREG_ADDRESS]]);
 		if(memory[YREG_ADDRESS] != -1)

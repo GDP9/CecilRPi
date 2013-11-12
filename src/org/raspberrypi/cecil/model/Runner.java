@@ -30,8 +30,8 @@ public class Runner {
 	public Runner(Compiler compiler) {
 		this.compiler = compiler;
 		this.sim40 = compiler.getSimulator();
-		this.errorStream = compiler.getErrorStream();
-		this.stdStream = compiler.getStdStream();
+		this.errorStream = new ErrorOutputStream();
+		this.stdStream = new StandardOutputStream();
 	}
 
 	/**
@@ -87,6 +87,7 @@ public class Runner {
 				i = execute(i);
 			}
 
+			
 			checkStatusFlags();
 			sim40.updateViewVars();
 			sim40.memory[Simulator.PROGRAM_COUNTER] = i;
@@ -101,7 +102,7 @@ public class Runner {
 	 * @return
 	 */
 	public String result(int i) {
-		switch(i){
+		switch(sim40.memory[i]){
 
 		case 1: /* print */
 			return (""+sim40.memory[Simulator.ACCUMULATOR_ADDRESS]);

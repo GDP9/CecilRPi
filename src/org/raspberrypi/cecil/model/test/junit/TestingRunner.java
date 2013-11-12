@@ -39,18 +39,23 @@ public class TestingRunner {
 	@Test
 	public void runs(){
 		Runner r = getCorrect();
+		r.run(0);
 		Simulator sim40 = r.getSimulator();
-		org.junit.Assert.assertEquals(r.result(1), ""+sim40.getAcc().get(sim40.getAcc().size()-1));
+		org.junit.Assert.assertEquals(65, Integer.parseInt(r.getStdStream().getOutput().get(0)));
+		org.junit.Assert.assertEquals("A", r.getStdStream().getOutput().get(1));
+		/*sim40.updateViewVars();
+		System.out.println(sim40.getAcc().size()-1);
+		org.junit.Assert.assertEquals(r.result(1), ""+sim40.getAcc().get(sim40.getAcc().size()-1));*/
 	}
 
 	/**
 	 * Set of tests which do not compile.
 	 */
-	@Test
+	/*@Test
 	public void doesntRun(){
 		Runner r = getIncorrect();
 		//org.junit.Assert.assertEquals(r.run(0));
-	}
+	}*/
 
 	/**
 	 * Incorrect input used in compiler test.
