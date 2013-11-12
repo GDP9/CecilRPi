@@ -43,14 +43,14 @@ public class InstructionList {
 		instructions.add(new Instruction("cset", "Sets the carry flag to 1", 5));
 //		instructions.add(new Instruction("lshift", "Moves all the bits of accumulator on place to the left", 6));
 //		instructions.add(new Instruction("rshift", "Moves all the bits of accumulator on place to the right", 7));
-		instructions.add(new Instruction("pull", "Pulls a copy of the number on the top of the stack into the Accumulator", 8));
+//		instructions.add(new Instruction("pull", "Pulls a copy of the number on the top of the stack into the Accumulator", 8));
 		instructions.add(new Instruction("xinc", "Adds 1 to the current value of the X-register", 9));
 		instructions.add(new Instruction("xdec", "Subtracts 1 from the current value of the X-register", 10));
-		instructions.add(new Instruction("xpush", "Pushes onto the top of the stack the current value of the X-register", 11));
-		instructions.add(new Instruction("xpull", "Pulls the value of the top of the stack into the X-register", 12));
-		instructions.add(new Instruction("push", "Places a copy of the value of the given address onto the top of the stack", 13));
-		instructions.add(new Instruction("ypush", "Pushes a copy of the number in the Y-register onto the top of the stack", 14));
-		instructions.add(new Instruction("ypull", "Pulls a copy of the number on  the top of the stack into the Y-register", 15));
+//		instructions.add(new Instruction("xpush", "Pushes onto the top of the stack the current value of the X-register", 11));
+//		instructions.add(new Instruction("xpull", "Pulls the value of the top of the stack into the X-register", 12));
+//		instructions.add(new Instruction("push", "Places a copy of the value of the given address onto the top of the stack", 13));
+//		instructions.add(new Instruction("ypush", "Pushes a copy of the number in the Y-register onto the top of the stack", 14));
+//		instructions.add(new Instruction("ypull", "Pulls a copy of the number on  the top of the stack into the Y-register", 15));
 		instructions.add(new Instruction("yinc", "Adds 1 to the current value of the Y-register", 16));
 		instructions.add(new Instruction("ydec", "Subtracts 1 from the current value of the Y-register", 17));
 		

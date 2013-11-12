@@ -85,7 +85,9 @@ public class Runner {
 				break;
 
 			default:
+				System.out.println(sim40.memory[i]);
 				i = execute(i);
+
 				checkStatusFlags();
 				sim40.updateViewVars();
 			}
@@ -135,23 +137,23 @@ public class Runner {
 			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 			i++;
 			break;
-//		case 6: /* lshift */
-//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
-//			i++;
-//			break;
-//		case 7: /* rshift */
-//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
-//			i++;
-//			break;
-		case 8: /* pull */
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			}
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-
-			i++;
-			break;
+			//		case 6: /* lshift */
+			//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
+			//			i++;
+			//			break;
+			//		case 7: /* rshift */
+			//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
+			//			i++;
+			//			break;
+			//		case 8: /* pull */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+			//				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
+			//			}
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
+			//
+			//			i++;
+			//			break;
 
 		case 9: /* xinc */
 			sim40.memory[Simulator.XREG_ADDRESS]++;
@@ -160,65 +162,62 @@ public class Runner {
 
 		case 10: /* xdec */
 			sim40.memory[Simulator.XREG_ADDRESS]--;
-
 			i++;
 			break;
 
-		case 11: /* xpull */
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-
-			i++;
-			break;
-
-		case 12: /* xpush */
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.XREG_ADDRESS];
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-
-			i++;
-			break;
-
-		case 13: /* push */
-			System.out.println("before   " + sim40.memory[Simulator.STACK_PTR]);
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[sim40.memory[i++]];
-			}
-		
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-
-			System.out.println("after  " + sim40.memory[Simulator.STACK_PTR]);
-			i++;
-			break;
-
-		case 14: /* ypush */
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.YREG_ADDRESS];
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-			i++;
-			break;
-
-		case 15: /* ypull */
-			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-
-			i++;
-			break;
+			//		case 11: /* xpull */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+			//				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
+			//			}
+			//
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
+			//
+			//			i++;
+			//			break;
+			//
+			//		case 12: /* xpush */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.XREG_ADDRESS];
+			//			}
+			//
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
+			//
+			//			i++;
+			//			break;
+			//
+			//		case 13: /* push */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[sim40.memory[i++]];
+			//			}
+			//		
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
+			//
+			//			i++;
+			//			break;
+			//
+			//		case 14: /* ypush */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
+			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.YREG_ADDRESS];
+			//			}
+			//
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
+			//			i++;
+			//			break;
+			//
+			//		case 15: /* ypull */
+			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
+			//				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
+			//			}
+			//
+			//			else 
+			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
+			//
+			//			i++;
+			//			break;
 
 		case 16: /* yinc */
 			sim40.memory[Simulator.YREG_ADDRESS]++;
@@ -239,7 +238,7 @@ public class Runner {
 
 			else 
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-			
+
 			break;
 
 		case 19: /* store */
@@ -253,7 +252,6 @@ public class Runner {
 			break;
 
 		case 20: /* add */
-			
 			if(checkInsert(i))	{
 				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] += sim40.memory[sim40.memory[++i]];
@@ -262,10 +260,9 @@ public class Runner {
 
 			else
 			{
-			System.out.println("ssiimm  " + sim40.memory[i+1]);
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			}
-			
+
 			break;
 
 		case 21: /* sub */
@@ -406,26 +403,23 @@ public class Runner {
 	 * 
 	 */
 	private void checkStatusFlags() {
+
+		this.checkFlags(Simulator.ACCUMULATOR_ADDRESS);
+		this.checkFlags(Simulator.XREG_ADDRESS);
+		this.checkFlags(Simulator.YREG_ADDRESS);
+	}
+
+
+	private void checkFlags(int register) {
 		/* checking zero flag status */
-		if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >= 1024)
-				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[Simulator.YREG_ADDRESS] >= 1024)
-				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[Simulator.XREG_ADDRESS] >= 1024)) {
-			if(sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >= 1024)
-				setRegToMax(Simulator.ACCUMULATOR_ADDRESS);
+		System.out.println(sim40.memory[register]);
+		if(sim40.memory[register] >= 1024) 
+			setRegToMax(register);
 
-			if( sim40.memory[Simulator.XREG_ADDRESS] >= 1024) 
-				setRegToMax(Simulator.XREG_ADDRESS);
-
-			if(sim40.memory[Simulator.YREG_ADDRESS] >= 1024)
-				setRegToMax(Simulator.YREG_ADDRESS);
-		}
 
 		/* checking negative flag status */
-		else if((sim40.memory[Simulator.ACCUMULATOR_ADDRESS] != -1 && sim40.memory[Simulator.ACCUMULATOR_ADDRESS] == 0)
-				|| (sim40.memory[Simulator.YREG_ADDRESS] != -1 && sim40.memory[Simulator.YREG_ADDRESS] == 0)
-				|| (sim40.memory[Simulator.XREG_ADDRESS] != -1 && sim40.memory[Simulator.XREG_ADDRESS] == 0)) {
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
-			sim40.memory[Simulator.STATUS_ADDRESS] |= 1;
+		else if(sim40.memory[register] <= 0) {
+			setRegToMin(register);
 		}
 
 	}
@@ -435,10 +429,22 @@ public class Runner {
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
-		System.out.println("gets here");
 		sim40.memory[register] = 1024;
 		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 	}
+
+	/**
+	 * 
+	 * @param register
+	 */
+	private void setRegToMin(int register) {
+		if(sim40.memory[register]==0)
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
+		else
+			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
+		sim40.memory[register] = 0;
+	}
+
 	/**
 	 * 
 	 * @param i

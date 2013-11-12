@@ -48,12 +48,12 @@ public class Compiler {
 			this.errorStream = this.parser.getErrorStream();
 
 			/* type checking for labels */
-			for(String key : parser.getDatafield().keySet()) {
-				if(parser.getLabelfield().keySet().contains(key)) 
-					this.sim40.memory[parser.getDatafield().get(key)] = this.parser.getLabelfield().get(key);
+			for(int i: parser.getDatafield().keySet()){
+					if(parser.getLabelfield().keySet().contains(parser.getDatafield().get(i))) 
+						this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
 
 				else { 
-					this.errorStream.getErrors().add(new OutputError(program.getDataLine(key), "Data " + key + " has no labelfield"));
+					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
 					this.sim40.setSuccessCompile(false);
 				}
 			}
@@ -68,14 +68,11 @@ public class Compiler {
 				this.stdStream.getOutput().add("Program has successfully compiled"); 
 				this.sim40.setSuccessCompile(true);
 			}
-			for(OutputError e : this.errorStream.getErrors())
-				System.out.println(e.getLine() + "   " + e.getMessage());
-
-			for(String e : this.stdStream.getOutput())
-				System.out.println(e);
+			
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**

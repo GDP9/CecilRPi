@@ -51,7 +51,7 @@ public class TestingRunner {
 		String resultPrint = "";
 		String resulPrintCh = "";
 		String resulPrintB = "";
-	/*	for(String s : getbitwise_algebraic_operators()){
+		for(String s : getbitwise_algebraic_operators()){
 			Runner r = getCorrect(s);
 			r.run(0);
 			Simulator sim40 = r.getSimulator();
@@ -86,18 +86,18 @@ public class TestingRunner {
 				resulPrintB = Integer.toBinaryString(61);
 				break;
 			}
-			org.junit.Assert.assertEquals(resultPrint, r.getStdStream().getOutput().get(0));
-			org.junit.Assert.assertEquals(resulPrintCh, r.getStdStream().getOutput().get(1));
-			org.junit.Assert.assertEquals(resulPrintB, r.getStdStream().getOutput().get(2));
-		//	org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
+//			org.junit.Assert.assertEquals(resultPrint, r.getStdStream().getOutput().get(0));
+//			org.junit.Assert.assertEquals(resulPrintCh, r.getStdStream().getOutput().get(1));
+//			org.junit.Assert.assertEquals(resulPrintB, r.getStdStream().getOutput().get(2));
+			//	org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
 			org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
-		//	org.junit.Assert.assertEquals(63,sim40.memory[sim40.getStackPtr()]);
+			org.junit.Assert.assertEquals(false, sim40.isNegativeFlag());
+			org.junit.Assert.assertEquals(false, sim40.isZeroFlag());
+			//org.junit.Assert.assertEquals(0, (int)(sim40.getXReg().get(sim40.getXReg().size()-1)));
+			// org.junit.Assert.assertEquals(63,sim40.memory[sim40.getStackPtr()]);
 		
-		}*/
-		Runner r = getCorrect("add");
-		r.run(0);
-		Simulator sim40 = r.getSimulator();
-		org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
+		}
+
 	}
 
 	/**
@@ -189,21 +189,42 @@ public class TestingRunner {
 		input.add("num1");
 		input.add(";");
 		userinput.add(input);
-
+		
+//		input = new ArrayList<String>();
+//		input.add(" ");
+//		input.add(op);
+//		input.add("num2");
+//		input.add(";");
+//		userinput.add(input);
+		
+//		input = new ArrayList<String>();
+//		input.add(" ");
+//		input.add("xinc");
+//		input.add(" ");
+//		input.add(";");
+//		userinput.add(input);
+		
 		input = new ArrayList<String>();
 		input.add(" ");
-		input.add(op);
-		input.add("num2");
+		input.add("xdec");
+		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-
+		
+		input = new ArrayList<String>();
+		input.add(" ");
+		input.add("xdec");
+		input.add(" ");
+		input.add(";");
+		userinput.add(input);
+		
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("print");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-
+		
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("printch");
@@ -216,35 +237,7 @@ public class TestingRunner {
 		input.add("printb");
 		input.add(" ");
 		input.add(";");
-		
-		input = new ArrayList<String>();
-		input.add(" ");
-		input.add(op);
-		input.add("num2");
-		input.add(";");
 		userinput.add(input);
-		
-//		userinput.add(input);
-//		input = new ArrayList<String>();
-//		input.add(" ");
-//		input.add("push");
-//		input.add("num1");
-//		input.add(";");
-//		userinput.add(input);
-		
-//		input = new ArrayList<String>();
-//		input.add(" ");
-//		input.add("cclear");
-//		input.add(" ");
-//		input.add(";");
-//		userinput.add(input);
-		
-//		input = new ArrayList<String>();
-//		input.add(" ");
-//		input.add("cset");
-//		input.add(" ");
-//		input.add(";");
-//		userinput.add(input);
 
 		input = new ArrayList<String>();
 		input.add(" ");
@@ -260,12 +253,6 @@ public class TestingRunner {
 		input.add(";");
 		userinput.add(input);
 
-		input = new ArrayList<String>();
-		input.add(".num2");
-		input.add("insert");
-		input.add("2");
-		input.add(";");
-		userinput.add(input);
 
 		Program program = new Program(userinput);
 		Model m = new Model();

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-12 15:27:21
+// $ANTLR 3.5.1 C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-12 17:32:17
 
   package org.raspberrypi.cecil.model.grammar;
 
@@ -1003,8 +1003,8 @@ public class CecilLexer extends Lexer {
 		try {
 			int _type = NAME;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:172:6: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:172:8: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:169:6: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:169:8: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -1014,7 +1014,7 @@ public class CecilLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:172:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:169:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			loop1:
 			while (true) {
 				int alt1=2;
@@ -1059,7 +1059,7 @@ public class CecilLexer extends Lexer {
 		try {
 			int _type = DIGIT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:174:7: ( '0' .. '9' )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:171:7: ( '0' .. '9' )
 			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:
 			{
 			if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -1086,11 +1086,11 @@ public class CecilLexer extends Lexer {
 		try {
 			int _type = COMMENT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:179:9: ( ';' ( . )* '\\n' )
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:179:11: ';' ( . )* '\\n'
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:9: ( ';' ( . )* '\\n' )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:11: ';' ( . )* '\\n'
 			{
 			match(';'); 
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:179:15: ( . )*
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:15: ( . )*
 			loop2:
 			while (true) {
 				int alt2=2;
@@ -1104,7 +1104,7 @@ public class CecilLexer extends Lexer {
 
 				switch (alt2) {
 				case 1 :
-					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:179:15: .
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:15: .
 					{
 					matchAny(); 
 					}
@@ -1133,10 +1133,10 @@ public class CecilLexer extends Lexer {
 		try {
 			int _type = WS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:180:4: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:180:6: ( ' ' | '\\t' | '\\r' | '\\n' )+
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:177:4: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:177:6: ( ' ' | '\\t' | '\\r' | '\\n' )+
 			{
-			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:180:6: ( ' ' | '\\t' | '\\r' | '\\n' )+
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:177:6: ( ' ' | '\\t' | '\\r' | '\\n' )+
 			int cnt3=0;
 			loop3:
 			while (true) {

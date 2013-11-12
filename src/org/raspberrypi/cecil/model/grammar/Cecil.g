@@ -44,7 +44,7 @@ options {
     
     /* Local variables */
     private static int pointer;
-    private HashMap<String, Integer> datafield;
+    private HashMap<Integer, String> datafield;
     private HashMap<String, Integer> labelfield;
     private HashMap<Integer, String> instructionfield;    
     private ErrorOutputStream stream;
@@ -57,7 +57,7 @@ options {
       
       sim40 = new Simulator();
       
-      datafield = new HashMap<String, Integer>();
+      datafield = new HashMap<Integer, String>();
       labelfield = new HashMap<String, Integer>();
       instructionfield = new HashMap<Integer, String>();
       
@@ -76,7 +76,7 @@ options {
     }
     
     /* Getters for fields */
-    public HashMap<String, Integer> getDatafield () { return datafield; }
+    public HashMap<Integer, String> getDatafield () { return datafield; }
     public HashMap<String, Integer> getLabelfield () { return labelfield; }
     public HashMap<Integer, String> getInstructionfield () { return instructionfield; }
    
@@ -87,7 +87,6 @@ options {
     public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
           String hdr = getErrorHeader(e);
           String msg = getErrorMessage(e, tokenNames);
-          System.out.println(hdr + "   "+ msg);
           this.stream.getErrors().add(new OutputError(e.line, msg));
     }
 }
@@ -119,8 +118,7 @@ labelfield
 mnemonicdata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
-          System.out.println(" val "+($binaryinstruction.text));
-         
+        
          if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
@@ -132,7 +130,6 @@ mnemonicdata
         else {
           instructionfield.put(pointer, $binaryinstruction.text);
           
-          System.out.println(" val "+($binaryinstruction.text));
           if(instructionList.instructionToMnemonic($binaryinstruction.text) == -1)
             throw new RecognitionException();
           
@@ -142,7 +139,7 @@ mnemonicdata
             sim40.memory[pointer++] = Integer.parseInt($datafield.text);
           
           else 
-            datafield.put($datafield.text,pointer++);
+            datafield.put(pointer++,$datafield.text);
          } 
      }) 
        

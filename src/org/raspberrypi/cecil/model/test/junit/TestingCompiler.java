@@ -39,9 +39,9 @@ public class TestingCompiler {
 		Compiler c = getCorrect();
 		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), true);
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
-		for(String key : c.getParser().getDatafield().keySet()){
-			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),true);
-			org.junit.Assert.assertEquals((int)c.getSimulator().memory[c.getParser().getDatafield().get(key)],(int)c.getParser().getLabelfield().get(key));
+		for(int key : c.getParser().getDatafield().keySet()){
+			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(c.getParser().getDatafield().get(key)),true);
+			org.junit.Assert.assertEquals((int)c.getSimulator().memory[key],(int)c.getParser().getLabelfield().get(c.getParser().getDatafield().get(key)));
 		}
 
 	}
@@ -54,10 +54,10 @@ public class TestingCompiler {
 		Compiler c = getIncorrect();
 		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
 		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
-		for(String key : c.getParser().getDatafield().keySet()){
-			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),false);
-			org.junit.Assert.assertEquals(c.getSimulator().memory[c.getParser().getDatafield().get(key)], -1);
-			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(key));
+		for(int key : c.getParser().getDatafield().keySet()){
+			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(c.getParser().getDatafield().get(key)),false);
+			org.junit.Assert.assertEquals(c.getSimulator().memory[key], -1);
+			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(c.getParser().getDatafield().get(key)));
 		}
 	}
 

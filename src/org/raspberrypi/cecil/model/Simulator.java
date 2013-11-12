@@ -58,6 +58,9 @@ public class Simulator {
 
 		memory[STACK_PTR] = 908;
 		memory[STATUS_ADDRESS] = 0;
+		memory[ACCUMULATOR_ADDRESS] = 0;
+		memory[XREG_ADDRESS] = 0;
+		memory[YREG_ADDRESS] = 0;
 
 		xReg = new ArrayList<Integer>();
 		yReg = new ArrayList<Integer>();
@@ -79,15 +82,15 @@ public class Simulator {
 			acc.add(memory[ACCUMULATOR_ADDRESS]);
 		}
 		
-		if( (memory[STATUS_ADDRESS] << 0) == 0)
+		if( (memory[STATUS_ADDRESS] & (1<< 0)) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
 
-		if( (memory[STATUS_ADDRESS] << 1) == 0)
+		if( (memory[STATUS_ADDRESS] & (1<< 1)) == 0)
 			negativeFlag = false;
 		else negativeFlag = true;
 
-		if( (memory[STATUS_ADDRESS] << 2) == 0){
+		if( (memory[STATUS_ADDRESS]& (1<< 2)) == 0){
 			carryFlag = false;
 		}
 		else carryFlag = true;
