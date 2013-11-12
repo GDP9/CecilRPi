@@ -31,6 +31,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -71,6 +72,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -538,7 +541,11 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseEntered(MouseEvent arg0) {}
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				highlightError();
+				if (errors != null && errors.size() > 0) {
+					highlightError();
+				} else {
+					txtConsole.removeSelectionInterval(txtConsole.getSelectedIndex(), txtConsole.getSelectedIndex());
+				}
 			}
 		});
 		JScrollPane consoleScroll = new JScrollPane(txtConsole);
@@ -579,12 +586,32 @@ public class Frame extends JFrame implements ViewInterface {
        	aligncenter.setHorizontalAlignment(JLabel.CENTER);
        	tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
        	tblInput.setRowHeight(25);                
-       	tblInput.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(input));
-       	tblInput.getColumnModel().getColumn(2).setCellEditor(new ComboBoxCellEditor(comboBox));       	
-       	tblInput.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(input));
-       	tblInput.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(input));
+//       	tblInput.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(input));
+//       	tblInput.getColumnModel().getColumn(2).setCellEditor(new ComboBoxCellEditor(comboBox));       	
+//       	tblInput.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(input));
+//       	tblInput.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(input));
        	tblInput.setFillsViewportHeight(true);
-		
+       	
+       	for (int i = 0; i < tblInput.getColumnCount(); i++) {
+       		TableColumn column = tblInput.getColumnModel().getColumn(i);
+       		
+       		if (i != 2) {
+       			column.setCellEditor(new DefaultCellEditor(input));
+       		} else {
+       			column.setCellEditor(new ComboBoxCellEditor(comboBox));
+       		}
+       		column.getCellEditor().addCellEditorListener(new CellEditorListener() {
+    			@Override
+    			public void editingStopped(ChangeEvent arg0) {
+    				if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+    					setButtonsEnabled(false);
+    				}
+    			}
+    			@Override
+    			public void editingCanceled(ChangeEvent arg0) {}
+    		});
+       	}
+       	
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				int selectedRow = tblInput.getSelectedRow();
@@ -608,7 +635,7 @@ public class Frame extends JFrame implements ViewInterface {
 						tblInput.getCellEditor().cancelCellEditing();
 					}
 					break;
-				} 
+				}
 			}
 
 			public void keyReleased(KeyEvent e) {}
@@ -694,6 +721,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 			consolePanel.setBackground(background);
 			txtConsole.setBackground(inner);
+			txtConsole.setSelectionBackground(highlight);
 
 			tblInput.setBackground(inner);
 			tblInput.setSelectionBackground(highlight);
@@ -726,6 +754,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 			consolePanel.setBackground(UIManager.getColor("Panel.background"));
 			txtConsole.setBackground(Color.WHITE);
+			txtConsole.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 
 			tblInput.setBackground(Color.WHITE);
 			tblInput.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
@@ -1376,18 +1405,21 @@ public class Frame extends JFrame implements ViewInterface {
 
 	@Override
 	public void setMemoryAllocation(int[] memory) {
+		DefaultTableModel mdlMemory = new DefaultTableModel();
 		if (memory != null && memory.length > 0) {
-			DefaultTableModel mdlMemory = new DefaultTableModel();
-			
 			for(int i = 0; i < memory.length; i++) {
 				if (memory[i] > -1) {
 					mdlMemory.addColumn(i, new Object[]{memory[i]});
 				} else {
 					mdlMemory.addColumn(i, new Object[]{""});
 				}
-				tblMemory.setModel(mdlMemory);
+			}
+		} else {
+			for (int i = 0; i < 1024; i++) {
+				mdlMemory.addColumn(i, new Object[]{""});
 			}
 		}
+		tblMemory.setModel(mdlMemory);
 	}
 
 	@Override
