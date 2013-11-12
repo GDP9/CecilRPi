@@ -1,6 +1,7 @@
 package org.raspberrypi.cecil.model.test.junit;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.raspberrypi.cecil.model.Compiler;
 import org.raspberrypi.cecil.model.Model;
@@ -43,8 +44,25 @@ public class TestingRunner {
 		return bitwise_algebraic_Operators;
 	}
 
+	private ArrayList<String> getCarryOperators(){
+		ArrayList<String> carryOperators = new ArrayList<String>();
+		carryOperators.add("cclear");
+		carryOperators.add("cset");
+		return carryOperators;
+	}
+
+
+	private ArrayList<String> getRegisterOperators(){
+		ArrayList<String> accOperators = new ArrayList<String>();
+		accOperators.add("xdec");
+		accOperators.add("xinc");
+		accOperators.add("ydec");
+		accOperators.add("yinc");
+		return accOperators;
+	}
+
 	/**
-	 * Set of tests which compile correctly.
+	 * Set of tests which run correctly.
 	 */
 	@Test
 	public void runs(){
@@ -52,7 +70,7 @@ public class TestingRunner {
 		String resulPrintCh = "";
 		String resulPrintB = "";
 		for(String s : getbitwise_algebraic_operators()){
-			Runner r = getCorrect(s);
+			Runner r = getCorrect(s, " ", " ");
 			r.run(0);
 			Simulator sim40 = r.getSimulator();
 			switch (s) {
@@ -61,118 +79,131 @@ public class TestingRunner {
 				resulPrintCh = Character.toString((char)65);
 				resulPrintB = Integer.toBinaryString(65);
 				break;
-				
+
 			case "sub":
 				resultPrint = "61";
 				resulPrintCh= Character.toString((char)61);
 				resulPrintB = Integer.toBinaryString(61);
 				break;
-				
+
 			case "and":
 				resultPrint = "2";
 				resulPrintCh= Character.toString((char)2);
 				resulPrintB = Integer.toBinaryString(2);
 				break;
-				
+
 			case "or":
 				resultPrint = "63";
 				resulPrintCh= Character.toString((char)63);
 				resulPrintB = Integer.toBinaryString(63);
 				break;
-				
+
 			case "xor":
 				resultPrint = "61";
 				resulPrintCh= Character.toString((char)61);
 				resulPrintB = Integer.toBinaryString(61);
 				break;
 			}
-//			org.junit.Assert.assertEquals(resultPrint, r.getStdStream().getOutput().get(0));
-//			org.junit.Assert.assertEquals(resulPrintCh, r.getStdStream().getOutput().get(1));
-//			org.junit.Assert.assertEquals(resulPrintB, r.getStdStream().getOutput().get(2));
-			//	org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
-			org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
-			org.junit.Assert.assertEquals(false, sim40.isNegativeFlag());
-			org.junit.Assert.assertEquals(false, sim40.isZeroFlag());
-			//org.junit.Assert.assertEquals(0, (int)(sim40.getXReg().get(sim40.getXReg().size()-1)));
-			// org.junit.Assert.assertEquals(63,sim40.memory[sim40.getStackPtr()]);
-		
+			org.junit.Assert.assertEquals(resultPrint, r.getStdStream().getOutput().get(0));
+			org.junit.Assert.assertEquals(resulPrintCh, r.getStdStream().getOutput().get(1));
+			org.junit.Assert.assertEquals(resulPrintB, r.getStdStream().getOutput().get(2));		
 		}
 
-	}
+		for(String s: getCarryOperators()){
+			Runner r = getCorrect(" ", s, " ");
+			r.run(0);
+			Simulator sim40 = r.getSimulator();
+			if(s.equals("cclear"))
+				org.junit.Assert.assertEquals(false, sim40.isCarryFlag());
+			else
+				org.junit.Assert.assertEquals(true, sim40.isCarryFlag());
+		}
 
-	/**
-	 * Set of tests which do not compile.
-	 */
-	/*@Test
-	public void doesntRun(){
-		Runner r = getIncorrect();
-		//org.junit.Assert.assertEquals(r.run(0));
-	}*/
+		for(String s: getRegisterOperators()){
+			Runner r = getCorrect(" ", " ", s);
+			r.run(0);
+			Simulator sim40 = r.getSimulator();
+			boolean carry = false;
+			boolean negative = false;
+			boolean zero = false;
 
-	/**
-	 * Incorrect input used in compiler test.
-	 * @return Compiler object using incorrect input
-	 */
-	private Runner getIncorrect(){
-		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
-		ArrayList<String> input = new ArrayList<String>();
+			if(sim40.getAcc().get(sim40.getAcc().size()-1)<=0){
+				carry=false;
+				negative=true;
+				zero=true;
+			}
+			else if(sim40.getAcc().get(sim40.getAcc().size()-1)>1023){
+				carry=true;
+				negative=false;
+				zero=false;
+			}
+			else{
+				carry=false;
+				negative=false;
+				zero=false;
+			}
+			
+			switch (s) {
+			case "xdec":
+				if((sim40.getXReg().get(sim40.getXReg().size()-1)<=0)){
+					carry = false;
+					negative = true;
+					zero=true;
+				}
+				else{
+					carry = false;
+					negative = false;
+					zero=false;
+				}
+				break;
 
-		input.add(".start");
-		input.add("load");
-		input.add("num1");
-		input.add(";");
-		userinput.add(input);
+			case "ydec":
+				if((sim40.getYReg().get(sim40.getYReg().size()-1)<=0)){
+					carry = false;
+					negative = true;
+					zero=true;
+				}
+				else{
+					carry = false;
+					negative = false;
+					zero=false;
+				}
+				break;
 
-		input = new ArrayList<String>();
-		input.add(" ");
-		input.add("add");
-		input.add("num2");
-		input.add(";");
-		userinput.add(input);
+			case "xinc":
+				if ((sim40.getXReg().get(sim40.getXReg().size()-1)>1023)){
+					carry = true;
+					negative = false;
+					zero=false;
+				}
+				else{
+					carry = false;
+					negative = false;
+					zero=false;
+				}
+				break;
+				
+			case "yinc":
+				if ((sim40.getYReg().get(sim40.getYReg().size()-1)>1023)){
+					carry = true;
+					negative = false;
+					zero=false;
+				}
+				else{
+					carry = false;
+					negative = false;
+					zero=false;
+				}
+				break;
+			}
 
-		input = new ArrayList<String>();
-		input.add(" ");
-		input.add("print");
-		input.add(" ");
-		input.add(";");
-		userinput.add(input);
-
-		input = new ArrayList<String>();
-		input.add(" ");
-		input.add("printch");
-		input.add(" ");
-		input.add(";");
-		userinput.add(input);
-
-		input = new ArrayList<String>();
-		input.add(" ");
-		input.add("stop");
-		input.add(" ");
-		input.add(";");
-		userinput.add(input);
-
-		input = new ArrayList<String>();
-		input.add(".num1");
-		input.add("insert");
-		input.add("63");
-		input.add(";");
-		userinput.add(input);
-
-		input = new ArrayList<String>();
-		input.add(".num2");
-		input.add("insert");
-		input.add("2");
-		input.add(";");
-		userinput.add(input);
-
-		Program program = new Program(userinput);
-		Model m = new Model();
-
-		File sample  = m.programToFile(program, "sample.cecil");
-		Compiler c = new Compiler(sample.getAbsolutePath(), program);
-		Runner r = new Runner(c);
-
-		return r;
+			System.out.println("helloo   " + (sim40.getXReg().get(sim40.getXReg().size()-1)));
+			System.out.println("zerooo  " + zero);
+			org.junit.Assert.assertEquals(carry, sim40.isCarryFlag());
+			//org.junit.Assert.assertEquals(negative, sim40.isNegativeFlag());
+			org.junit.Assert.assertEquals(zero, sim40.isZeroFlag());
+		}
+		//org.junit.Assert.assertEquals(0, (int)(sim40.getXReg().get(sim40.getXReg().size()-1)));
 
 	}
 
@@ -180,7 +211,7 @@ public class TestingRunner {
 	 * Correct input used in compiler test.
 	 * @return Compiler object using correct input
 	 */
-	private Runner getCorrect(String op){
+	private Runner getCorrect(String op, String cOp, String regOp){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
 		ArrayList<String> input = new ArrayList<String>();
 
@@ -189,49 +220,44 @@ public class TestingRunner {
 		input.add("num1");
 		input.add(";");
 		userinput.add(input);
-		
-//		input = new ArrayList<String>();
-//		input.add(" ");
-//		input.add(op);
-//		input.add("num2");
-//		input.add(";");
-//		userinput.add(input);
-		
-//		input = new ArrayList<String>();
-//		input.add(" ");
-//		input.add("xinc");
-//		input.add(" ");
-//		input.add(";");
-//		userinput.add(input);
-		
+
+		if(!op.equals(" ")){
+			input = new ArrayList<String>();
+			input.add(" ");
+			input.add(op);
+			input.add("num2");
+			input.add(";");
+			userinput.add(input);
+		}
+
 		input = new ArrayList<String>();
 		input.add(" ");
-		input.add("xdec");
+		input.add(cOp);
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
-		input.add("xdec");
+		input.add(regOp);
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("print");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("printch");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);
-		
+
 		input = new ArrayList<String>();
 		input.add(" ");
 		input.add("printb");
@@ -252,6 +278,15 @@ public class TestingRunner {
 		input.add("63");
 		input.add(";");
 		userinput.add(input);
+
+		if(!op.equals(" ")){
+			input = new ArrayList<String>();
+			input.add(".num2");
+			input.add("insert");
+			input.add("2");
+			input.add(";");
+			userinput.add(input);
+		}
 
 
 		Program program = new Program(userinput);
