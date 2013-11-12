@@ -100,7 +100,7 @@ public class Runner {
 	 * @param i
 	 * @return
 	 */
-	private String result(int i) {
+	public String result(int i) {
 		switch(i){
 
 		case 1: /* print */
@@ -121,7 +121,7 @@ public class Runner {
 	 * @param i
 	 * @return
 	 */
-	private int execute(int i) {
+	public int execute(int i) {
 		switch(sim40.memory[i]) {
 
 		/* Unary Instructions */

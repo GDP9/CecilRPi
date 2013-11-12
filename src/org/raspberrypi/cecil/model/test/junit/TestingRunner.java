@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.raspberrypi.cecil.model.Compiler;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.model.Runner;
+import org.raspberrypi.cecil.model.Simulator;
 import org.raspberrypi.cecil.pojo.Program;
 
 import org.junit.Test;
@@ -37,14 +38,9 @@ public class TestingRunner {
 	 */
 	@Test
 	public void runs(){
-		/*Compiler c = getCorrect();
-		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), true);
-		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
-		for(String key : c.getParser().getDatafield().keySet()){
-			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),true);
-			org.junit.Assert.assertEquals((int)c.getSimulator().memory[c.getParser().getDatafield().get(key)],(int)c.getParser().getLabelfield().get(key));
-		}*/
-
+		Runner r = getCorrect();
+		Simulator sim40 = r.getSimulator();
+		org.junit.Assert.assertEquals(r.result(1), ""+sim40.getAcc().get(sim40.getAcc().size()-1));
 	}
 
 	/**
@@ -52,14 +48,8 @@ public class TestingRunner {
 	 */
 	@Test
 	public void doesntRun(){
-		/*Compiler c = getIncorrect();
-		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
-		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
-		for(String key : c.getParser().getDatafield().keySet()){
-			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(key),false);
-			org.junit.Assert.assertEquals(c.getSimulator().memory[c.getParser().getDatafield().get(key)], -1);
-			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(key));
-		}*/
+		Runner r = getIncorrect();
+		//org.junit.Assert.assertEquals(r.run(0));
 	}
 
 	/**

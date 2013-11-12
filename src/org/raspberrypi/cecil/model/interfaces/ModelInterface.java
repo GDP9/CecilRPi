@@ -3,7 +3,8 @@ package org.raspberrypi.cecil.model.interfaces;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.raspberrypi.cecil.model.Simulator;
+import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
+import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 import org.raspberrypi.cecil.pojo.Instruction;
 import org.raspberrypi.cecil.pojo.Program;
 
@@ -18,7 +19,8 @@ public interface ModelInterface {
 	/**
 	 * Memory + View Output 
 	 */
-	public Simulator getSimulator();
+	public ErrorOutputStream getErrorStream();
+	public StandardOutputStream getStdStream();
 	public ArrayList<Instruction> getInstructions();
 	
 	/**

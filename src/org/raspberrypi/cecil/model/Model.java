@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
