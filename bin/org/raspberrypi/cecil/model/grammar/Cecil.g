@@ -35,6 +35,7 @@ options {
 }
 
 /* Member function and field declaration */
+
 @members { 
     /* Simulator */
     private Simulator sim40;
@@ -91,6 +92,27 @@ options {
     }
 }
 
+
+@rulecatch {
+	catch (RecognitionException e) {
+		String hdr = getErrorHeader(e);
+		String msg = getErrorMessage(e, tokenNames);
+		System.out.println(e.line + msg);
+    
+		this.stream.getErrors().add(new OutputError(e.line, msg));
+		
+	}
+	
+	catch (NullPointerException e1) {
+    //String hdr = getErrorHeader(e1);
+    //String msg = getErrorMessage(e1, tokenNames);
+    //throw new RecognitionException();
+    
+    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+    
+  }
+}
+
 /**
  * Rules
  * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt, ypull, ypush, push, 
@@ -119,7 +141,6 @@ labelfield
 mnemonicdata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
-        
          if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
