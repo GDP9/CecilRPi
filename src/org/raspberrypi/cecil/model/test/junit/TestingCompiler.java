@@ -21,7 +21,6 @@ import org.junit.runners.JUnit4;
 * The MIT License (MIT)
 * Copyright (c) 2013 Southampton University group GDP9
 *
-* 
 * @authors Carolina Ferreira (cf4g09)
 * Southampton University, United Kingdom
 * @version 1.1
@@ -50,7 +49,7 @@ public class TestingCompiler {
 	/**
 	 * Set of tests which do not compile.
 	 */
-	/*@Test
+	@Test
 	public void doesntCompile(){
 		Compiler c = getIncorrect();
 		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
@@ -60,7 +59,7 @@ public class TestingCompiler {
 			org.junit.Assert.assertEquals(c.getSimulator().memory[c.getParser().getDatafield().get(key)], -1);
 			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(key));
 		}
-	}*/
+	}
 
 	/**
 	 * Incorrect input used in compiler test.
@@ -89,13 +88,13 @@ public class TestingCompiler {
 		input.add(" ");
 		input.add(";This is a sample comment");
 		userinput.add(input);
-		input  = new ArrayList<String>();
-
-		input.add(".d1");
-		input.add("insert");
-		input.add("65");
-		input.add(" ");
-		userinput.add(input);
+//		input  = new ArrayList<String>();
+//
+//		input.add(".d1");
+//		input.add("insert");
+//		input.add("65");
+//		input.add(" ");
+//		userinput.add(input);
 
 		Program program = new Program(userinput);
 		Model m = new Model();
