@@ -5,6 +5,21 @@
 	<classpathentry kind="lib" path="lib/antlr/antlr-3.5.1-complete.jar"/>
 	<classpathentry kind="lib" path="lib/antlr/antlr-3.5.1-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/napkin/swingx-all-1.6.4.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-core-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-core-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-core.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-device-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-device-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-device.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-example-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-example-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-example.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-gpio-extension-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-gpio-extension-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-gpio-extension.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-service-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-service-sources.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j/pi4j-service.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
