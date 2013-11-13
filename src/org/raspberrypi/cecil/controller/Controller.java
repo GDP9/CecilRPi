@@ -120,8 +120,8 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		checkForNullInputs(code);
-		model.compile(new Program(code));
+		if(checkCorrectInput(code))
+			model.compile(new Program(code));
 		this.setViewOutput();
 	}
 
@@ -137,7 +137,7 @@ public class Controller implements ControllerInterface {
 		this.setViewOutput();
 	}
 
-	private boolean checkForNullInputs(ArrayList<ArrayList<String>> code){
+	private boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		boolean isCorrectInput = true;
 		for(int i = 0; i<code.size(); i++){
 			ArrayList<String> input = code.get(i);

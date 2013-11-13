@@ -2,6 +2,8 @@ package org.raspberrypi.cecil.model.test.junit;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.Compiler;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.pojo.Program;
@@ -209,6 +211,7 @@ public class TestingCompiler {
 		Model m = new Model();
 
 		File sample  = m.programToFile(program, "sample.cecil");
+		Controller control = new Controller();
 		Compiler c = new Compiler(sample.getAbsolutePath(), program);
 
 		return c;
