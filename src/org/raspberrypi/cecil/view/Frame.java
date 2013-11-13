@@ -1297,7 +1297,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private void loadNewProgram() {
 		ArrayList<ArrayList<String>> code = new ArrayList<ArrayList<String>>();
 		ArrayList<String> newLine = new ArrayList<String>();
-		newLine.add("");
+		newLine.add(".start");
 		newLine.add("");
 		newLine.add("");
 		newLine.add(";");

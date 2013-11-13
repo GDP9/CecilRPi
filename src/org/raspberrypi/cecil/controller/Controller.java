@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.Model;
-import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
-import org.raspberrypi.cecil.model.outputstream.OutputError;
-import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 import org.raspberrypi.cecil.view.Frame;
 
@@ -33,16 +30,16 @@ public class Controller implements ControllerInterface {
 	public static void main(String[] args) {
 		new Controller();
 	}
-
-
+	
+	
 	/**
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
 	 */
 	public Controller() {
 		view = new Frame(this);		
 		model = new Model();
-
-		view.setInstructionList(model.getInstructions().getInstructions());
+		
+		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
 	}
 
@@ -53,89 +50,79 @@ public class Controller implements ControllerInterface {
 	private ArrayList<ArrayList<String>> getDefaultInput() {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = new ArrayList<String>();
-
+		
 		line.add(".start");
 		line.add("load");
 		line.add("num1");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
-		line.add(".num1");
 		line.add(" ");
-		line.add(" ");
+		line.add("add");
+		line.add("num2");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("print");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printch");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printb");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(".num1");
 		line.add("insert");
 		line.add("63");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		return program;
 	}
-
+	
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		System.out.println("checking " + checkCorrectInput(code));
-		if(checkCorrectInput(code)){
-			model.compile(new Program(code));
-			this.setViewOutput();
-		}
-		else{ 
-			model.setToDefault();
-			this.setViewOutput();
-			view.setConsoleError(model.getErrorStream().getErrors());
-		}
-		
-		//System.out.println(model.getErrorStream().getErrors().get(0).getMessage());
+		Program program = new Program(code);
+		preliminaryParse(program);
+		model.compile(program);
+		this.setViewOutput();
 	}
-	
-	
 
 	@Override
 	public void runClicked() {
@@ -147,42 +134,6 @@ public class Controller implements ControllerInterface {
 	public void stepThroughClicked() {
 		model.stepThrough();
 		this.setViewOutput();
-	}
-
-	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
-		for(int i = 0; i<code.size(); i++){
-			ArrayList<String> input = code.get(i);
-			
-			if(input.get(1).equals(" ")){
-				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")){
-					addErrorToOutputstream(i+1, "An instruction must be provided");
-					return false;
-				}
-			}
-			else{
-				
-				if(model.getInstructions().isBinaryInstruction(input.get(1))){
-					if(input.get(2).equals(" ")){
-						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
-						System.out.println(model.getErrorStream().getErrors().isEmpty());
-						return false;
-					}
-				}
-				if(!model.getInstructions().isBinaryInstruction(input.get(1))){
-					if(!input.get(2).equals(" ")){
-						addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	private void addErrorToOutputstream (int line, String msg){
-		ErrorOutputStream e = new ErrorOutputStream();
-		e.getErrors().add(new OutputError(line, msg));
-		model.setErrorStream(e);
 	}
 
 	/**
@@ -232,8 +183,8 @@ public class Controller implements ControllerInterface {
 		}
 		view.setButtonsEnabled(model.isCompileSuccess());
 	}
-
-
+	
+	
 	@Override
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
@@ -243,7 +194,7 @@ public class Controller implements ControllerInterface {
 			view.setFilename(file.getName());
 		}
 	}
-
+	
 	@Override
 	public void saveToFile(ArrayList<ArrayList<String>> code, String filename) {
 		if (code != null && filename != null) {
@@ -251,5 +202,23 @@ public class Controller implements ControllerInterface {
 			File file = model.programToFile(program, filename);
 			view.setFilename(file.getName());
 		}
-	}	
+	}
+	
+	private boolean preliminaryParse(Program program) {
+		ArrayList<ArrayList<String>> code = program.getProgramStatements();
+		for (ArrayList<String> line : code ) {
+			if (!line.get(0).isEmpty() && line.get(1).isEmpty()) {
+				System.out.println("1");
+				return false;
+			} else if (!line.get(2).isEmpty() && line.get(1).isEmpty()) {
+				System.out.println("2");
+				return false;
+			} else if (line.get(0).isEmpty() && line.get(1).isEmpty() && !line.get(3).isEmpty()) {
+				System.out.println("3");
+				return false;
+			}
+		}
+		System.out.println("4");
+		return true;
+	}
 }
