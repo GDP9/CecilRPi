@@ -38,7 +38,7 @@ public class TestingCompiler {
 	public void compiles(){
 		Compiler c = getCorrect();
 		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), true);
-		//org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
+		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 		for(int key : c.getParser().getDatafield().keySet()){
 			org.junit.Assert.assertEquals(c.getParser().getLabelfield().keySet().contains(c.getParser().getDatafield().get(key)),true);
 			org.junit.Assert.assertEquals((int)c.getSimulator().memory[key],(int)c.getParser().getLabelfield().get(c.getParser().getDatafield().get(key)));
@@ -156,9 +156,9 @@ public class TestingCompiler {
 		userinput.add(input);
 		
 		input = new ArrayList<String>();
+		input.add(".num1");
 		input.add(" ");
-		input.add("add");
-		input.add("num2");
+		input.add(" ");
 		input.add(";");
 		userinput.add(input);
 		

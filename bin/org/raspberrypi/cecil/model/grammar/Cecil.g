@@ -35,7 +35,6 @@ options {
 }
 
 /* Member function and field declaration */
-
 @members { 
     /* Simulator */
     private Simulator sim40;
@@ -84,43 +83,40 @@ options {
     /**
     * Implicitly invoked by the parser. The error is appended in the output console. 
     */
-    @Override
-    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-          String hdr = getErrorHeader(e);
-          String msg = getErrorMessage(e, tokenNames);
-          this.stream.getErrors().add(new OutputError(e.line, msg));
-    }
+//    @Override
+//    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+//          String hdr = getErrorHeader(e);
+//          String msg = getErrorMessage(e, tokenNames);
+//          this.stream.getErrors().add(new OutputError(e.line, msg));
+//    }
 }
 
-
 @rulecatch {
-	catch (RecognitionException e) {
-		String hdr = getErrorHeader(e);
-		String msg = getErrorMessage(e, tokenNames);
-		System.out.println(e.line + msg);
-    
-		this.stream.getErrors().add(new OutputError(e.line, msg));
-		
-	}
-	
-	catch (NullPointerException e1) {
-    //String hdr = getErrorHeader(e1);
-    //String msg = getErrorMessage(e1, tokenNames);
-    //throw new RecognitionException();
-    
-    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-    
-  }
+        catch (RecognitionException e) {
+                String hdr = getErrorHeader(e);
+                String msg = getErrorMessage(e, tokenNames);
+                System.out.println(e.line + " : " + msg);
+                this.stream.getErrors().add(new OutputError(e.line, msg));
+                
+        }
+        
+//        catch (NullPointerException e1) {
+//    //String hdr = getErrorHeader(e1);
+//    //String msg = getErrorMessage(e1, tokenNames);
+//   //throw new RecognitionException();
+//    
+//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+//    
+//  }
 }
 
 /**
  * Rules
- * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt, ypull, ypush, push, 
- *       lshift, rshift, pull, printd, xpull, xpush, jmptosr, return
+ * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
  * Reserved Keywords: all-instructions
  */
 program 
-  : '.start' mnemonicdata instruction* stop
+  : '.start' mnemonicdata instruction*
   ;
 
 instruction 
@@ -141,6 +137,7 @@ labelfield
 mnemonicdata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
+        
          if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
@@ -173,22 +170,15 @@ mnemonicdata
   ;
 
 unaryinstruction
-  : (stop|'print'|'printch'|'printb'|'cclear'|'cset'|'xdec'|'xinc'|'ydec'|'yinc')
+  : ('stop'| 'print'| 'printch'|'printb'|'printd'|'cclear'|'cset'|'lshift'|'rshift'|'pull'
+  |'xdec'|'xinc'|'xpull'|'xpush'|'ydec'|'yinc'|'ypull'|'ypush'|'push')
   ;
   
 binaryinstruction
-  : ('add'|'sub'|'and'|'comp'|'xor'|'or'|'jineg'|'jicarry'|'jipos'|'jizero'|'jump'
-  |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp'|'insert'|'ycomp')
+  : ('add'|'sub'|'and'|'comp'|'xor'|'or'|'jineg'|'jicarry'|'jipos'|'jizero'|'jmptosr'|'jump'
+  |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp' | 'insert' | 'return'|'ycomp')
   ;
   
-stop
-  :'stop'
-  {
-    instructionfield.put(pointer, "stop");
-    sim40.memory[pointer++] = 0;
-  }
-  
-  ;
   
 datafield 
   : NAME

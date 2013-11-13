@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-12 20:59:11
+// $ANTLR 3.5.1 C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g 2013-11-13 17:28:21
  
   package org.raspberrypi.cecil.model.grammar;
   import java.util.HashMap;
@@ -32,10 +32,12 @@ public class CecilParser extends Parser {
 	public static final String[] tokenNames = new String[] {
 		"<invalid>", "<EOR>", "<DOWN>", "<UP>", "COMMENT", "DIGIT", "NAME", "WS", 
 		"'.'", "'.start'", "'add'", "'and'", "'cclear'", "'comp'", "'cset'", "'insert'", 
-		"'jicarry'", "'jineg'", "'jipos'", "'jizero'", "'jump'", "'load'", "'loadmx'", 
-		"'or'", "'print'", "'printb'", "'printch'", "'stop'", "'store'", "'sub'", 
-		"'xcomp'", "'xdec'", "'xinc'", "'xload'", "'xor'", "'xstore'", "'ycomp'", 
-		"'ydec'", "'yinc'", "'yload'", "'ystore'"
+		"'jicarry'", "'jineg'", "'jipos'", "'jizero'", "'jmptosr'", "'jump'", 
+		"'load'", "'loadmx'", "'lshift'", "'or'", "'print'", "'printb'", "'printch'", 
+		"'printd'", "'pull'", "'push'", "'return'", "'rshift'", "'stop'", "'store'", 
+		"'sub'", "'xcomp'", "'xdec'", "'xinc'", "'xload'", "'xor'", "'xpull'", 
+		"'xpush'", "'xstore'", "'ycomp'", "'ydec'", "'yinc'", "'yload'", "'ypull'", 
+		"'ypush'", "'ystore'"
 	};
 	public static final int EOF=-1;
 	public static final int T__8=8;
@@ -71,6 +73,17 @@ public class CecilParser extends Parser {
 	public static final int T__38=38;
 	public static final int T__39=39;
 	public static final int T__40=40;
+	public static final int T__41=41;
+	public static final int T__42=42;
+	public static final int T__43=43;
+	public static final int T__44=44;
+	public static final int T__45=45;
+	public static final int T__46=46;
+	public static final int T__47=47;
+	public static final int T__48=48;
+	public static final int T__49=49;
+	public static final int T__50=50;
+	public static final int T__51=51;
 	public static final int COMMENT=4;
 	public static final int DIGIT=5;
 	public static final int NAME=6;
@@ -92,7 +105,7 @@ public class CecilParser extends Parser {
 	}
 
 	@Override public String[] getTokenNames() { return CecilParser.tokenNames; }
-	@Override public String getGrammarFileName() { return "C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g"; }
+	@Override public String getGrammarFileName() { return "C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g"; }
 
 	 
 	    /* Simulator */
@@ -142,48 +155,41 @@ public class CecilParser extends Parser {
 	    /**
 	    * Implicitly invoked by the parser. The error is appended in the output console. 
 	    */
-	    @Override
-	    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-	          String hdr = getErrorHeader(e);
-	          String msg = getErrorMessage(e, tokenNames);
-	          this.stream.getErrors().add(new OutputError(e.line, msg));
-	    }
+	//    @Override
+	//    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+	//          String hdr = getErrorHeader(e);
+	//          String msg = getErrorMessage(e, tokenNames);
+	//          this.stream.getErrors().add(new OutputError(e.line, msg));
+	//    }
 
 
 
 	// $ANTLR start "program"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:122:1: program : '.start' mnemonicdata ( instruction )* stop ;
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:118:1: program : '.start' mnemonicdata ( instruction )* ;
 	public final void program() throws RecognitionException {
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:3: ( '.start' mnemonicdata ( instruction )* stop )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:5: '.start' mnemonicdata ( instruction )* stop
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:119:3: ( '.start' mnemonicdata ( instruction )* )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:119:5: '.start' mnemonicdata ( instruction )*
 			{
-			match(input,9,FOLLOW_9_in_program70); 
-			pushFollow(FOLLOW_mnemonicdata_in_program72);
+			match(input,9,FOLLOW_9_in_program68); 
+			pushFollow(FOLLOW_mnemonicdata_in_program70);
 			mnemonicdata();
 			state._fsp--;
 
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:27: ( instruction )*
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:119:27: ( instruction )*
 			loop1:
 			while (true) {
 				int alt1=2;
 				int LA1_0 = input.LA(1);
-				if ( (LA1_0==27) ) {
-					int LA1_1 = input.LA(2);
-					if ( (LA1_1==8||(LA1_1 >= 10 && LA1_1 <= 40)) ) {
-						alt1=1;
-					}
-
-				}
-				else if ( (LA1_0==8||(LA1_0 >= 10 && LA1_0 <= 26)||(LA1_0 >= 28 && LA1_0 <= 40)) ) {
+				if ( (LA1_0==8||(LA1_0 >= 10 && LA1_0 <= 51)) ) {
 					alt1=1;
 				}
 
 				switch (alt1) {
 				case 1 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:27: instruction
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:119:27: instruction
 					{
-					pushFollow(FOLLOW_instruction_in_program74);
+					pushFollow(FOLLOW_instruction_in_program72);
 					instruction();
 					state._fsp--;
 
@@ -195,31 +201,26 @@ public class CecilParser extends Parser {
 				}
 			}
 
-			pushFollow(FOLLOW_stop_in_program77);
-			stop();
-			state._fsp--;
-
 			}
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -230,15 +231,15 @@ public class CecilParser extends Parser {
 
 
 	// $ANTLR start "instruction"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:126:1: instruction : ( '.' labelfield )? mnemonicdata ;
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:122:1: instruction : ( '.' labelfield )? mnemonicdata ;
 	public final void instruction() throws RecognitionException {
 		ParserRuleReturnScope labelfield1 =null;
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:127:3: ( ( '.' labelfield )? mnemonicdata )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:127:5: ( '.' labelfield )? mnemonicdata
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:3: ( ( '.' labelfield )? mnemonicdata )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:5: ( '.' labelfield )? mnemonicdata
 			{
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:127:5: ( '.' labelfield )?
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:5: ( '.' labelfield )?
 			int alt2=2;
 			int LA2_0 = input.LA(1);
 			if ( (LA2_0==8) ) {
@@ -246,10 +247,10 @@ public class CecilParser extends Parser {
 			}
 			switch (alt2) {
 				case 1 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:127:6: '.' labelfield
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:123:6: '.' labelfield
 					{
-					match(input,8,FOLLOW_8_in_instruction92); 
-					pushFollow(FOLLOW_labelfield_in_instruction94);
+					match(input,8,FOLLOW_8_in_instruction88); 
+					pushFollow(FOLLOW_labelfield_in_instruction90);
 					labelfield1=labelfield();
 					state._fsp--;
 
@@ -262,7 +263,7 @@ public class CecilParser extends Parser {
 
 			}
 
-			pushFollow(FOLLOW_mnemonicdata_in_instruction107);
+			pushFollow(FOLLOW_mnemonicdata_in_instruction103);
 			mnemonicdata();
 			state._fsp--;
 
@@ -270,23 +271,22 @@ public class CecilParser extends Parser {
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -300,39 +300,38 @@ public class CecilParser extends Parser {
 
 
 	// $ANTLR start "labelfield"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:137:1: labelfield : NAME ;
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:133:1: labelfield : NAME ;
 	public final CecilParser.labelfield_return labelfield() throws RecognitionException {
 		CecilParser.labelfield_return retval = new CecilParser.labelfield_return();
 		retval.start = input.LT(1);
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:3: ( NAME )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:6: NAME
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:134:3: ( NAME )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:134:6: NAME
 			{
-			match(input,NAME,FOLLOW_NAME_in_labelfield132); 
+			match(input,NAME,FOLLOW_NAME_in_labelfield128); 
 			}
 
 			retval.stop = input.LT(-1);
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -344,20 +343,20 @@ public class CecilParser extends Parser {
 
 
 	// $ANTLR start "mnemonicdata"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:141:1: mnemonicdata : ( ( binaryinstruction datafield ) | unaryinstruction );
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:137:1: mnemonicdata : ( ( binaryinstruction datafield ) | unaryinstruction );
 	public final void mnemonicdata() throws RecognitionException {
 		ParserRuleReturnScope binaryinstruction2 =null;
 		ParserRuleReturnScope datafield3 =null;
 		ParserRuleReturnScope unaryinstruction4 =null;
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:142:3: ( ( binaryinstruction datafield ) | unaryinstruction )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:3: ( ( binaryinstruction datafield ) | unaryinstruction )
 			int alt3=2;
 			int LA3_0 = input.LA(1);
-			if ( ((LA3_0 >= 10 && LA3_0 <= 11)||LA3_0==13||(LA3_0 >= 15 && LA3_0 <= 23)||(LA3_0 >= 28 && LA3_0 <= 30)||(LA3_0 >= 33 && LA3_0 <= 36)||(LA3_0 >= 39 && LA3_0 <= 40)) ) {
+			if ( ((LA3_0 >= 10 && LA3_0 <= 11)||LA3_0==13||(LA3_0 >= 15 && LA3_0 <= 23)||LA3_0==25||LA3_0==32||(LA3_0 >= 35 && LA3_0 <= 37)||(LA3_0 >= 40 && LA3_0 <= 41)||(LA3_0 >= 44 && LA3_0 <= 45)||LA3_0==48||LA3_0==51) ) {
 				alt3=1;
 			}
-			else if ( (LA3_0==12||LA3_0==14||(LA3_0 >= 24 && LA3_0 <= 27)||(LA3_0 >= 31 && LA3_0 <= 32)||(LA3_0 >= 37 && LA3_0 <= 38)) ) {
+			else if ( (LA3_0==12||LA3_0==14||LA3_0==24||(LA3_0 >= 26 && LA3_0 <= 31)||(LA3_0 >= 33 && LA3_0 <= 34)||(LA3_0 >= 38 && LA3_0 <= 39)||(LA3_0 >= 42 && LA3_0 <= 43)||(LA3_0 >= 46 && LA3_0 <= 47)||(LA3_0 >= 49 && LA3_0 <= 50)) ) {
 				alt3=2;
 			}
 
@@ -369,21 +368,22 @@ public class CecilParser extends Parser {
 
 			switch (alt3) {
 				case 1 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:142:5: ( binaryinstruction datafield )
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:5: ( binaryinstruction datafield )
 					{
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:142:5: ( binaryinstruction datafield )
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:142:6: binaryinstruction datafield
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:5: ( binaryinstruction datafield )
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:138:6: binaryinstruction datafield
 					{
-					pushFollow(FOLLOW_binaryinstruction_in_mnemonicdata147);
+					pushFollow(FOLLOW_binaryinstruction_in_mnemonicdata143);
 					binaryinstruction2=binaryinstruction();
 					state._fsp--;
 
-					pushFollow(FOLLOW_datafield_in_mnemonicdata149);
+					pushFollow(FOLLOW_datafield_in_mnemonicdata145);
 					datafield3=datafield();
 					state._fsp--;
 
 
 					      /* if instruction is insert and data is integer then add value to memory */
+					        
 					         if(((binaryinstruction2!=null?input.toString(binaryinstruction2.start,binaryinstruction2.stop):null)).equals("insert")) {
 					          if(((datafield3!=null?input.toString(datafield3.start,datafield3.stop):null)).matches("^[0-9]+$")) {
 					            instructionfield.put(pointer, "insert");
@@ -412,9 +412,9 @@ public class CecilParser extends Parser {
 					}
 					break;
 				case 2 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:168:5: unaryinstruction
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:165:5: unaryinstruction
 					{
-					pushFollow(FOLLOW_unaryinstruction_in_mnemonicdata167);
+					pushFollow(FOLLOW_unaryinstruction_in_mnemonicdata163);
 					unaryinstruction4=unaryinstruction();
 					state._fsp--;
 
@@ -428,23 +428,22 @@ public class CecilParser extends Parser {
 			}
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -458,163 +457,45 @@ public class CecilParser extends Parser {
 
 
 	// $ANTLR start "unaryinstruction"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:175:1: unaryinstruction : ( stop | 'print' | 'printch' | 'printb' | 'cclear' | 'cset' | 'xdec' | 'xinc' | 'ydec' | 'yinc' ) ;
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:172:1: unaryinstruction : ( 'stop' | 'print' | 'printch' | 'printb' | 'printd' | 'cclear' | 'cset' | 'lshift' | 'rshift' | 'pull' | 'xdec' | 'xinc' | 'xpull' | 'xpush' | 'ydec' | 'yinc' | 'ypull' | 'ypush' | 'push' ) ;
 	public final CecilParser.unaryinstruction_return unaryinstruction() throws RecognitionException {
 		CecilParser.unaryinstruction_return retval = new CecilParser.unaryinstruction_return();
 		retval.start = input.LT(1);
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:3: ( ( stop | 'print' | 'printch' | 'printb' | 'cclear' | 'cset' | 'xdec' | 'xinc' | 'ydec' | 'yinc' ) )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:5: ( stop | 'print' | 'printch' | 'printb' | 'cclear' | 'cset' | 'xdec' | 'xinc' | 'ydec' | 'yinc' )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:173:3: ( ( 'stop' | 'print' | 'printch' | 'printb' | 'printd' | 'cclear' | 'cset' | 'lshift' | 'rshift' | 'pull' | 'xdec' | 'xinc' | 'xpull' | 'xpush' | 'ydec' | 'yinc' | 'ypull' | 'ypush' | 'push' ) )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:
 			{
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:5: ( stop | 'print' | 'printch' | 'printb' | 'cclear' | 'cset' | 'xdec' | 'xinc' | 'ydec' | 'yinc' )
-			int alt4=10;
-			switch ( input.LA(1) ) {
-			case 27:
-				{
-				alt4=1;
-				}
-				break;
-			case 24:
-				{
-				alt4=2;
-				}
-				break;
-			case 26:
-				{
-				alt4=3;
-				}
-				break;
-			case 25:
-				{
-				alt4=4;
-				}
-				break;
-			case 12:
-				{
-				alt4=5;
-				}
-				break;
-			case 14:
-				{
-				alt4=6;
-				}
-				break;
-			case 31:
-				{
-				alt4=7;
-				}
-				break;
-			case 32:
-				{
-				alt4=8;
-				}
-				break;
-			case 37:
-				{
-				alt4=9;
-				}
-				break;
-			case 38:
-				{
-				alt4=10;
-				}
-				break;
-			default:
-				NoViableAltException nvae =
-					new NoViableAltException("", 4, 0, input);
-				throw nvae;
+			if ( input.LA(1)==12||input.LA(1)==14||input.LA(1)==24||(input.LA(1) >= 26 && input.LA(1) <= 31)||(input.LA(1) >= 33 && input.LA(1) <= 34)||(input.LA(1) >= 38 && input.LA(1) <= 39)||(input.LA(1) >= 42 && input.LA(1) <= 43)||(input.LA(1) >= 46 && input.LA(1) <= 47)||(input.LA(1) >= 49 && input.LA(1) <= 50) ) {
+				input.consume();
+				state.errorRecovery=false;
 			}
-			switch (alt4) {
-				case 1 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:6: stop
-					{
-					pushFollow(FOLLOW_stop_in_unaryinstruction190);
-					stop();
-					state._fsp--;
-
-					}
-					break;
-				case 2 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:11: 'print'
-					{
-					match(input,24,FOLLOW_24_in_unaryinstruction192); 
-					}
-					break;
-				case 3 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:19: 'printch'
-					{
-					match(input,26,FOLLOW_26_in_unaryinstruction194); 
-					}
-					break;
-				case 4 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:29: 'printb'
-					{
-					match(input,25,FOLLOW_25_in_unaryinstruction196); 
-					}
-					break;
-				case 5 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:38: 'cclear'
-					{
-					match(input,12,FOLLOW_12_in_unaryinstruction198); 
-					}
-					break;
-				case 6 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:47: 'cset'
-					{
-					match(input,14,FOLLOW_14_in_unaryinstruction200); 
-					}
-					break;
-				case 7 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:54: 'xdec'
-					{
-					match(input,31,FOLLOW_31_in_unaryinstruction202); 
-					}
-					break;
-				case 8 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:61: 'xinc'
-					{
-					match(input,32,FOLLOW_32_in_unaryinstruction204); 
-					}
-					break;
-				case 9 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:68: 'ydec'
-					{
-					match(input,37,FOLLOW_37_in_unaryinstruction206); 
-					}
-					break;
-				case 10 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:176:75: 'yinc'
-					{
-					match(input,38,FOLLOW_38_in_unaryinstruction208); 
-					}
-					break;
-
+			else {
+				MismatchedSetException mse = new MismatchedSetException(null,input);
+				throw mse;
 			}
-
 			}
 
 			retval.stop = input.LT(-1);
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -629,16 +510,16 @@ public class CecilParser extends Parser {
 
 
 	// $ANTLR start "binaryinstruction"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:179:1: binaryinstruction : ( 'add' | 'sub' | 'and' | 'comp' | 'xor' | 'or' | 'jineg' | 'jicarry' | 'jipos' | 'jizero' | 'jump' | 'load' | 'xload' | 'yload' | 'xstore' | 'ystore' | 'loadmx' | 'store' | 'xcomp' | 'insert' | 'ycomp' ) ;
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:177:1: binaryinstruction : ( 'add' | 'sub' | 'and' | 'comp' | 'xor' | 'or' | 'jineg' | 'jicarry' | 'jipos' | 'jizero' | 'jmptosr' | 'jump' | 'load' | 'xload' | 'yload' | 'xstore' | 'ystore' | 'loadmx' | 'store' | 'xcomp' | 'insert' | 'return' | 'ycomp' ) ;
 	public final CecilParser.binaryinstruction_return binaryinstruction() throws RecognitionException {
 		CecilParser.binaryinstruction_return retval = new CecilParser.binaryinstruction_return();
 		retval.start = input.LT(1);
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:180:3: ( ( 'add' | 'sub' | 'and' | 'comp' | 'xor' | 'or' | 'jineg' | 'jicarry' | 'jipos' | 'jizero' | 'jump' | 'load' | 'xload' | 'yload' | 'xstore' | 'ystore' | 'loadmx' | 'store' | 'xcomp' | 'insert' | 'ycomp' ) )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:178:3: ( ( 'add' | 'sub' | 'and' | 'comp' | 'xor' | 'or' | 'jineg' | 'jicarry' | 'jipos' | 'jizero' | 'jmptosr' | 'jump' | 'load' | 'xload' | 'yload' | 'xstore' | 'ystore' | 'loadmx' | 'store' | 'xcomp' | 'insert' | 'return' | 'ycomp' ) )
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:
 			{
-			if ( (input.LA(1) >= 10 && input.LA(1) <= 11)||input.LA(1)==13||(input.LA(1) >= 15 && input.LA(1) <= 23)||(input.LA(1) >= 28 && input.LA(1) <= 30)||(input.LA(1) >= 33 && input.LA(1) <= 36)||(input.LA(1) >= 39 && input.LA(1) <= 40) ) {
+			if ( (input.LA(1) >= 10 && input.LA(1) <= 11)||input.LA(1)==13||(input.LA(1) >= 15 && input.LA(1) <= 23)||input.LA(1)==25||input.LA(1)==32||(input.LA(1) >= 35 && input.LA(1) <= 37)||(input.LA(1) >= 40 && input.LA(1) <= 41)||(input.LA(1) >= 44 && input.LA(1) <= 45)||input.LA(1)==48||input.LA(1)==51 ) {
 				input.consume();
 				state.errorRecovery=false;
 			}
@@ -652,23 +533,22 @@ public class CecilParser extends Parser {
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -678,109 +558,67 @@ public class CecilParser extends Parser {
 	// $ANTLR end "binaryinstruction"
 
 
-
-	// $ANTLR start "stop"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:184:1: stop : 'stop' ;
-	public final void stop() throws RecognitionException {
-		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:185:3: ( 'stop' )
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:185:4: 'stop'
-			{
-			match(input,27,FOLLOW_27_in_stop283); 
-
-			    instructionfield.put(pointer, "stop");
-			    sim40.memory[pointer++] = 0;
-			  
-			}
-
-		}
-
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
-
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "stop"
-
-
 	public static class datafield_return extends ParserRuleReturnScope {
 	};
 
 
 	// $ANTLR start "datafield"
-	// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:193:1: datafield : ( NAME | ( DIGIT )+ );
+	// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:183:1: datafield : ( NAME | ( DIGIT )+ );
 	public final CecilParser.datafield_return datafield() throws RecognitionException {
 		CecilParser.datafield_return retval = new CecilParser.datafield_return();
 		retval.start = input.LT(1);
 
 		try {
-			// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:194:3: ( NAME | ( DIGIT )+ )
-			int alt6=2;
-			int LA6_0 = input.LA(1);
-			if ( (LA6_0==NAME) ) {
-				alt6=1;
+			// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:184:3: ( NAME | ( DIGIT )+ )
+			int alt5=2;
+			int LA5_0 = input.LA(1);
+			if ( (LA5_0==NAME) ) {
+				alt5=1;
 			}
-			else if ( (LA6_0==DIGIT) ) {
-				alt6=2;
+			else if ( (LA5_0==DIGIT) ) {
+				alt5=2;
 			}
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 6, 0, input);
+					new NoViableAltException("", 5, 0, input);
 				throw nvae;
 			}
 
-			switch (alt6) {
+			switch (alt5) {
 				case 1 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:194:5: NAME
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:184:5: NAME
 					{
-					match(input,NAME,FOLLOW_NAME_in_datafield306); 
+					match(input,NAME,FOLLOW_NAME_in_datafield315); 
 					}
 					break;
 				case 2 :
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:195:5: ( DIGIT )+
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:185:5: ( DIGIT )+
 					{
-					// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:195:5: ( DIGIT )+
-					int cnt5=0;
-					loop5:
+					// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:185:5: ( DIGIT )+
+					int cnt4=0;
+					loop4:
 					while (true) {
-						int alt5=2;
-						int LA5_0 = input.LA(1);
-						if ( (LA5_0==DIGIT) ) {
-							alt5=1;
+						int alt4=2;
+						int LA4_0 = input.LA(1);
+						if ( (LA4_0==DIGIT) ) {
+							alt4=1;
 						}
 
-						switch (alt5) {
+						switch (alt4) {
 						case 1 :
-							// C:\\Users\\Shreeprabha\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:195:5: DIGIT
+							// C:\\Users\\Carol\\Documents\\GitHub\\CecilRPi\\src\\org\\raspberrypi\\cecil\\model\\grammar\\Cecil.g:185:5: DIGIT
 							{
-							match(input,DIGIT,FOLLOW_DIGIT_in_datafield312); 
+							match(input,DIGIT,FOLLOW_DIGIT_in_datafield321); 
 							}
 							break;
 
 						default :
-							if ( cnt5 >= 1 ) break loop5;
-							EarlyExitException eee = new EarlyExitException(5, input);
+							if ( cnt4 >= 1 ) break loop4;
+							EarlyExitException eee = new EarlyExitException(4, input);
 							throw eee;
 						}
-						cnt5++;
+						cnt4++;
 					}
 
 					}
@@ -791,23 +629,22 @@ public class CecilParser extends Parser {
 
 		}
 
-			catch (RecognitionException e) {
-				String hdr = getErrorHeader(e);
-				String msg = getErrorMessage(e, tokenNames);
-				System.out.println(e.line + msg);
-		    
-				this.stream.getErrors().add(new OutputError(e.line, msg));
-				
-			}
-			
-			catch (NullPointerException e1) {
-		    //String hdr = getErrorHeader(e1);
-		    //String msg = getErrorMessage(e1, tokenNames);
-		    //throw new RecognitionException();
-		    
-		    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-		    
-		  }
+		        catch (RecognitionException e) {
+		                String hdr = getErrorHeader(e);
+		                String msg = getErrorMessage(e, tokenNames);
+		                System.out.println(e.line + " : " + msg);
+		                this.stream.getErrors().add(new OutputError(e.line, msg));
+		                
+		        }
+		        
+		//        catch (NullPointerException e1) {
+		//    //String hdr = getErrorHeader(e1);
+		//    //String msg = getErrorMessage(e1, tokenNames);
+		//   //throw new RecognitionException();
+		//    
+		//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
+		//    
+		//  }
 
 		finally {
 			// do for sure before leaving
@@ -820,28 +657,16 @@ public class CecilParser extends Parser {
 
 
 
-	public static final BitSet FOLLOW_9_in_program70 = new BitSet(new long[]{0x000001FFFFFFFC00L});
-	public static final BitSet FOLLOW_mnemonicdata_in_program72 = new BitSet(new long[]{0x000001FFFFFFFD00L});
-	public static final BitSet FOLLOW_instruction_in_program74 = new BitSet(new long[]{0x000001FFFFFFFD00L});
-	public static final BitSet FOLLOW_stop_in_program77 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_8_in_instruction92 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_labelfield_in_instruction94 = new BitSet(new long[]{0x000001FFFFFFFC00L});
-	public static final BitSet FOLLOW_mnemonicdata_in_instruction107 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NAME_in_labelfield132 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_binaryinstruction_in_mnemonicdata147 = new BitSet(new long[]{0x0000000000000060L});
-	public static final BitSet FOLLOW_datafield_in_mnemonicdata149 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_unaryinstruction_in_mnemonicdata167 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_stop_in_unaryinstruction190 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_24_in_unaryinstruction192 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_26_in_unaryinstruction194 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_25_in_unaryinstruction196 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_12_in_unaryinstruction198 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_14_in_unaryinstruction200 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_31_in_unaryinstruction202 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_32_in_unaryinstruction204 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_37_in_unaryinstruction206 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_38_in_unaryinstruction208 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_27_in_stop283 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NAME_in_datafield306 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_DIGIT_in_datafield312 = new BitSet(new long[]{0x0000000000000022L});
+	public static final BitSet FOLLOW_9_in_program68 = new BitSet(new long[]{0x000FFFFFFFFFFC00L});
+	public static final BitSet FOLLOW_mnemonicdata_in_program70 = new BitSet(new long[]{0x000FFFFFFFFFFD02L});
+	public static final BitSet FOLLOW_instruction_in_program72 = new BitSet(new long[]{0x000FFFFFFFFFFD02L});
+	public static final BitSet FOLLOW_8_in_instruction88 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_labelfield_in_instruction90 = new BitSet(new long[]{0x000FFFFFFFFFFC00L});
+	public static final BitSet FOLLOW_mnemonicdata_in_instruction103 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NAME_in_labelfield128 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_binaryinstruction_in_mnemonicdata143 = new BitSet(new long[]{0x0000000000000060L});
+	public static final BitSet FOLLOW_datafield_in_mnemonicdata145 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_unaryinstruction_in_mnemonicdata163 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NAME_in_datafield315 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_DIGIT_in_datafield321 = new BitSet(new long[]{0x0000000000000022L});
 }
