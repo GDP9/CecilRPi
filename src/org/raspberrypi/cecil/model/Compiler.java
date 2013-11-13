@@ -53,15 +53,15 @@ public class Compiler {
 						this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
 
 				else { 
-					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
+					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i))+1, "Data " + parser.getDatafield().get(i) + " has no labelfield"));
 					this.sim40.setSuccessCompile(false);
 				}
 			}
 			/* checking for stop instruction */
-			if(!parser.getInstructionfield().containsValue("stop")) {
-				this.errorStream.getErrors().add(new OutputError(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
-				this.sim40.setSuccessCompile(false);
-			}
+//			if(!parser.getInstructionfield().containsValue("stop")) {
+//				this.errorStream.getErrors().add(new OutputError(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
+//				this.sim40.setSuccessCompile(false);
+//			}
 
 			/* Writing successful compilation to std stream */
 			if(this.sim40.isCompileSuccess()) {

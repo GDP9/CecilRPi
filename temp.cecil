@@ -1,4 +1,4 @@
-.start load num1 ;
+.start load nu?m1 ;
   add num2 ;
   print   ;
   printch   ;

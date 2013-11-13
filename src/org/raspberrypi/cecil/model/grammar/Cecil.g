@@ -34,8 +34,15 @@ options {
   package org.raspberrypi.cecil.model.grammar;
 }
 
+//@lexer::members{
+// @Override
+//  public void reportError(RecognitionException e) {
+//    throw new RuntimeException("I quit!\n" + e.getMessage()); 
+//  }
+//}
+
 /* Member function and field declaration */
-@members { 
+@parser::members { 
     /* Simulator */
     private Simulator sim40;
     
@@ -83,12 +90,6 @@ options {
     /**
     * Implicitly invoked by the parser. The error is appended in the output console. 
     */
-//    @Override
-//    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-//          String hdr = getErrorHeader(e);
-//          String msg = getErrorMessage(e, tokenNames);
-//          this.stream.getErrors().add(new OutputError(e.line, msg));
-//    }
 }
 
 @rulecatch {
@@ -96,18 +97,11 @@ options {
                 String hdr = getErrorHeader(e);
                 String msg = getErrorMessage(e, tokenNames);
                 System.out.println(e.line + " : " + msg);
-                this.stream.getErrors().add(new OutputError(e.line, msg));
-                
+                this.stream.getErrors().add(new OutputError(e.line, msg));      
         }
-        
-//        catch (NullPointerException e1) {
-//    //String hdr = getErrorHeader(e1);
-//    //String msg = getErrorMessage(e1, tokenNames);
-//   //throw new RecognitionException();
-//    
-//    //this.stream.getErrors().add(new OutputError(e1.line, msg));
-//    
-//  }
+        catch (Exception e) {
+        System.out.println("Other exception : " + e.getMessage());
+    }      
 }
 
 /**
@@ -116,8 +110,7 @@ options {
  * Reserved Keywords: all-instructions
  */
 program 
-  : '.start' mnemonicdata instruction*
-  ;
+  : '.start'? mnemonicdata instruction*;
 
 instruction 
   : ('.' labelfield  
@@ -126,8 +119,6 @@ instruction
     else labelfield.put(($labelfield.text),pointer);
   }
   )? mnemonicdata
-  
-  
   ;  
   
 labelfield 
