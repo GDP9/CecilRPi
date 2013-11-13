@@ -150,7 +150,20 @@ public class Controller implements ControllerInterface {
 				else 
 					isCorrectInput = true;
 			}
-			
+			if(model.getInstructions().isBinaryInstruction(input.get(2))){
+				if(input.get(1).equals(" ")){
+					isCorrectInput = false;
+					model.getErrorStream().getErrors().add(new OutputError(i, "A binary instruction must be succeeded by a datafield"));
+					break;
+				}
+			}
+			if(!model.getInstructions().isBinaryInstruction(input.get(2))){
+				if(!input.get(1).equals(" ")){
+					isCorrectInput = false;
+					model.getErrorStream().getErrors().add(new OutputError(i, "A unary instruction must not be succeeded by a datafield"));
+					break;
+				}
+			}
 		}
 		return isCorrectInput;
 	}
