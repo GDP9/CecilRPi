@@ -32,7 +32,10 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.JComboBox;
 
 import java.awt.event.FocusEvent;
@@ -41,8 +44,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridLayout;
@@ -631,6 +637,36 @@ public class Frame extends JFrame implements ViewInterface {
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
 		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(35);
+		JTableHeader headerforinput = tblInput.getTableHeader();
+
+		ToolTipsforinput tips = new ToolTipsforinput();
+		for (int column = 0; column < tblInput.getColumnCount(); column++) {
+			TableColumn colNo = tblInput.getColumnModel().getColumn(column);
+			if (column == 0) {
+				tips.setToolTip(colNo, "Line Number");
+			}
+			if (column == 1) {
+				tips.setToolTip(colNo, "Reference point to the next instruction");
+			}
+			if (column == 2) {
+				tips.setToolTip(colNo, "Machine operation to be executed");
+			}
+			if (column == 3) {
+				tips.setToolTip(colNo, "Reference to labelfield");
+			}
+			if (column == 4) {
+				tips.setToolTip(colNo, "Comments");
+			}
+		}
+		headerforinput.addMouseMotionListener(tips);
+		/*JLabel headerRenderer = new DefaultTableCellRenderer();
+	    String columnName = tblInput.getModel().getColumnName(0);
+	    headerRenderer.setText(columnName);
+	    headerRenderer.setBackground(Color.GRAY);
+	    headerRenderer.setToolTipText("Wave");
+	    TableColumnModel columnModel = tblInput.getColumnModel();
+	    TableColumn englishColumn = columnModel.getColumn(0);
+	    englishColumn.setHeaderRenderer((TableCellRenderer) headerRenderer);*/
 		
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
@@ -1102,7 +1138,21 @@ public class Frame extends JFrame implements ViewInterface {
 			return this;
 		}
 	}
-	
+	class ToolTipsforinput extends MouseMotionAdapter {
+		  HashMap tooltips = new HashMap();
+		  public void setToolTip(TableColumn col, String tooltip) {		    
+		      tooltips.put(col, tooltip);		    
+		  }
+		  public void mouseMoved(MouseEvent evt) {
+		    JTableHeader headerInput = (JTableHeader) evt.getSource();
+		    JTable inputTable = headerInput.getTable();
+		    int columnIndex = inputTable.getColumnModel().getColumnIndexAtX(evt.getX());
+		     if (columnIndex >= 0) {
+		       headerInput.setToolTipText((String) tooltips.get(inputTable.getColumnModel().getColumn(columnIndex)));
+		    }
+		 
+		  }
+	}
 	
 
 	/**
@@ -1568,4 +1618,6 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		repaint();
 	}
+
+		  
 }
