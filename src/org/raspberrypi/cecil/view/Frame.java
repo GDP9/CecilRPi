@@ -467,7 +467,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		xRegister.setEnabled(false);
-		xRegister.setToolTipText("Storage area for data within the CPU.");
+		xRegister.setToolTipText("Internal memory store for data within CPU.");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		
 		/*
@@ -480,7 +480,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		yRegister.setEnabled(false);
-		yRegister.setToolTipText("Storage area for data within the CPU.");
+		yRegister.setToolTipText("Internal memory store for data within CPU.");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		
 		/*
@@ -493,7 +493,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
         accRegister.setEnabled(false);
-		accRegister.setToolTipText("Register in which intermediate arithmetic and logic results are stored.");
+		accRegister.setToolTipText("Memory store for performing arithmetic and logical operations.");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
 		
@@ -535,7 +535,7 @@ public class Frame extends JFrame implements ViewInterface {
 		carryPanel.setOpaque(false);
 		carryPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblCarry = new JLabel("Carry", SwingConstants.CENTER);
-		lblCarry.setToolTipText("Since the memory buffer allows a 10 bit number, if the value at any of the registers exceeds 2^10 i.e. 1024, this flag is switched on");
+		lblCarry.setToolTipText("If the value at any of the registers exceeds 2^10 i.e. 1024, this flag is switched on");
 		lblCarry.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblCarry.setOpaque(true);
 		carryPanel.add(lblCarry);
@@ -610,7 +610,6 @@ public class Frame extends JFrame implements ViewInterface {
 		mdlInput.addColumn("Data");
 		mdlInput.addColumn("Comments");
 		mdlInput.addRow(new Object[]{0,"","","",";"});
-		
 		tblInput = new JTable(mdlInput) {
 			/**
 			 * Serial version UID to stop the warning.
