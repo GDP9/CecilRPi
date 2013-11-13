@@ -32,24 +32,18 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 import javax.swing.JComboBox;
 
-import java.awt.event.ItemEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 import java.awt.GridLayout;
 
@@ -165,7 +159,7 @@ public class Frame extends JFrame implements ViewInterface {
 	
 	//Misc
 	private JTextField input;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	private FontUIResource currentFont;
 	private ArrayList<ArrayList<String>> currentProgram;
 	private Color[] currentTheme;
@@ -241,6 +235,20 @@ public class Frame extends JFrame implements ViewInterface {
 		repaint();
 		
 		fileMenu = new JMenu("File");
+		fileMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				fileMenu.requestFocus();
+			}
+		});
 		menuBar.add(fileMenu);
 		
 		menuNew = new JMenuItem("New");
@@ -282,7 +290,20 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu.add(menuExit);
 		
 		settingsMenu = new JMenu("Settings");
-		settingsMenu.setRolloverEnabled(true);
+		settingsMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				settingsMenu.requestFocus();
+			}
+		});
 		menuBar.add(settingsMenu);
 		
 		menuPreferences = new JMenuItem("Preferences");
@@ -295,7 +316,20 @@ public class Frame extends JFrame implements ViewInterface {
 		settingsMenu.add(menuPreferences);
 
 		helpMenu = new JMenu("Help");
-		helpMenu.setRolloverEnabled(true);
+		helpMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				helpMenu.requestFocus();
+			}
+		});
 		menuBar.add(helpMenu);
 		
 		menuWelcome = new JMenuItem("Welcome");
@@ -580,12 +614,15 @@ public class Frame extends JFrame implements ViewInterface {
 				}
 			}
 		};
+		tblInput.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		tblInput.getTableHeader().setReorderingAllowed(false);
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
 		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(35);
 		
-		comboBox = new JComboBox(instructionList.toArray());
+		String[] temp = new String[instructionList.size()];
+		instructionList.toArray(temp);
+		comboBox = new JComboBox<String>(temp);
 		comboBox.setEditable(true);
 		AutoCompleteDecorator.decorate(comboBox);
 									
@@ -600,11 +637,7 @@ public class Frame extends JFrame implements ViewInterface {
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
        	aligncenter.setHorizontalAlignment(JLabel.CENTER);
        	tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
-       	tblInput.setRowHeight(25);                
-//       	tblInput.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(input));
-//       	tblInput.getColumnModel().getColumn(2).setCellEditor(new ComboBoxCellEditor(comboBox));       	
-//       	tblInput.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(input));
-//       	tblInput.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(input));
+       	tblInput.setRowHeight(25);
        	tblInput.setFillsViewportHeight(true);
        	
        	for (int i = 0; i < tblInput.getColumnCount(); i++) {
@@ -1180,14 +1213,15 @@ public class Frame extends JFrame implements ViewInterface {
 	 * The user is also shown a warning if there are unsaved changes.
 	 */
 	private void onNewClicked() {
-		clearVisualisations();
 		if (!currentProgram.equals(getProgramCode())) {
 			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
 			if (returnValue == JOptionPane.OK_OPTION) {
+				clearVisualisations();
 				loadNewProgram();
 				setFilename("Untitled");
 			}
 		} else {
+			clearVisualisations();
 			loadNewProgram();
 			setFilename("Untitled");
 		}
@@ -1211,12 +1245,25 @@ public class Frame extends JFrame implements ViewInterface {
 	 * Opens a JFileChooser dialog to open a .cecil file.
 	 */
 	private void onOpenClicked() {
-		JFileChooser fileChooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
-		fileChooser.setFileFilter(filter);
-		int returnValue = fileChooser.showOpenDialog(this);
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			controller.fileOpened(fileChooser.getSelectedFile());
+		if (!currentProgram.equals(getProgramCode())) {
+			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
+			if (returnValue == JOptionPane.OK_OPTION) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
+				fileChooser.setFileFilter(filter);
+				int returnVal = fileChooser.showOpenDialog(this);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					controller.fileOpened(fileChooser.getSelectedFile());
+				}
+			}
+		} else {
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
+			fileChooser.setFileFilter(filter);
+			int returnValue = fileChooser.showOpenDialog(this);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				controller.fileOpened(fileChooser.getSelectedFile());
+			}
 		}
 	}
 	
@@ -1239,7 +1286,14 @@ public class Frame extends JFrame implements ViewInterface {
 	 * Exits the application.
 	 */
 	private void onExitClicked() {
-		System.exit(0);
+		if (!currentProgram.equals(getProgramCode())) {
+			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
+			if (returnValue == JOptionPane.OK_OPTION) {
+				System.exit(0);
+			}
+		} else {
+			System.exit(0);
+		}
 	}
 	
 	/**
