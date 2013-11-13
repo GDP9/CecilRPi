@@ -47,8 +47,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 *  @return ArrayList<Instruction>
 	 */
 	@Override
-	public InstructionList getInstructions() {
-		return (new InstructionList());
+	public ArrayList<Instruction> getInstructions() {
+		return (new InstructionList().getInstructions());
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 * @return instruction mnemonic
 	 */
 	public int instructionToMnemonic(String name) {
-		for(Instruction i: getInstructions().getInstructions()) {
+		for(Instruction i: getInstructions()) {
 			if(i.getName().equals(name))
 				return i.getMnemonic();
 		}

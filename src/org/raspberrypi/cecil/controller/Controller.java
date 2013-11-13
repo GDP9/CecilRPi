@@ -42,7 +42,7 @@ public class Controller implements ControllerInterface {
 		view = new Frame(this);		
 		model = new Model();
 
-		view.setInstructionList(model.getInstructions().getInstructions());
+		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
 	}
 
