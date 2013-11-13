@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -200,6 +200,7 @@ public class Frame extends JFrame implements ViewInterface {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		ToolTipManager.sharedInstance().setDismissDelay(20000);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(this);
@@ -208,6 +209,16 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		getContentPane().setLayout(new GridBagLayout());
 		setTitle("CECIL");
+		
+		if (instructionList == null) {
+			//Default instructions
+			instructionList = new ArrayList<String>();
+			instructionList.add("load");
+			instructionList.add("print");
+			instructionList.add("stop");
+			instructionList.add("add");
+			instructionList.add("insert");
+		}
 		
 		/*
 		 * Menu bar
@@ -354,6 +365,8 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		southPanel = new JPanel();
 		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 20, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		//southPanel.setToolTipText("Each cell in the memory is an address."
+				//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
 		southPanel.setLayout(new GridBagLayout());
 		
 		/*
@@ -522,6 +535,7 @@ public class Frame extends JFrame implements ViewInterface {
 		carryPanel.setOpaque(false);
 		carryPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblCarry = new JLabel("Carry", SwingConstants.CENTER);
+		lblCarry.setToolTipText("Since the memory buffer allows a 10 bit number, if the value at any of the registers exceeds 2^10 i.e. 1024, this flag is switched on");
 		lblCarry.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblCarry.setOpaque(true);
 		carryPanel.add(lblCarry);
@@ -531,6 +545,7 @@ public class Frame extends JFrame implements ViewInterface {
 		zeroPanel.setOpaque(false);
 		zeroPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblZero = new JLabel("Zero", SwingConstants.CENTER);
+		lblZero.setToolTipText("If the value at any of the registers is equal to zero then this flag is switched on");
 		lblZero.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblZero.setOpaque(true);
 		zeroPanel.add(lblZero);
@@ -540,6 +555,7 @@ public class Frame extends JFrame implements ViewInterface {
 		negativePanel.setOpaque(false);
 		negativePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblNegative = new JLabel("Negative", SwingConstants.CENTER);
+		lblNegative.setToolTipText("If the value at any of the registers is equal to zero then this flag is switched on");
 		lblNegative.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblNegative.setOpaque(true);
 		negativePanel.add(lblNegative);
@@ -721,6 +737,8 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.setEnabled(false);
 		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblMemory.setToolTipText("Each cell in the memory is an address."
+				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc");
 		
 //		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 //		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
@@ -803,7 +821,7 @@ public class Frame extends JFrame implements ViewInterface {
 			yRegister.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 
 			flagPanel.setBackground(UIManager.getColor("Panel.background"));
-			lblCarry.setBackground(Color.WHITE);
+			lblCarry.setBackground(Color.WHITE);			
 			lblZero.setBackground(Color.WHITE);
 			lblNegative.setBackground(Color.WHITE);
 
