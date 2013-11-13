@@ -25,6 +25,8 @@ public interface ModelInterface {
 	public void setErrorStream(ErrorOutputStream stream);
 	public InstructionList getInstructions();
 	public void setToDefault();
+	public int instructionToMnemonic(String name);
+	public boolean isBinaryInstruction(String name);
 	
 	/**
 	 * Input editor converter

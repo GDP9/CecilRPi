@@ -121,7 +121,6 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		System.out.println("checking " + checkCorrectInput(code));
 		if(checkCorrectInput(code)){
 			model.compile(new Program(code));
 			this.setViewOutput();
@@ -161,14 +160,14 @@ public class Controller implements ControllerInterface {
 			}
 			else{
 				
-				if(model.getInstructions().isBinaryInstruction(input.get(1))){
+				if(model.isBinaryInstruction(input.get(1))){
 					if(input.get(2).equals(" ")){
 						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
 						System.out.println(model.getErrorStream().getErrors().isEmpty());
 						return false;
 					}
 				}
-				if(!model.getInstructions().isBinaryInstruction(input.get(1))){
+				if(!model.isBinaryInstruction(input.get(1))){
 					if(!input.get(2).equals(" ")){
 						addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
 						return false;

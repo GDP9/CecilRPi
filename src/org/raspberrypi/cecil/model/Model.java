@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
@@ -48,6 +49,33 @@ public class Model implements ModelInterface, SimulatorInterface {
 	@Override
 	public InstructionList getInstructions() {
 		return (new InstructionList());
+	}
+	
+	/**
+	 * Returns the machine code of the given instruction.
+	 * @param instruction name
+	 * @return instruction mnemonic
+	 */
+	public int instructionToMnemonic(String name) {
+		for(Instruction i: getInstructions().getInstructions()) {
+			if(i.getName().equals(name))
+				return i.getMnemonic();
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean isBinaryInstruction(String name){
+		boolean isBinary = false;
+		if(instructionToMnemonic(name)>=18){
+			isBinary= true;
+		}
+		return isBinary;
 	}
 
 	@Override
