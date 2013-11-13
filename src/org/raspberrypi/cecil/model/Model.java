@@ -224,8 +224,13 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return this.sim40.getMemory();
 	}
 
+	public void setErrorStream(ErrorOutputStream stream){
+		this.errorStream = stream;
+	}
 	@Override
 	public ErrorOutputStream getErrorStream() {
+		if(this.errorStream==null)
+			return new ErrorOutputStream();
 		return this.errorStream;
 	}
 

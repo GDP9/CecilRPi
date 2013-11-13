@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.Model;
+import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
@@ -62,7 +63,7 @@ public class Controller implements ControllerInterface {
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("add");
-		line.add("num2");
+		line.add(" ");
 		line.add(";");
 		program.add(line);
 
@@ -120,9 +121,14 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		if(checkCorrectInput(code))
+		System.out.println("checking " + checkCorrectInput(code));
+		if(checkCorrectInput(code)){
 			model.compile(new Program(code));
-		this.setViewOutput();
+			this.setViewOutput();
+		}
+		else 
+			view.setConsoleError(model.getErrorStream().getErrors());
+		//System.out.println(model.getErrorStream().getErrors().get(0).getMessage());
 	}
 
 	@Override
@@ -137,35 +143,40 @@ public class Controller implements ControllerInterface {
 		this.setViewOutput();
 	}
 
-	private boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
-		boolean isCorrectInput = true;
+	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		for(int i = 0; i<code.size(); i++){
 			ArrayList<String> input = code.get(i);
-			if(!input.get(0).equals(" ") || !input.get(3).equals(" ")){
-				if(input.get(1).equals(" ")){
-					isCorrectInput = false;
-					model.getErrorStream().getErrors().add(new OutputError(i, "An instruction must be provided"));
-					break;
-				}
-				else 
-					isCorrectInput = true;
-			}
-			if(model.getInstructions().isBinaryInstruction(input.get(2))){
-				if(input.get(1).equals(" ")){
-					isCorrectInput = false;
-					model.getErrorStream().getErrors().add(new OutputError(i, "A binary instruction must be succeeded by a datafield"));
-					break;
+			
+			if(input.get(1).equals(" ")){
+				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")){
+					addErrorToOutputstream(i, "An instruction must be provided");
+					return false;
 				}
 			}
-			if(!model.getInstructions().isBinaryInstruction(input.get(2))){
-				if(!input.get(1).equals(" ")){
-					isCorrectInput = false;
-					model.getErrorStream().getErrors().add(new OutputError(i, "A unary instruction must not be succeeded by a datafield"));
-					break;
+			else{
+				
+				if(model.getInstructions().isBinaryInstruction(input.get(1))){
+					if(input.get(2).equals(" ")){
+						addErrorToOutputstream(i, "A binary instruction must be succeeded by a datafield");
+						System.out.println(model.getErrorStream().getErrors().isEmpty());
+						return false;
+					}
+				}
+				if(!model.getInstructions().isBinaryInstruction(input.get(1))){
+					if(!input.get(2).equals(" ")){
+						addErrorToOutputstream(i, "A unary instruction must not be succeeded by a datafield");
+						return false;
+					}
 				}
 			}
 		}
-		return isCorrectInput;
+		return true;
+	}
+	
+	private void addErrorToOutputstream (int line, String msg){
+		ErrorOutputStream e = new ErrorOutputStream();
+		e.getErrors().add(new OutputError(line, msg));
+		model.setErrorStream(e);
 	}
 
 	/**

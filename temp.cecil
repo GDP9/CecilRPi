@@ -1,0 +1,9 @@
+.start load num1 ;
+  add   ;
+  print   ;
+  printch   ;
+  printb   ;
+  stop   ;
+.num1 insert 63 ;
+.num2 insert 2 ;
+  stop   ;

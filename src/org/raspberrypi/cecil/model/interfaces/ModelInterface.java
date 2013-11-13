@@ -22,6 +22,7 @@ public interface ModelInterface {
 	 */
 	public ErrorOutputStream getErrorStream();
 	public StandardOutputStream getStdStream();
+	public void setErrorStream(ErrorOutputStream stream);
 	public InstructionList getInstructions();
 	
 	/**
