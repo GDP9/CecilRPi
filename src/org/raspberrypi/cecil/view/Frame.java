@@ -464,7 +464,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		xRegister.setEnabled(false);
-		xRegister.setToolTipText("X register");
+		xRegister.setToolTipText("Storage area for data within the CPU.");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		
 		/*
@@ -477,7 +477,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		yRegister.setEnabled(false);
-		yRegister.setToolTipText("Y register");
+		yRegister.setToolTipText("Storage area for data within the CPU.");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		
 		/*
@@ -490,7 +490,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
         accRegister.setEnabled(false);
-		accRegister.setToolTipText("Acc register");
+		accRegister.setToolTipText("Register in which intermediate arithmetic and logic results are stored.");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
 		
@@ -504,6 +504,7 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		yScroll = new JScrollPane(accRegister);
 		yScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+		//yScroll.setToolTipText("Register in which intermediate arithmetic and logic results are stored.");
 		yScroll.setOpaque(false);
 		registerPanel.add(yScroll);
 		
@@ -564,6 +565,7 @@ public class Frame extends JFrame implements ViewInterface {
 					
 		txtConsole = new JList<String>();
 		txtConsole.setToolTipText("Output console");
+		
 		txtConsole.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -572,11 +574,16 @@ public class Frame extends JFrame implements ViewInterface {
 			@Override
 			public void mouseExited(MouseEvent arg0) {}
 			@Override
-			public void mouseEntered(MouseEvent arg0) {}
+			public void mouseEntered(MouseEvent arg0) {
+				if (errors != null && errors.size() > 0) {
+					txtConsole.setToolTipText("Click on the error to see where the problem is");
+				}
+				}
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (errors != null && errors.size() > 0) {
 					highlightError();
+					
 				} else {
 					txtConsole.removeSelectionInterval(txtConsole.getSelectedIndex(), txtConsole.getSelectedIndex());
 				}
