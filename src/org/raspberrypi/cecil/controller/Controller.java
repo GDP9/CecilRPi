@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.Model;
+import org.raspberrypi.cecil.model.outputstream.OutputError;
+import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 import org.raspberrypi.cecil.view.Frame;
 
@@ -30,16 +32,16 @@ public class Controller implements ControllerInterface {
 	public static void main(String[] args) {
 		new Controller();
 	}
-	
-	
+
+
 	/**
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
 	 */
 	public Controller() {
 		view = new Frame(this);		
 		model = new Model();
-		
-		view.setInstructionList(model.getInstructions());
+
+		view.setInstructionList(model.getInstructions().getInstructions());
 		view.setProgramCode(this.getDefaultInput());
 	}
 
@@ -50,74 +52,75 @@ public class Controller implements ControllerInterface {
 	private ArrayList<ArrayList<String>> getDefaultInput() {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = new ArrayList<String>();
-		
+
 		line.add(".start");
 		line.add("load");
 		line.add("num1");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("add");
 		line.add("num2");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("print");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printch");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printb");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(".num1");
 		line.add("insert");
 		line.add("63");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		return program;
 	}
-	
+
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
+		checkForNullInputs(code);
 		model.compile(new Program(code));
 		this.setViewOutput();
 	}
@@ -132,6 +135,24 @@ public class Controller implements ControllerInterface {
 	public void stepThroughClicked() {
 		model.stepThrough();
 		this.setViewOutput();
+	}
+
+	private boolean checkForNullInputs(ArrayList<ArrayList<String>> code){
+		boolean isCorrectInput = true;
+		for(int i = 0; i<code.size(); i++){
+			ArrayList<String> input = code.get(i);
+			if(!input.get(0).equals(" ") || !input.get(3).equals(" ")){
+				if(input.get(1).equals(" ")){
+					isCorrectInput = false;
+					model.getErrorStream().getErrors().add(new OutputError(i, "An instruction must be provided"));
+					break;
+				}
+				else 
+					isCorrectInput = true;
+			}
+			
+		}
+		return isCorrectInput;
 	}
 
 	/**
@@ -181,8 +202,8 @@ public class Controller implements ControllerInterface {
 		}
 		view.setButtonsEnabled(model.isCompileSuccess());
 	}
-	
-	
+
+
 	@Override
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
@@ -192,7 +213,7 @@ public class Controller implements ControllerInterface {
 			view.setFilename(file.getName());
 		}
 	}
-	
+
 	@Override
 	public void saveToFile(ArrayList<ArrayList<String>> code, String filename) {
 		if (code != null && filename != null) {

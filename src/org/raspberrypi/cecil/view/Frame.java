@@ -209,16 +209,6 @@ public class Frame extends JFrame implements ViewInterface {
 		getContentPane().setLayout(new GridBagLayout());
 		setTitle("CECIL");
 		
-		if (instructionList == null) {
-			//Default instructions
-			instructionList = new ArrayList<String>();
-			instructionList.add("load");
-			instructionList.add("print");
-			instructionList.add("stop");
-			instructionList.add("add");
-			instructionList.add("insert");
-		}
-		
 		/*
 		 * Menu bar
 		 */

@@ -46,8 +46,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 *  @return ArrayList<Instruction>
 	 */
 	@Override
-	public ArrayList<Instruction> getInstructions() {
-		return (new InstructionList()).getInstructions();
+	public InstructionList getInstructions() {
+		return (new InstructionList());
 	}
 
 	@Override

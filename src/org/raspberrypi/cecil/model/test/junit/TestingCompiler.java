@@ -156,8 +156,8 @@ public class TestingCompiler {
 		userinput.add(input);
 		
 		input = new ArrayList<String>();
-		input.add(".num1");
 		input.add(" ");
+		input.add("add");
 		input.add(" ");
 		input.add(";");
 		userinput.add(input);

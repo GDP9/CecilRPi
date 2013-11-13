@@ -103,4 +103,12 @@ public class InstructionList {
 		
 		return -1;
 	}
+	
+	public boolean isBinaryInstruction(String name){
+		boolean isBinary = false;
+		if(instructionToMnemonic(name)>=18){
+			isBinary= true;
+		}
+		return isBinary;
+	}
 }
