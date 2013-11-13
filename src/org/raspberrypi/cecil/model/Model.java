@@ -110,6 +110,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return file;
 	}
 	
+	public void setToDefault(){
+		sim40 = new Simulator();
+	}
+	
 	/**
 	 * Method to convert the program input from a .cecil file to Program object
 	 * 
@@ -236,6 +240,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	@Override
 	public StandardOutputStream getStdStream() {
+		if(this.stdStream==null)
+			return new StandardOutputStream();
 		return this.stdStream;
 	}
 }

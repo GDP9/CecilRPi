@@ -39,7 +39,7 @@ public class TestingCompiler {
 	@Test
 	public void compiles(){
 		Compiler c = getCorrect();
-		if(!c.equals(null)){
+		if(c!=null){
 			org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), true);
 			org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), true);
 			for(int key : c.getParser().getDatafield().keySet()){
@@ -55,7 +55,8 @@ public class TestingCompiler {
 	//	 */
 	//	@Test
 	//	public void doesntCompile(){
-	//		Compiler c = getIncorrect();
+	//		if(c!=null){
+	//Compiler c = getIncorrect();
 	//		org.junit.Assert.assertEquals(c.getSimulator().isCompileSuccess(), false);
 	//		org.junit.Assert.assertEquals(c.getInstructionField().containsValue("stop"), false);
 	//		for(int key : c.getParser().getDatafield().keySet()){
@@ -63,6 +64,7 @@ public class TestingCompiler {
 	//			org.junit.Assert.assertEquals(c.getSimulator().memory[key], -1);
 	//			org.junit.Assert.assertNull(c.getParser().getLabelfield().get(c.getParser().getDatafield().get(key)));
 	//		}
+	//}
 	//	}
 
 	/**
@@ -104,7 +106,11 @@ public class TestingCompiler {
 		Model m = new Model();
 
 		File sample  = m.programToFile(program, "sample.cecil");
-		Compiler c = new Compiler(sample.getAbsolutePath(), program);
+		Controller control = new Controller();
+		Compiler c = null;
+		if(control.checkCorrectInput(userinput)){
+			c = new Compiler(sample.getAbsolutePath(), program);
+		}
 
 		return c;
 

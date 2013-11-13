@@ -61,8 +61,8 @@ public class Controller implements ControllerInterface {
 		program.add(line);
 
 		line = new ArrayList<String>();
+		line.add(".num1");
 		line.add(" ");
-		line.add("add");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
@@ -126,10 +126,16 @@ public class Controller implements ControllerInterface {
 			model.compile(new Program(code));
 			this.setViewOutput();
 		}
-		else 
+		else{ 
+			model.setToDefault();
+			this.setViewOutput();
 			view.setConsoleError(model.getErrorStream().getErrors());
+		}
+		
 		//System.out.println(model.getErrorStream().getErrors().get(0).getMessage());
 	}
+	
+	
 
 	@Override
 	public void runClicked() {
@@ -149,7 +155,7 @@ public class Controller implements ControllerInterface {
 			
 			if(input.get(1).equals(" ")){
 				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")){
-					addErrorToOutputstream(i, "An instruction must be provided");
+					addErrorToOutputstream(i+1, "An instruction must be provided");
 					return false;
 				}
 			}
@@ -157,14 +163,14 @@ public class Controller implements ControllerInterface {
 				
 				if(model.getInstructions().isBinaryInstruction(input.get(1))){
 					if(input.get(2).equals(" ")){
-						addErrorToOutputstream(i, "A binary instruction must be succeeded by a datafield");
+						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
 						System.out.println(model.getErrorStream().getErrors().isEmpty());
 						return false;
 					}
 				}
 				if(!model.getInstructions().isBinaryInstruction(input.get(1))){
 					if(!input.get(2).equals(" ")){
-						addErrorToOutputstream(i, "A unary instruction must not be succeeded by a datafield");
+						addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
 						return false;
 					}
 				}

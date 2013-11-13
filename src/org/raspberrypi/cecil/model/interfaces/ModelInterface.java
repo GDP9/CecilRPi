@@ -24,6 +24,7 @@ public interface ModelInterface {
 	public StandardOutputStream getStdStream();
 	public void setErrorStream(ErrorOutputStream stream);
 	public InstructionList getInstructions();
+	public void setToDefault();
 	
 	/**
 	 * Input editor converter
