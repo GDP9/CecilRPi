@@ -83,36 +83,39 @@ options {
     /* Getters for fields */
     public HashMap<Integer, String> getDatafield () { return datafield; }
     public HashMap<String, Integer> getLabelfield () { return labelfield; }
-    public HashMap<Integer, String> getInstructionfield () { return instructionfield; }
-   
-    /**
-    * Implicitly invoked by the parser. The error is appended in the output console. 
-    */
+    public HashMap<Integer, String> getInstructionfield () { return instructionfield; }  
 }
 
+
+  
 @rulecatch {
-        catch (RecognitionException e) {
-                String hdr = getErrorHeader(e);
-                String msg = getErrorMessage(e, tokenNames);
-                System.out.println(e.line + " : " + msg);
-                this.stream.getErrors().add(new OutputError(e.line, msg));      
-        }
-        catch (Exception e) {
-        System.out.println("Other exception : " + e.getMessage());
-    }      
+  /**
+  * Rulecatch implicitly invoked by the parser. The error is appended to the StreamOutputError list. 
+  */
+     catch (RecognitionException e) {
+             String hdr = getErrorHeader(e);
+             String msg = getErrorMessage(e, tokenNames);
+             System.out.println(e.line + " : " + msg);
+             this.stream.getErrors().add(new OutputError(e.line, msg));      
+     }
+     catch (Exception e) {
+     System.out.println("Other exception : " + e.getMessage());
+     } 
+      
 }
 
 /**
- * Rules
- * TODO: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
+ * CECIL sim30 lexer rules
+ * Not added to grammar: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
  * Reserved Keywords: all-instructions
+ * a program contitutes labelfields, instructions (binary and unary), datafields and comments
  */
 program 
   : '.start'? mnemonicdata instruction*;
 
 instruction 
   : ('.' labelfield  
-  { /* if label already does not exist or isn't start then add to the hash */
+  { /* filling labelfield hashmap */
     if(labelfield.containsKey($labelfield.text)) throw new RecognitionException();
     else labelfield.put(($labelfield.text),pointer);
   }
@@ -125,7 +128,7 @@ labelfield
 
 mnemonicdata 
   : (binaryinstruction datafield {
-      /* if instruction is insert and data is integer then add value to memory */
+      /* If an instruction is 'insert' and data is integer then add the value directly to memory */
          if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
@@ -133,7 +136,9 @@ mnemonicdata
           }
           else throw new RecognitionException();
         }
-      /* else reference instruction */  
+      /* Else if instruction is not 'insert', reference to corresponding instruction and add the value to memory (from memory address)
+       * Filling in instruction hashmap with binary instructions
+       */  
         else {
           instructionfield.put(pointer, $binaryinstruction.text);
           
@@ -151,7 +156,7 @@ mnemonicdata
      }) 
        
   | unaryinstruction 
-      {
+      {/* Filling  instruction hashmap with unary instructions */
         instructionfield.put(pointer, $unaryinstruction.text);
         sim40.memory[pointer++] = instructionList.instructionToMnemonic($unaryinstruction.text);
       }
@@ -178,7 +183,7 @@ NAME : ('a'..'z' | 'A'..'Z') ('a'..'z' |'A'..'Z'| '0'	..'9' | '_' )*;
 DIGIT : '0'.. '9';
 
 /* 
- * Only single line comments beginning with semicolon are supported
+ * Single line comments beginning with semicolon are supported
  */
 COMMENT : ';' .* '\n'  {$channel=HIDDEN;} ;
 WS : (' '|'\t'|'\r'|'\n')+  {$channel=HIDDEN;} ;
