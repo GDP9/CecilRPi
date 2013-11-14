@@ -1,5 +1,5 @@
 .start load num1 ;
-  add num3 ;
+  add num2 ;
   printch   ;
   printb   ;
   xor num2 ;

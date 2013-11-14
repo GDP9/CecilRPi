@@ -1600,6 +1600,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 	@Override
 	public void setButtonsEnabled(boolean enabled) {
+		txtConsole.setToolTipText("Output Console");
 		btnRun.setEnabled(enabled);
 		btnStepThrough.setEnabled(enabled);
 	}
