@@ -166,7 +166,7 @@ public class Controller implements ControllerInterface {
 		}
 
 		else { 
-			model.setToDefault();
+			model.setViewToDefault();
 			this.setViewOutput();
 			view.setConsoleError(model.getErrorStream().getErrors());
 		}
@@ -175,6 +175,7 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void runClicked() {
+		//model.setToDefault();
 		model.run();
 		this.setViewOutput();
 	}

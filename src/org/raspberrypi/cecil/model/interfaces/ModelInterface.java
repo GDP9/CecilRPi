@@ -24,7 +24,7 @@ public interface ModelInterface {
 	public void setErrorStream(ErrorOutputStream stream);
 	
 	public ArrayList<Instruction> getInstructions();
-	public void setToDefault();
+	public void setViewToDefault();
 	
 	public int instructionToMnemonic(String name);
 	public boolean isBinaryInstruction(String name);
