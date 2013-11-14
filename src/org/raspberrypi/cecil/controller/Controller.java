@@ -65,7 +65,7 @@ public class Controller implements ControllerInterface {
 		line.add("num2");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printch");
@@ -79,49 +79,49 @@ public class Controller implements ControllerInterface {
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("xor");
 		line.add("num2");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printb");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("xdec");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("cset");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("jizero");
 		line.add("end");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("print");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
 		line.add(".end");
 		line.add("stop");
@@ -148,20 +148,20 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
-		if(checkCorrectInput(code)){
+		if(checkCorrectInput(code)) {
 			model.compile(new Program(code));
 			this.setViewOutput();
 		}
-		else{ 
+
+		else { 
 			model.setToDefault();
 			this.setViewOutput();
 			view.setConsoleError(model.getErrorStream().getErrors());
 		}
-		
-		//System.out.println(model.getErrorStream().getErrors().get(0).getMessage());
+
 	}
-	
-	
+
+
 
 	@Override
 	public void runClicked() {
@@ -178,7 +178,7 @@ public class Controller implements ControllerInterface {
 	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		for(int i = 0; i<code.size(); i++){
 			ArrayList<String> input = code.get(i);
-			
+
 			if(input.get(1).equals(" ")){
 				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")){
 					addErrorToOutputstream(i+1, "An instruction must be provided");
@@ -186,7 +186,7 @@ public class Controller implements ControllerInterface {
 				}
 			}
 			else{
-				
+
 				if(model.isBinaryInstruction(input.get(1))){
 					if(input.get(2).equals(" ")){
 						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
@@ -204,7 +204,7 @@ public class Controller implements ControllerInterface {
 		}
 		return true;
 	}
-	
+
 	private void addErrorToOutputstream (int line, String msg){
 		ErrorOutputStream e = new ErrorOutputStream();
 		e.getErrors().add(new OutputError(line, msg));

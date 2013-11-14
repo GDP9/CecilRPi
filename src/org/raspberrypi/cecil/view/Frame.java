@@ -541,7 +541,7 @@ public class Frame extends JFrame implements ViewInterface {
 		carryPanel.setOpaque(false);
 		carryPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblCarry = new JLabel("Carry", SwingConstants.CENTER);
-		lblCarry.setToolTipText("If the value at any of the registers exceeds 2^10 i.e. 1024, this flag is switched on");
+		lblCarry.setToolTipText("This flag is switched on when the value at any of the registers exceeds 1024 (max buffer size)");
 		lblCarry.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblCarry.setOpaque(true);
 		carryPanel.add(lblCarry);
@@ -551,7 +551,7 @@ public class Frame extends JFrame implements ViewInterface {
 		zeroPanel.setOpaque(false);
 		zeroPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblZero = new JLabel("Zero", SwingConstants.CENTER);
-		lblZero.setToolTipText("If the value at any of the registers is equal to zero then this flag is switched on");
+		lblZero.setToolTipText("This flag is switched on when the value at any of the registers is equal to 0");
 		lblZero.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblZero.setOpaque(true);
 		zeroPanel.add(lblZero);
@@ -561,7 +561,7 @@ public class Frame extends JFrame implements ViewInterface {
 		negativePanel.setOpaque(false);
 		negativePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblNegative = new JLabel("Negative", SwingConstants.CENTER);
-		lblNegative.setToolTipText("If the value at any of the registers is equal to zero then this flag is switched on");
+		lblNegative.setToolTipText("this flag is switched on when the value at any of the registers is < 0");
 		lblNegative.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblNegative.setOpaque(true);
 		negativePanel.add(lblNegative);
@@ -572,7 +572,7 @@ public class Frame extends JFrame implements ViewInterface {
 		 */		
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
-		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Result", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		centerRightPanel.add(consolePanel);
 					
 		txtConsole = new JList<String>();
