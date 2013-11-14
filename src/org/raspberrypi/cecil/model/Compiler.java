@@ -53,7 +53,7 @@ public class Compiler {
 						this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
 
 				else { 
-					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i))+1, "Data " + parser.getDatafield().get(i) + " has no labelfield"));
+					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
 					this.sim40.setSuccessCompile(false);
 				}
 			}
