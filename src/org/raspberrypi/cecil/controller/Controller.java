@@ -35,15 +35,15 @@ public class Controller implements ControllerInterface {
 	/**
 	 * Launches the application by creating a new CecilController.
 	 */
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new Controller();
-            }
-        });
-    }
+	public static void main(String[] args) {
+		//Schedule a job for the event-dispatching thread:
+		//creating and showing this application's GUI.
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new Controller();
+			}
+		});
+	}
 
 
 	/**
@@ -193,7 +193,7 @@ public class Controller implements ControllerInterface {
 			/* create gpio controller */
 			GpioController gpio = GpioFactory.getInstance();
 			GpioPinDigitalOutput opin;
-			
+
 			for(int i = 0; i < 11; i++) {
 				if((model.getAcc().get(model.getAcc().size() - 1) << i) == 1) {
 					/* provision gpio pin #01 as an output pin and turn on */
@@ -242,19 +242,30 @@ public class Controller implements ControllerInterface {
 	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		for(int i = 0; i<code.size(); i++) {
 			ArrayList<String> input = code.get(i);
-			String alphanumeric = "^([a-zA-Z])([a-zA-Z0-9] | '_')*$";
-			
+			String alphanumeric = "[a-zA-Z][a-zA-Z0-9]*";
+
 			/* Checking for alpha-numeric labelfield*/
-			if(!input.get(0).matches(alphanumeric)) {
+			if(!input.get(0).equals(" ") && !input.get(0).substring(1).matches(alphanumeric)) {
 				addErrorToOutputstream(i+1, "Incorrectly formed label");
 				return false;
 			}
-			
+
 			/* Checking for alpha-numeric datafield */
-			else if(!input.get(2).matches(alphanumeric)) {
-				addErrorToOutputstream(i+1, "Incorrectly formed data");
-				return false;
+			else if(!input.get(2).equals(" ")) {
+				if(input.get(1).equals("insert")) {
+					if(!input.get(2).matches("[0-9]*")) {
+						addErrorToOutputstream(i+1, "Data should be numeric only");
+						return false;
+					}
+					continue;
+				}
+				
+				else if(!input.get(2).matches(alphanumeric)) {
+					addErrorToOutputstream(i+1, "Incorrectly formed data");
+					return false;
+				}
 			}
+
 			/* Checking for empty instruction */
 			else if(input.get(1).equals(" ")) {
 				/* Checking for missing instruction given datafield or labelfield */
@@ -263,13 +274,13 @@ public class Controller implements ControllerInterface {
 					return false;
 				}
 			}
-			
+
 			/* Checking for valid instruction */
 			else if(!model.isInstruction(input.get(1))) {
 				addErrorToOutputstream(i+1, "Invalid instruction provided");
 				return false;
 			}
-			
+
 			else {
 				/* Checking for missing datafield following binary instruction */
 				if(model.isBinaryInstruction(input.get(1))) {
@@ -278,7 +289,7 @@ public class Controller implements ControllerInterface {
 						return false;
 					}
 				}
-				
+
 				/* Checking for existing datafield following unary instruction */
 				else if(!model.isBinaryInstruction(input.get(1))) {
 					if(!input.get(2).equals(" ")){
@@ -288,7 +299,7 @@ public class Controller implements ControllerInterface {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
