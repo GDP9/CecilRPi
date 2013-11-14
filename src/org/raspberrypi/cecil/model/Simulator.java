@@ -93,10 +93,6 @@ public class Simulator {
 	}
 
 	public void updateViewRegisters() {
-		System.out.println("Acc "+acc.size());
-		System.out.println("X re "+xReg.size());
-		System.out.println("Y re "+yReg.size());
-
 		if(memory[XREG_ADDRESS] != xReg.get(xReg.size() - 1))
 			xReg.add(memory[XREG_ADDRESS]);
 
@@ -119,7 +115,7 @@ public class Simulator {
 
 	public void setLineNumbers(Program program) {
 		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
-			for(int j = 1; j < 2; j++) {
+			for(int j = 1; j <= 2; j++) {
 				if(program.getProgramStatements().get(line).get(j) != null 
 						&& !program.getProgramStatements().get(line).get(j).equals(" ")
 						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr])

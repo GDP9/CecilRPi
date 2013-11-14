@@ -161,8 +161,6 @@ public class Controller implements ControllerInterface {
 
 	}
 
-
-
 	@Override
 	public void runClicked() {
 		model.run();
@@ -171,7 +169,7 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void stepThroughClicked() {
-		model.stepThrough();
+		view.highlightStepThrough(model.stepThrough());
 		this.setViewOutput();
 	}
 

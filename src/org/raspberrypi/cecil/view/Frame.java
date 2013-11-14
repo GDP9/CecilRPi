@@ -96,23 +96,23 @@ import org.raspberrypi.cecil.pojo.Instruction;
 public class Frame extends JFrame implements ViewInterface {
 	private static final int WIDTH = 1100;
 	private static final int HEIGHT = 750;
-	
+
 	private static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
 	private static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
 	private static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
 	private static final Color[] DEFAULT_THEME = null;
-	
+
 	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
 	private static final FontUIResource FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
-	
+
 	//Controller
 	private Controller controller;
-	
+
 	//Instructions
 	private ArrayList<Instruction> instructions;
 	private ArrayList<String> instructionList;
-	
+
 	//Panels
 	private JPanel northPanel;
 	private JPanel centerRightPanel;
@@ -121,7 +121,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JPanel consolePanel;
 	private JPanel registerPanel;
 	private JPanel flagPanel;
-	
+
 	//Registers
 	private JList<String> xRegister;
 	private JList<String> yRegister;
@@ -129,26 +129,26 @@ public class Frame extends JFrame implements ViewInterface {
 	private JScrollPane xScroll;
 	private JScrollPane yScroll;
 	private JScrollPane accScroll;
-	
+
 	//Console
 	private JList<String> txtConsole;
-	
+
 	//Input
 	private JTable tblInput;
-	
+
 	//Memory
 	private JTable tblMemory;
-	
+
 	//Action buttons
 	private JButton btnCompile;
 	private JButton btnRun;
 	private JButton btnStepThrough;
-	
+
 	//Status flags
 	private JLabel lblCarry;
 	private JLabel lblZero;
 	private JLabel lblNegative;
-	
+
 	//Menu
 	private BackgroundMenuBar menuBar;
 	private JMenu fileMenu;
@@ -162,7 +162,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JMenuItem menuWelcome;
 	private JMenuItem menuAbout;
 	private JMenuItem menuDocumentation;
-	
+
 	//Misc
 	private JTextField input;
 	private JComboBox<String> comboBox;
@@ -170,7 +170,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private ArrayList<ArrayList<String>> currentProgram;
 	private Color[] currentTheme;
 	private ArrayList<OutputError> errors;
-	
+
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
@@ -180,7 +180,7 @@ public class Frame extends JFrame implements ViewInterface {
 		currentFont = FONT_MEDIUM;
 		drawFrame();
 	}
-	
+
 	/**
 	 * Draw the application GUI.
 	 */
@@ -215,7 +215,7 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		getContentPane().setLayout(new GridBagLayout());
 		setTitle("CECIL");
-		
+
 		if (instructionList == null) {
 			//Default instructions
 			instructionList = new ArrayList<String>();
@@ -225,12 +225,12 @@ public class Frame extends JFrame implements ViewInterface {
 			instructionList.add("add");
 			instructionList.add("insert");
 		}
-		
+
 		/*
 		 * Menu bar
 		 */
 		menuBar = new BackgroundMenuBar();
-		
+
 		ImageIcon icon = new ImageIcon(getClass().getResource("/resources/cecil_title.png").getPath());
 		JMenuItem iconItem = new JMenuItem();
 		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -240,7 +240,7 @@ public class Frame extends JFrame implements ViewInterface {
 		iconItem.setMinimumSize(iconSize);
 		menuBar.add(iconItem);
 		repaint();
-		
+
 		fileMenu = new JMenu("File");
 		fileMenu.addMouseListener(new MouseListener() {
 			@Override
@@ -257,7 +257,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		menuBar.add(fileMenu);
-		
+
 		menuNew = new JMenuItem("New");
 		menuNew.addActionListener(new ActionListener() {
 			@Override
@@ -265,7 +265,7 @@ public class Frame extends JFrame implements ViewInterface {
 				onNewClicked();
 			}
 		});
-		
+
 		menuOpen = new JMenuItem("Open");
 		menuOpen.addActionListener(new ActionListener() {
 			@Override
@@ -273,7 +273,7 @@ public class Frame extends JFrame implements ViewInterface {
 				onOpenClicked();
 			}
 		});
-		
+
 		menuSave = new JMenuItem("Save");
 		menuSave.addActionListener(new ActionListener() {
 			@Override
@@ -281,7 +281,7 @@ public class Frame extends JFrame implements ViewInterface {
 				onSaveClicked();
 			}
 		});
-		
+
 		menuExit = new JMenuItem("Exit");
 		menuExit.addActionListener(new ActionListener() {
 			@Override
@@ -289,13 +289,13 @@ public class Frame extends JFrame implements ViewInterface {
 				onExitClicked();
 			}
 		});
-		
+
 		fileMenu.add(menuNew);
 		fileMenu.add(menuOpen);
 		fileMenu.add(menuSave);
 		fileMenu.addSeparator();
 		fileMenu.add(menuExit);
-		
+
 		settingsMenu = new JMenu("Settings");
 		settingsMenu.addMouseListener(new MouseListener() {
 			@Override
@@ -312,7 +312,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		menuBar.add(settingsMenu);
-		
+
 		menuPreferences = new JMenuItem("Preferences");
 		final FontChooser fc = new FontChooser(this);
 		menuPreferences.addActionListener(new ActionListener() {
@@ -338,43 +338,43 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		menuBar.add(helpMenu);
-		
+
 		menuWelcome = new JMenuItem("Welcome");
 		menuDocumentation = new JMenuItem("Documentation");
 		menuAbout = new JMenuItem("About CECIL");
-		
+
 		helpMenu.add(menuWelcome);
 		helpMenu.add(menuDocumentation);
 		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
-		
+
 		setJMenuBar(menuBar);
-		
+
 		/*
 		 * Panels
 		 */
 		northPanel = new JPanel();	
 		northPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		northPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
-		
+
 		centerLeftPanel = new JPanel();
 		centerLeftPanel.setLayout(new GridLayout(1,1));
 		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Program - Untitled", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		
+
 		centerRightPanel = new JPanel();
 		centerRightPanel.setLayout(new GridLayout(2,1));
-		
+
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(1,2));
 		centerPanel.add(centerLeftPanel);
 		centerPanel.add(centerRightPanel);
-		
+
 		southPanel = new JPanel();
 		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 20, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		//southPanel.setToolTipText("Each cell in the memory is an address."
-				//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
+		//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
 		southPanel.setLayout(new GridBagLayout());
-		
+
 		/*
 		 * Add north panel
 		 */
@@ -385,7 +385,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_north.weightx = 1;
 		gbc_north.weighty = 0.05;
 		getContentPane().add(northPanel, gbc_north);
-		
+
 		/*
 		 * Add centre panel
 		 */
@@ -396,7 +396,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_centre.weightx = 1;
 		gbc_centre.weighty = 0.55;
 		getContentPane().add(centerPanel, gbc_centre);		
-		
+
 		/*
 		 * Add south panel
 		 */
@@ -407,7 +407,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_south.weightx = 1;
 		gbc_south.weighty = 0.4;
 		getContentPane().add(southPanel, gbc_south);
-		
+
 		/*
 		 * Setup north panel buttons
 		 */		
@@ -416,11 +416,12 @@ public class Frame extends JFrame implements ViewInterface {
 		btnCompile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				tblInput.clearSelection();
 				onCompileClicked();
 			}
 		});
 		northPanel.add(btnCompile);
-		
+
 		btnRun = new JButton("Run");
 		btnRun.setToolTipText("Run");
 		btnRun.setEnabled(false);
@@ -431,7 +432,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		northPanel.add(btnRun);
-		
+
 		btnStepThrough = new JButton("Step through");
 		btnStepThrough.setToolTipText("Step through");
 		btnStepThrough.setEnabled(false);
@@ -442,7 +443,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		});
 		northPanel.add(btnStepThrough);
-		
+
 		/*
 		 * Registers
 		 */
@@ -450,11 +451,11 @@ public class Frame extends JFrame implements ViewInterface {
 		centerRightTopPanel.setLayout(new GridBagLayout());
 		centerRightTopPanel.setOpaque(false);
 		centerRightPanel.add(centerRightTopPanel);
-		
+
 		registerPanel = new JPanel();
 		registerPanel.setLayout(new GridLayout(1,3));
 		registerPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		
+
 		GridBagConstraints gbc_register = new GridBagConstraints();
 		gbc_register.fill = GridBagConstraints.BOTH;
 		gbc_register.gridx = 0;
@@ -462,7 +463,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_register.weightx = 1;
 		gbc_register.weighty = 0.9;
 		centerRightTopPanel.add(registerPanel, gbc_register);
-		
+
 		/*
 		 * X register
 		 */
@@ -475,7 +476,7 @@ public class Frame extends JFrame implements ViewInterface {
 		xRegister.setEnabled(false);
 		xRegister.setToolTipText("Internal memory store for data within CPU.");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		
+
 		/*
 		 * Y register
 		 */
@@ -488,21 +489,21 @@ public class Frame extends JFrame implements ViewInterface {
 		yRegister.setEnabled(false);
 		yRegister.setToolTipText("Internal memory store for data within CPU.");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		
+
 		/*
 		 * Acc register
 		 */
 		accRegister = new JList<String>();
-        accRegister.setCellRenderer(new DefaultListCellRenderer(){
+		accRegister.setCellRenderer(new DefaultListCellRenderer(){
 			public int getHorizontalAlignment() {
 				return CENTER;
 			}
 		});
-        accRegister.setEnabled(false);
+		accRegister.setEnabled(false);
 		accRegister.setToolTipText("Memory store for performing arithmetic and logical operations.");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-		
+
 		/*
 		 * Add the register panes
 		 */
@@ -510,25 +511,25 @@ public class Frame extends JFrame implements ViewInterface {
 		xScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "X", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		xScroll.setOpaque(false);
 		registerPanel.add(xScroll);
-		
+
 		yScroll = new JScrollPane(accRegister);
 		yScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		//yScroll.setToolTipText("Register in which intermediate arithmetic and logic results are stored.");
 		yScroll.setOpaque(false);
 		registerPanel.add(yScroll);
-		
+
 		accScroll = new JScrollPane(yRegister);
 		accScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Y", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
 		accScroll.setOpaque(false);
 		registerPanel.add(accScroll);
-		
+
 		/*
 		 * Flags
 		 */
 		flagPanel = new JPanel();
 		flagPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		flagPanel.setLayout(new GridLayout(1,3));
-		
+
 		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
 		gbc_flagpanel.fill = GridBagConstraints.BOTH;
 		gbc_flagpanel.gridx = 0;
@@ -536,7 +537,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_flagpanel.weightx = 1;
 		gbc_flagpanel.weighty = 0.1;
 		centerRightTopPanel.add(flagPanel, gbc_flagpanel);
-		
+
 		JPanel carryPanel = new JPanel(new GridLayout(1,1));
 		carryPanel.setOpaque(false);
 		carryPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -546,7 +547,7 @@ public class Frame extends JFrame implements ViewInterface {
 		lblCarry.setOpaque(true);
 		carryPanel.add(lblCarry);
 		flagPanel.add(carryPanel);
-		
+
 		JPanel zeroPanel = new JPanel(new GridLayout(1,1));
 		zeroPanel.setOpaque(false);
 		zeroPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -556,7 +557,7 @@ public class Frame extends JFrame implements ViewInterface {
 		lblZero.setOpaque(true);
 		zeroPanel.add(lblZero);
 		flagPanel.add(zeroPanel);
-		
+
 		JPanel negativePanel = new JPanel(new GridLayout(1,1));
 		negativePanel.setOpaque(false);
 		negativePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -566,7 +567,7 @@ public class Frame extends JFrame implements ViewInterface {
 		lblNegative.setOpaque(true);
 		negativePanel.add(lblNegative);
 		flagPanel.add(negativePanel);
-		
+
 		/*
 		 * Console
 		 */		
@@ -574,10 +575,10 @@ public class Frame extends JFrame implements ViewInterface {
 		consolePanel.setLayout(new GridLayout(1,1));
 		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		centerRightPanel.add(consolePanel);
-					
+
 		txtConsole = new JList<String>();
 		txtConsole.setToolTipText("Output console");
-		
+
 		txtConsole.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -590,12 +591,12 @@ public class Frame extends JFrame implements ViewInterface {
 				if (errors != null && errors.size() > 0) {
 					txtConsole.setToolTipText("Click on the error to see where the problem is");
 				}
-				}
+			}
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (errors != null && errors.size() > 0) {
 					highlightError();
-					
+
 				} else {
 					txtConsole.removeSelectionInterval(txtConsole.getSelectedIndex(), txtConsole.getSelectedIndex());
 				}
@@ -605,7 +606,7 @@ public class Frame extends JFrame implements ViewInterface {
 		consoleScroll.setOpaque(false);
 		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		consolePanel.add(consoleScroll);
-		
+
 		/*
 		 * Input editor
 		 */
@@ -621,11 +622,11 @@ public class Frame extends JFrame implements ViewInterface {
 			 * Serial version UID to stop the warning.
 			 */
 			private static final long serialVersionUID = 1L;
-			
+
 			@Override
 			public void changeSelection(int row, int column, boolean toggle, boolean extend) {
 				super.changeSelection(row, column, toggle, extend);
-				
+
 				if (editCellAt(row, column)) {
 					Component editor = getEditorComponent();
 					editor.requestFocusInWindow();
@@ -667,52 +668,52 @@ public class Frame extends JFrame implements ViewInterface {
 	    TableColumnModel columnModel = tblInput.getColumnModel();
 	    TableColumn englishColumn = columnModel.getColumn(0);
 	    englishColumn.setHeaderRenderer((TableCellRenderer) headerRenderer);*/
-		
+
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
 		comboBox = new JComboBox<String>(temp);
 		comboBox.setEditable(true);
 		AutoCompleteDecorator.decorate(comboBox);
-									
-				ActionListener actionListener = new ActionListener() {
-					public void actionPerformed(ActionEvent actionEvent) {
-						actionEvent.getSource();
-					}
-				};
-				comboBox.addActionListener(actionListener);				
-				comboBox.setRenderer(new MyComboBoxRenderer()); 				
+
+		ActionListener actionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				actionEvent.getSource();
+			}
+		};
+		comboBox.addActionListener(actionListener);				
+		comboBox.setRenderer(new MyComboBoxRenderer()); 				
 		input = new JTextField();
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
-       	aligncenter.setHorizontalAlignment(JLabel.CENTER);
-       	tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
-       	tblInput.setRowHeight(25);
-       	tblInput.setFillsViewportHeight(true);
-       	
-       	for (int i = 0; i < tblInput.getColumnCount(); i++) {
-       		TableColumn column = tblInput.getColumnModel().getColumn(i);
-       		
-       		if (i != 2) {
-       			column.setCellEditor(new DefaultCellEditor(input));
-       		} else {
-       			column.setCellEditor(new ComboBoxCellEditor(comboBox));
-       		}
-       		column.getCellEditor().addCellEditorListener(new CellEditorListener() {
-    			@Override
-    			public void editingStopped(ChangeEvent arg0) {
-    				if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
-    					setButtonsEnabled(false);
-    				}
-    			}
-    			@Override
-    			public void editingCanceled(ChangeEvent arg0) {}
-    		});
-       	}
-       	
+		aligncenter.setHorizontalAlignment(JLabel.CENTER);
+		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
+		tblInput.setRowHeight(25);
+		tblInput.setFillsViewportHeight(true);
+
+		for (int i = 0; i < tblInput.getColumnCount(); i++) {
+			TableColumn column = tblInput.getColumnModel().getColumn(i);
+
+			if (i != 2) {
+				column.setCellEditor(new DefaultCellEditor(input));
+			} else {
+				column.setCellEditor(new ComboBoxCellEditor(comboBox));
+			}
+			column.getCellEditor().addCellEditorListener(new CellEditorListener() {
+				@Override
+				public void editingStopped(ChangeEvent arg0) {
+					if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+						setButtonsEnabled(false);
+					}
+				}
+				@Override
+				public void editingCanceled(ChangeEvent arg0) {}
+			});
+		}
+
 		tblInput.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				int selectedRow = tblInput.getSelectedRow();
 				int selectedColumn = tblInput.getSelectedColumn();
-				
+
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_ENTER:
 					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",";"});
@@ -747,7 +748,7 @@ public class Frame extends JFrame implements ViewInterface {
 			public void keyReleased(KeyEvent e) {}
 			public void keyTyped(KeyEvent e) {}
 		});
-		
+
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridheight = 7;
 		gbc_scrollPane.gridwidth = 4;
@@ -758,7 +759,7 @@ public class Frame extends JFrame implements ViewInterface {
 		inputScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		inputScroll.setOpaque(false);
 		centerLeftPanel.add(inputScroll, gbc_scrollPane);
-		
+
 		/*
 		 * Memory
 		 */
@@ -766,7 +767,7 @@ public class Frame extends JFrame implements ViewInterface {
 		for (int i = 0; i < 1024; i++) {
 			mdlMemory.addColumn(i, new Object[]{""});
 		}
-		
+
 		tblMemory = new JTable(mdlMemory);
 		tblMemory.getTableHeader().setReorderingAllowed(false);
 		tblMemory.setEnabled(false);
@@ -774,25 +775,25 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMemory.setToolTipText("Each cell in the memory is an address."
 				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc");
-		
-//		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-//		memoryScroll.setOpaque(false);
-//		southPanel.add(memoryScroll);
-		
+
+		//		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		//		memoryScroll.setOpaque(false);
+		//		southPanel.add(memoryScroll);
+
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		  memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		  memoryScroll.setOpaque(true);
-		  
-		  GridBagConstraints gbc_south_table = new GridBagConstraints();
-		  gbc_south_table.fill = GridBagConstraints.BOTH;
-		  gbc_south_table.gridx = 0;
-		  gbc_south_table.gridy = 0;
-		  gbc_south_table.weightx = 1;
-		  gbc_south_table.weighty = 1;
-		  southPanel.add(memoryScroll, gbc_south_table);
+		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		memoryScroll.setOpaque(true);
+
+		GridBagConstraints gbc_south_table = new GridBagConstraints();
+		gbc_south_table.fill = GridBagConstraints.BOTH;
+		gbc_south_table.gridx = 0;
+		gbc_south_table.gridy = 0;
+		gbc_south_table.weightx = 1;
+		gbc_south_table.weighty = 1;
+		southPanel.add(memoryScroll, gbc_south_table);
 	}
-	
+
 	/**
 	 * Set the colours to the current theme.
 	 * A theme consists of three colours; background, highlight, and inner panel colours.
@@ -869,7 +870,7 @@ public class Frame extends JFrame implements ViewInterface {
 			tblMemory.setBackground(Color.WHITE);
 		}
 	}
-	
+
 	/**
 	 * Set the icons for the menu bar buttons and action buttons.
 	 * These icons change colour when hovered over.
@@ -879,46 +880,46 @@ public class Frame extends JFrame implements ViewInterface {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
 			btnCompile.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
 			btnCompile.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		//Run
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
 			btnRun.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-play-colour.png"));
 			btnRun.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		//Step through
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
 			btnStepThrough.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-step-colour.png"));
 			btnStepThrough.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		//File
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
 			fileMenu.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
 			fileMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		fileMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {}
@@ -945,18 +946,18 @@ public class Frame extends JFrame implements ViewInterface {
 			@Override
 			public void mouseReleased(MouseEvent e) {}
 		});
-		
+
 		//Settings
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
 			settingsMenu.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
 			settingsMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		settingsMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {}
@@ -983,18 +984,18 @@ public class Frame extends JFrame implements ViewInterface {
 			@Override
 			public void mouseReleased(MouseEvent e) {}
 		});
-		
+
 		//Help
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
 			helpMenu.setIcon(new ImageIcon(img));
-			
+
 			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
 			helpMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		helpMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {}
@@ -1022,7 +1023,7 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseReleased(MouseEvent e) {}
 		});
 	}
-	
+
 	/**
 	 * Set the icons for the status flags.
 	 * These icons change colour depending on the flag state.
@@ -1034,14 +1035,14 @@ public class Frame extends JFrame implements ViewInterface {
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 			lblZero.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
-		
+
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 			lblNegative.setIcon(new ImageIcon(img));
@@ -1049,22 +1050,22 @@ public class Frame extends JFrame implements ViewInterface {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
 	}
-	
+
 	/**
 	 * Set font of all text components.
 	 * The font sizes can be changed from small, medium, and large.
 	 */
 	private void setupFonts() {
 		UIManager.put("ToolTip.font", new FontUIResource(currentFont));
-        UIManager.put("Table.font", currentFont);
-        
+		UIManager.put("Table.font", currentFont);
+
 		input.setFont(currentFont);
 		comboBox.setFont(currentFont);
-		
+
 		btnCompile.setFont(currentFont);
 		btnRun.setFont(currentFont);
 		btnStepThrough.setFont(currentFont);
-		
+
 		fileMenu.setFont(currentFont);
 		settingsMenu.setFont(currentFont);
 		helpMenu.setFont(currentFont);
@@ -1076,7 +1077,7 @@ public class Frame extends JFrame implements ViewInterface {
 		menuWelcome.setFont(currentFont);
 		menuDocumentation.setFont(currentFont);
 		menuAbout.setFont(currentFont);
-		
+
 		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		lblCarry.setFont(currentFont);
 		lblZero.setFont(currentFont);
@@ -1099,7 +1100,7 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.setFont(currentFont);
 		tblMemory.setRowHeight(40);
 	}
-	
+
 	/**
 	 * Set the current program code to display in the input editor.
 	 */
@@ -1108,13 +1109,13 @@ public class Frame extends JFrame implements ViewInterface {
 			loadProgramCode(currentProgram);
 		}
 	}
-	
+
 	//TODO Javadocing needed?
 	static private String selectedString(ItemSelectable is) {
 		Object selected[] = is.getSelectedObjects();
 		return ((selected.length == 0) ? "null" : (String)selected[0]);
 	} 
-	
+
 	//TODO Javadocing needed
 	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -1139,21 +1140,21 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 	class ToolTipsforinput extends MouseMotionAdapter {
-		  HashMap tooltips = new HashMap();
-		  public void setToolTip(TableColumn col, String tooltip) {		    
-		      tooltips.put(col, tooltip);		    
-		  }
-		  public void mouseMoved(MouseEvent evt) {
-		    JTableHeader headerInput = (JTableHeader) evt.getSource();
-		    JTable inputTable = headerInput.getTable();
-		    int columnIndex = inputTable.getColumnModel().getColumnIndexAtX(evt.getX());
-		     if (columnIndex >= 0) {
-		       headerInput.setToolTipText((String) tooltips.get(inputTable.getColumnModel().getColumn(columnIndex)));
-		    }
-		 
-		  }
+		HashMap tooltips = new HashMap();
+		public void setToolTip(TableColumn col, String tooltip) {		    
+			tooltips.put(col, tooltip);		    
+		}
+		public void mouseMoved(MouseEvent evt) {
+			JTableHeader headerInput = (JTableHeader) evt.getSource();
+			JTable inputTable = headerInput.getTable();
+			int columnIndex = inputTable.getColumnModel().getColumnIndexAtX(evt.getX());
+			if (columnIndex >= 0) {
+				headerInput.setToolTipText((String) tooltips.get(inputTable.getColumnModel().getColumn(columnIndex)));
+			}
+
+		}
 	}
-	
+
 
 	/**
 	 * Custom JMenuBar class which allows the background colour to be changed.
@@ -1173,7 +1174,7 @@ public class Frame extends JFrame implements ViewInterface {
 		 */
 		private static final long serialVersionUID = 1L;
 		private Color bgColour = Color.WHITE;
-		
+
 		/**
 		 * Set the background colour.
 		 * 
@@ -1190,7 +1191,7 @@ public class Frame extends JFrame implements ViewInterface {
 			g2d.fillRect(0, 0, getWidth()-1,  getHeight()-1);
 		}
 	}
-	
+
 	/**
 	 * Custom DefaultTableModel class which displays the row numbers in the first column.
 	 * 
@@ -1215,7 +1216,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 			return super.getValueAt(row, column);
 		}
-		
+
 		@Override
 		public boolean isCellEditable(int row, int column) {
 			if (column == 0) {
@@ -1235,7 +1236,7 @@ public class Frame extends JFrame implements ViewInterface {
 		setButtonsEnabled(false);
 		controller.compileClicked(getProgramCode());
 	}
-	
+
 	/**
 	 * Retrieve the program code from the input editor
 	 * 
@@ -1257,21 +1258,21 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		return code;
 	}
-	
+
 	/**
 	 * Notifies the controller that the run button has been clicked.
 	 */
 	private void onRunClicked() {
 		controller.runClicked();
 	}
-	
+
 	/**
 	 * Notifies the controller that the step through button has been clicked.
 	 */
 	private void onStepThroughClicked()  {
 		controller.stepThroughClicked() ;
 	}
-	
+
 	/**
 	 * Loads a new program and sets filename to Untitled.
 	 * The user is also shown a warning if there are unsaved changes.
@@ -1290,7 +1291,7 @@ public class Frame extends JFrame implements ViewInterface {
 			setFilename("Untitled");
 		}
 	}
-	
+
 	/**
 	 * Loads the input editor with an empty row.
 	 */
@@ -1304,7 +1305,7 @@ public class Frame extends JFrame implements ViewInterface {
 		code.add(newLine);
 		setProgramCode(code);
 	}
-	
+
 	/**
 	 * Opens a JFileChooser dialog to open a .cecil file.
 	 */
@@ -1330,7 +1331,7 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		}
 	}
-	
+
 	/**
 	 * Opens a JFileChooser dialog to save to a .cecil file.
 	 */
@@ -1345,7 +1346,7 @@ public class Frame extends JFrame implements ViewInterface {
 			currentProgram = getProgramCode();
 		}
 	}
-	
+
 	/**
 	 * Exits the application.
 	 */
@@ -1359,7 +1360,7 @@ public class Frame extends JFrame implements ViewInterface {
 			System.exit(0);
 		}
 	}
-	
+
 	/**
 	 * Loads a program into the input editor.
 	 * 
@@ -1386,7 +1387,7 @@ public class Frame extends JFrame implements ViewInterface {
 		model.fireTableDataChanged();
 		currentProgram = getProgramCode();
 	}
-	
+
 	/**
 	 * Highlight and jump to the error line in the input editor.
 	 * 
@@ -1400,6 +1401,13 @@ public class Frame extends JFrame implements ViewInterface {
 			txtConsole.removeSelectionInterval(errorNo, errorNo);
 			tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(lineNo, 0, true)));
 		}
+	}
+
+	public void highlightStepThrough(int currNo) {
+		tblInput.clearSelection();
+		
+		tblInput.setRowSelectionInterval(currNo-1, currNo-1);
+		tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(currNo-1, 0, true)));
 	}
 	
 	/**
@@ -1418,7 +1426,7 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		setupFonts();
 	}
-	
+
 	public void setNewColour(String color) {
 		if (color == "Default") {
 			currentTheme = DEFAULT_THEME;
@@ -1531,7 +1539,7 @@ public class Frame extends JFrame implements ViewInterface {
 			txtConsole.setListData(list);
 		}
 	}
-	
+
 	@Override
 	public void setConsoleError(ArrayList<OutputError> errors) {
 		txtConsole.setListData(new String[0]);
@@ -1576,7 +1584,7 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		drawFrame();
 	}
-	
+
 	@Override
 	public void setProgramCode(ArrayList<ArrayList<String>> program) {
 		if (program != null && program.size() > 0) {
@@ -1592,7 +1600,7 @@ public class Frame extends JFrame implements ViewInterface {
 		btnRun.setEnabled(enabled);
 		btnStepThrough.setEnabled(enabled);
 	}
-	
+
 	@Override
 	public void clearVisualisations() {
 		setProgramCode(null);
@@ -1608,7 +1616,7 @@ public class Frame extends JFrame implements ViewInterface {
 		setMemoryAllocation(null);
 		repaint();
 	}
-	
+
 	@Override
 	public void setFilename(String filename) {
 		if (filename != null) {
@@ -1619,5 +1627,5 @@ public class Frame extends JFrame implements ViewInterface {
 		repaint();
 	}
 
-		  
+
 }

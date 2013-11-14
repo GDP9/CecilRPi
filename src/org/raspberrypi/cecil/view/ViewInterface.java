@@ -117,4 +117,6 @@ public interface ViewInterface {
 	 * Clear all visualisation views of their current values.
 	 */
 	public void clearVisualisations();
+	
+	public void highlightStepThrough(int currNo); 
 }

@@ -86,9 +86,15 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	@Override
-	public void stepThrough() {
+	public int stepThrough() {
 		ptr = this.runner.stepthrough(ptr);
 		if(ptr == -1) ptr = 0;
+		
+		this.sim40 = this.runner.getSimulator();
+		this.errorStream = this.runner.getErrorStream();
+		this.stdStream = this.runner.getStdStream();
+		
+		return this.sim40.lines[ptr];
 	}
 
 	@Override

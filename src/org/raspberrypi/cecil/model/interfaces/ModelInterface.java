@@ -14,7 +14,7 @@ public interface ModelInterface {
 	 */
 	public void compile(Program program); 
 	public void run(); 
-	public void stepThrough();
+	public int stepThrough();
 	
 	/**
 	 * Memory + View Output 
