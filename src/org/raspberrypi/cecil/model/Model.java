@@ -23,8 +23,20 @@ import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * @author Shreeprabha
- *
+ * CECIL Application Model
+ * Implements two interfaces: ModelInterface and SimulatorInterface
+ * Calls on the Compiler and Runner for functionality of the application
+ * Gets all standard output and error messages from Compiler and Runner
+ * 
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+ * Southampton University, United Kingdom
+ * @version 1.2
+ * 
+ * @date 14/11/2013
+ * 
  */
 public class Model implements ModelInterface, SimulatorInterface {
 
@@ -39,14 +51,14 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	/**
 	 * Default model constructor
+	 * Sets the starting location (addressable memory location) for running and stepping through the program to 0
 	 */
 	public Model() {
 		ptr = 0;
 	}
 
 	/**
-	 * Method to instantiate a complete set of all the available machine instructions
-	 * 
+	 * Instantiates a complete set of all the available machine instructions (InstructionList object)
 	 *  @return ArrayList<Instruction>
 	 */
 	@Override
@@ -68,9 +80,9 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Checks if a certain instruction is binary
+	 * @param instruction name
+	 * @return boolean
 	 */
 	public boolean isBinaryInstruction(String name){
 		if(instructionToMnemonic(name) >= 18)
@@ -80,9 +92,9 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Checks if an instruction is valid
+	 * @param instruction given name
+	 * @return boolean
 	 */
 	public boolean isInstruction(String name) {
 		if(instructionToMnemonic(name) == -1)
@@ -91,6 +103,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return true;
 	}
 
+	/**
+	 * Calls in the method run in Runner
+	 * Runs the user input program and updates the view accordingly
+	 */
 	@Override
 	public void run() {
 		if(ptr==0 && isCompileClicked()){
@@ -107,6 +123,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 		this.stdStream = this.runner.getStdStream();
 	}
 
+	/**
+	 * Calls in the method stepthrough in Runner
+	 * Steps through the user input program and updates the view accordingly
+	 */
 	@Override
 	public int stepThrough() {
 		if(ptr==0 && isCompileClicked() && isCompileSuccess()){
@@ -124,6 +144,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return this.sim40.lines[ptr];
 	}
 
+	/**
+	 * Calls in the method compile in Compiler
+	 * Compiles the user input program and updates the view accordingly
+	 */
 	@Override
 	public void compile(Program program) {	
 		this.setCompileClicked(true);
@@ -136,14 +160,25 @@ public class Model implements ModelInterface, SimulatorInterface {
 		this.runner = new Runner(this.compiler);	
 	}
 
-	private void setCompileClicked (boolean hasOccured){
-		this.compileClicked = hasOccured;
+	/**
+	 * sets the global boolean variable compileClicked according to if the last user action was compiling their input program
+	 * @param boolean compile clicking has occurred
+	 */
+	private void setCompileClicked (boolean hasOccurred){
+		this.compileClicked = hasOccurred;
 	}
 
+	/**
+	 * gets the global boolean according to if the last user action was compiling their input program 
+	 * @return boolean compile clicking has occurred
+	 */
 	private boolean isCompileClicked (){
 		return this.compileClicked;
 	}
 
+	/**
+	 * Refreshes ErrorOutputStream and StandardOutputStream
+	 */
 	private void refreshOutputs(){
 		if(errorStream !=null)
 			errorStream.setErrors(new ArrayList<OutputError>());
@@ -152,8 +187,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * Method to Save a the input editor program into a .cecil file
-	 * 
+	 * Saves the input editor program into a .cecil file
 	 * @param input : Program statements from the input editor
 	 * @param fileName : name of file (assuming a .cecil extension)
 	 */
@@ -183,14 +217,16 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return file;
 	}
 
+	/**
+	 * Sets the Simulator to initiation values
+	 */
 	public void setViewToDefault(){
 		sim40 = new Simulator();
 	}
 
 	/**
-	 * Method to convert the program input from a .cecil file to Program object
-	 * 
-	 * @param file
+	 * Converts the program input from a .cecil file to Program object
+	 * @param user input file
 	 * @return Program object
 	 */
 	public Program fileToProgram(File file) {
@@ -261,49 +297,90 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return new Program(program);
 	}
 
+	/**
+	 * gets boolean isCarryFlag
+	 * @return boolean
+	 */
 	@Override
 	public boolean isCarryFlag() {
 		return this.sim40.isCarryFlag();
 	}
 
+	/**
+	 * gets boolean isZeroFlag
+	 * @return boolean
+	 */
 	@Override
 	public boolean isZeroFlag() {
 		return this.sim40.isZeroFlag();
 	}
 
+	/**
+	 * gets boolean isNegativeFlag
+	 * @return boolean
+	 */
 	@Override
 	public boolean isNegativeFlag() {
 		return this.sim40.isNegativeFlag();
 	}
 
+	/**
+	 * gets boolean isCompileSuccess
+	 * @return boolean
+	 */
 	@Override
 	public boolean isCompileSuccess() {
 		return this.sim40.isCompileSuccess();
 	}
 
+	/**
+	 * gets the stack for the X register 
+	 * @return ArrayList<Integer> X register values
+	 */
 	@Override
 	public ArrayList<Integer> getXReg() {
 		return this.sim40.getXReg();
 	}
 
+	/**
+	 * gets the stack for the Y register 
+	 * @return ArrayList<Integer> Y register values
+	 */
 	@Override
 	public ArrayList<Integer> getYReg() {
 		return this.sim40.getYReg();
 	}
 
+	/**
+	 * gets the stack for the Accumulator register 
+	 * @return ArrayList<Integer> Accumulator register values
+	 */
 	@Override
 	public ArrayList<Integer> getAcc() {
 		return this.sim40.getAcc();
 	}
 
+	/**
+	 * gets the CECIL memory manipulated by the user input program
+	 * @return int[] memory
+	 */
 	@Override
 	public int[] getMemory() {
 		return this.sim40.getMemory();
 	}
 
+	/**
+	 * sets the ErrorOutpurStream object
+	 * @param ErrorOutputStream object
+	 */
 	public void setErrorStream(ErrorOutputStream stream){
 		this.errorStream = stream;
 	}
+	
+	/**
+	 * gets the ErrorOutputStream object
+	 * @return ErrorOutputStream object
+	 */
 	@Override
 	public ErrorOutputStream getErrorStream() {
 		if(this.errorStream==null)
@@ -311,6 +388,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return this.errorStream;
 	}
 
+	/**
+	 * gets the StandardOutputStream object
+	 * @return StandardOutputStream object
+	 */
 	@Override
 	public StandardOutputStream getStdStream() {
 		if(this.stdStream==null)
