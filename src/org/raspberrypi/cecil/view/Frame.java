@@ -213,8 +213,8 @@ public class Frame extends JFrame implements ViewInterface {
 		gridBagLayout.rowHeights = new int[] {0, 0, 0};
 		getContentPane().setLayout(gridBagLayout);
 		setTitle("CECIL");
-		//if(System.getProperties().getProperty("sun.desktop").equals("raspbian"))
-		//setTitle("CECILRPi");
+		if(System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm"))
+		setTitle("CECILRPi");
 
 		if (instructionList == null) {
 			//Default instructions
