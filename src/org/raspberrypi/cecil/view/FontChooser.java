@@ -23,6 +23,9 @@ public class FontChooser extends JDialog {
 	JPanel fontPreview;
 	JPanel colourPreview;
 	JPanel controlPanel;
+	JRadioButton small;
+	JRadioButton medium;
+	JRadioButton large;
 	Frame frame;
 
 	public FontChooser(Frame frame) {
@@ -45,31 +48,34 @@ public class FontChooser extends JDialog {
 		getContentPane().setBackground(panelcolour);
 
 		fontPanel = new JPanel();
-		fontName = new JComboBox(new String[] { "TimesRoman", "Helvetica",
-				"Courier" });
-		fontName.setSelectedIndex(2);
-		fontName.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				updateFont();
-			}
-		});
-		fontSize = new JComboBox(new String[] { "Small", "Medium", "Large" });
-		fontSize.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				updateFont();
-			}
-		});
-
-		// Color(255,230,214)
-		fontPanel.setBackground(new Color(255, 148, 82));
-		fontPanel.add(fontName);
-		fontPanel.add(new JLabel(" Size: "));
-		fontPanel.add(fontSize);
-
+		 ActionListener fontsize = new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			    	  	updateFont(((JRadioButton) e.getSource()).getText());
+			    			    }
+			  };
+		 ButtonGroup bg = new ButtonGroup();
+		small = new JRadioButton("Small");
+		small.setSelected(true);
+		small.setFont(new Font("Arial", Font.PLAIN, 12));
+		small.addActionListener(fontsize);
+		medium = new JRadioButton("Medium");
+		medium.setFont(new Font("Arial", Font.PLAIN, 18));
+		medium.addActionListener(fontsize);
+		large = new JRadioButton("Large");
+		large.setFont(new Font("Arial", Font.PLAIN, 24));
+		large.addActionListener(fontsize);
+		bg.add(small);
+		bg.add(medium);
+		bg.add(large);
+		fontPanel.setBackground(new Color(255, 148, 82));		
+		fontPanel.add(small);
+		fontPanel.add(medium);
+		fontPanel.add(large);
+		
 		fontPreview = new JPanel(new GridBagLayout());
 		fontPreview.setBackground(panelcolour);
 		sampleText = new JLabel("The Text looks like this");
-		sampleText.setFont(new Font("Courier", Font.BOLD, 12));
+		sampleText.setFont(new Font("Courier", Font.PLAIN, 12));
 		GridBagConstraints gbc_fontPanel = new GridBagConstraints();
 		gbc_fontPanel.fill = GridBagConstraints.BOTH;
 		gbc_fontPanel.gridx = 0;
@@ -151,35 +157,39 @@ public class FontChooser extends JDialog {
 		fontPanel.setBackground(panelcolour);
 		fontPreview.setBackground(panelcolour);
 		controlPanel.setBackground(panelcolour);
+		small.setBackground(panelcolour);
+		medium.setBackground(panelcolour);
+		large.setBackground(panelcolour);
 
 	}
 
 	/* updates the sample text to the new font */
-	protected void updateFont() {
+	protected void updateFont(String font) {
 
-		String name = fontName.getSelectedItem().toString();
 		int size = 12;
-		if (fontSize.getSelectedItem().toString() == "Small") {
+		if (font == "Small") {
 			size = 12;
 			newFont = "Small";
+			sampleText.setFont(new Font("Courier", Font.PLAIN, 12));
 			frame.tblMemory.setRowHeight(90);
 		} 
 		
-		else if (fontSize.getSelectedItem().toString() == "Medium") {
+		else if (font == "Medium") {
 			size = 18;
 			newFont = "Medium";
+			sampleText.setFont(new Font("Courier", Font.PLAIN, 18));
 			frame.tblMemory.setRowHeight(30);
 		}
 		
-		else if (fontSize.getSelectedItem().toString() == "Large") {
+		else if (font == "Large") {
 			size = 24;
 			newFont = "Large";
+			sampleText.setFont(new Font("Courier", Font.PLAIN, 24));
 			frame.tblMemory.setRowHeight(90);
 			
 		}
 		
-		Font f = new Font(name, Font.PLAIN, size);
-		sampleText.setFont(f);
+	
 	}
 
 	protected void updateColour() {
