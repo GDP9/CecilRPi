@@ -1,4 +1,4 @@
-.start load num1 ;
+  load num1 ;
   add num2 ;
   printch   ;
   printb   ;
@@ -7,7 +7,6 @@
   xdec   ;
   cset   ;
   jizero end ;
-  print   ;
-.end stop   ;
+.end print   ;
 .num1 insert 63 ;
 .num2 insert 2 ;

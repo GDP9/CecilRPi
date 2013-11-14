@@ -60,7 +60,6 @@ public class Model implements ModelInterface, SimulatorInterface {
 			if(i.getName().equals(name))
 				return i.getMnemonic();
 		}
-		
 		return -1;
 	}
 	

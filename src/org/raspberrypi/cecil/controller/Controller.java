@@ -243,7 +243,6 @@ public class Controller implements ControllerInterface {
 		for(int i = 0; i<code.size(); i++) {
 			ArrayList<String> input = code.get(i);
 			String alphanumeric = "[a-zA-Z][a-zA-Z0-9]*";
-
 			/* Checking for alpha-numeric labelfield*/
 			if(!input.get(0).equals(" ") && !input.get(0).substring(1).matches(alphanumeric)) {
 				addErrorToOutputstream(i+1, "Incorrectly formed label");
@@ -267,7 +266,7 @@ public class Controller implements ControllerInterface {
 			}
 
 			/* Checking for empty instruction */
-			else if(input.get(1).equals(" ")) {
+			if(input.get(1).equals(" ")) {
 				/* Checking for missing instruction given datafield or labelfield */
 				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")) {
 					addErrorToOutputstream(i+1, "An instruction must be provided");
@@ -275,8 +274,10 @@ public class Controller implements ControllerInterface {
 				}
 			}
 
+			
 			/* Checking for valid instruction */
 			else if(!model.isInstruction(input.get(1))) {
+				System.out.println("gets here");
 				addErrorToOutputstream(i+1, "Invalid instruction provided");
 				return false;
 			}
