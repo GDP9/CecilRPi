@@ -7,14 +7,18 @@ import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 /**
  * 
  * CECIL assembly language Runner
- * 
- * MIT Open Source License
- * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
- * Southampton University, United Kingdom
- * @version 1.1
- * 
- * @date 01/11/2013
+ * runs CECIL Language user input programs
+ * Handles running errors and adds them to StreamOutputError list
+ * Only takes place when compilation has been previously successful
  *
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+ * Southampton University, United Kingdom
+ * @version 1.2
+ * 
+ * @date 14/11/2013
  *
  */
 public class Runner {
@@ -25,7 +29,9 @@ public class Runner {
 	private StandardOutputStream stdStream;
 
 	/**
-	 * Constructor
+	 * Runner Parametric constructor
+	 * Initalises Simulator, ErrorOutputStream and StandardOutputStream
+	 * @param Compiler object
 	 */
 	public Runner(Compiler compiler) {
 		this.compiler = compiler;
@@ -35,17 +41,18 @@ public class Runner {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * gets Simulator object
+	 * @return Simulator object
 	 */
 	public Simulator getSimulator() {
 		return this.sim40;
 	}
 
 	/**
-	 * 
-	 * @param i
-	 * @return
+	 * Executes "step through" of user input program
+	 * This execution goes according to the instructions rules
+	 * @param line number
+	 * @return next line number
 	 */
 	public int stepthrough(int i) {
 		switch(sim40.memory[i]) {
@@ -80,8 +87,10 @@ public class Runner {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Executes "run" of user input program
+	 * This execution goes according to the instructions rules
+	 * @param line number
+	 * @return next line number
 	 */
 	public void run(int i) {
 		while(sim40.memory[i] != -1) {	
@@ -118,9 +127,10 @@ public class Runner {
 
 
 	/**
-	 * 
-	 * @param i
-	 * @return
+	 * Executes instructions "print", "printch" and "printb" existent in user input programs
+	 * This execution goes according to the instructions rules
+	 * @param addressable memory location
+	 * @return String instruction output
 	 */
 	private String result(int i) {
 		switch(sim40.memory[i]){
@@ -138,6 +148,12 @@ public class Runner {
 		return "";
 	}
 
+	/**
+	 * Executes comparison instructions "jump", "comp", "jineg", "jipos", "jizero" and "jicarry" existent in user input programs
+	 * This execution goes according to the instructions rules
+	 * @param addressable memory location
+	 * @return int next addressable memory location
+	 */
 	private int compareExecute(int i) {
 		switch(sim40.memory[i]) {
 
@@ -173,6 +189,12 @@ public class Runner {
 		return i;
 	}
 
+	/**
+	 * Executes other instructions "cclear", "cset", "(y)xinc", "(y)xdec","(x,y)load", "(x,y)store", "add", "sub", "and", "or", "xor", "loadmx" and "insert" existent in user input programs
+	 * This execution goes according to the instructions rules
+	 * @param addressable memory location
+	 * @return int next addressable memory location
+	 */
 	private int restExecute(int i) {
 		switch(sim40.memory[i]) {
 
@@ -344,7 +366,8 @@ public class Runner {
 	}
 
 	/**
-	 * 
+	 * Modifies status flags according to register values
+	 * Modifies carry, negative and zero flags
 	 */
 	private void checkStatusFlags() {
 
@@ -354,21 +377,25 @@ public class Runner {
 	}
 
 
+	/**
+	 * Modifies status flags and register values according to register values
+	 * @param register
+	 */
 	private void checkFlags(int register) {
-		/* checking zero flag status */
+		/*register values greater than 1024*/
 		if(sim40.memory[register] >= 1024) 
 			setRegToMax(register);
 
 
-		/* checking negative flag status */
+		/*register values smaller than or equal to 0*/
 		else if(sim40.memory[register] <= 0) {
 			setRegToMin(register);
 		}
-
 	}
 
 	/**
-	 * 
+	 * Sets the register value to max 1024
+	 * Sets the carry flag to true
 	 * @param register
 	 */
 	private void setRegToMax(int register) {
@@ -377,7 +404,8 @@ public class Runner {
 	}
 
 	/**
-	 * 
+	 * Sets the register value to min 0
+	 * Sets the zero and negative flag accordingly 
 	 * @param register
 	 */
 	private void setRegToMin(int register) {
@@ -389,16 +417,19 @@ public class Runner {
 	}
 
 	/**
-	 * 
-	 * @param i
-	 * @return
+	 * Checks if insert instruction exists for a given load instruction.
+	 * All load instructions must have a corresponding "insert" instruction so the data field is not null
+	 * @param addressable memory location
+	 * @return boolean
 	 */
 	private boolean checkInsert(int i) {
 		return (compiler.getInstructionField().containsKey(sim40.memory[i+1]) && compiler.getInstructionField().get(sim40.memory[i+1]).equals("insert"));
 	}
 
 	/**
-	 * 
+	 * Checks the registers values and sets the zero flag accordingly.
+	 * @param int register
+	 * @param int addressable memory location
 	 */
 	private void zeroflagstatus(int register, int address){
 		if(sim40.memory[register] == sim40.memory[address]){
@@ -410,8 +441,9 @@ public class Runner {
 	}
 
 	/**
-	 * 
-	 * @param register
+	 * Checks the registers values and sets the negative flag accordingly.
+	 * @param int register
+	 * @param int addressable memory location
 	 */
 	private void negativeflagstatus(int register, int address){
 		if(sim40.memory[register] <= sim40.memory[address]){
@@ -423,14 +455,16 @@ public class Runner {
 	}
 
 	/**
-	 * @return the errorStream
+	 * gets ErrorOutputStream object
+	 * @return ErrorOutputStream object
 	 */
 	public ErrorOutputStream getErrorStream() {
 		return errorStream;
 	}
 
 	/**
-	 * @return the stdStream
+	 * gets StandardOutputStream object
+	 * @return StandardOutputStream object
 	 */
 	public StandardOutputStream getStdStream() {
 		return stdStream;
