@@ -234,26 +234,47 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	/**
+	 * 
+	 * @param code
+	 * @return
+	 */
 	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		for(int i = 0; i<code.size(); i++) {
 			ArrayList<String> input = code.get(i);
-
-			if(input.get(1).equals(" ")){
-				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")){
+			String alphanumeric = "^([a-zA-Z])([a-zA-Z0-9] | '_')*$";
+			
+			/* Checking for alpha-numeric labelfield*/
+			if(!input.get(0).matches(alphanumeric)) {
+				addErrorToOutputstream(i+1, "Incorrectly formed label");
+				return false;
+			}
+			
+			/* Checking for alpha-numeric datafield */
+			else if(!input.get(2).matches(alphanumeric)) {
+				addErrorToOutputstream(i+1, "Incorrectly formed data");
+				return false;
+			}
+			/* Checking for empty instruction */
+			else if(input.get(1).equals(" ")) {
+				/* Checking for missing instruction given datafield or labelfield */
+				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")) {
 					addErrorToOutputstream(i+1, "An instruction must be provided");
 					return false;
 				}
 			}
-			else{
-
-				if(model.isBinaryInstruction(input.get(1))){
-					if(input.get(2).equals(" ")){
+			
+			else {
+				/* Checking for missing datafield following binary instruction */
+				if(model.isBinaryInstruction(input.get(1))) {
+					if(input.get(2).equals(" ")) {
 						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
-						System.out.println(model.getErrorStream().getErrors().isEmpty());
 						return false;
 					}
 				}
-				if(!model.isBinaryInstruction(input.get(1))){
+				
+				/* Checking for existing datafield following unary instruction */
+				else if(!model.isBinaryInstruction(input.get(1))) {
 					if(!input.get(2).equals(" ")){
 						addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
 						return false;
@@ -261,9 +282,15 @@ public class Controller implements ControllerInterface {
 				}
 			}
 		}
+		
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param line
+	 * @param msg
+	 */
 	private void addErrorToOutputstream (int line, String msg){
 		ErrorOutputStream e = new ErrorOutputStream();
 		e.getErrors().add(new OutputError(line, msg));

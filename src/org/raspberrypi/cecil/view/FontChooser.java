@@ -162,13 +162,22 @@ public class FontChooser extends JDialog {
 		if (fontSize.getSelectedItem().toString() == "Small") {
 			size = 12;
 			newFont = "Small";
-		} else if (fontSize.getSelectedItem().toString() == "Medium") {
+			frame.tblMemory.setRowHeight(90);
+		} 
+		
+		else if (fontSize.getSelectedItem().toString() == "Medium") {
 			size = 18;
 			newFont = "Medium";
-		} else if (fontSize.getSelectedItem().toString() == "Large") {
+			frame.tblMemory.setRowHeight(30);
+		}
+		
+		else if (fontSize.getSelectedItem().toString() == "Large") {
 			size = 24;
 			newFont = "Large";
+			frame.tblMemory.setRowHeight(90);
+			
 		}
+		
 		Font f = new Font(name, Font.PLAIN, size);
 		sampleText.setFont(f);
 	}

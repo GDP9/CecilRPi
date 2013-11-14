@@ -33,13 +33,9 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.JComboBox;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -48,7 +44,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridLayout;
@@ -137,7 +132,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JTable tblInput;
 
 	//Memory
-	private JTable tblMemory;
+	JTable tblMemory;
 
 	//Action buttons
 	private JButton btnCompile;
@@ -165,7 +160,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 	//Misc
 	private JTextField input;
-	private JComboBox<String> comboBox;
+	private JComboBox comboBox;
 	private FontUIResource currentFont;
 	private ArrayList<ArrayList<String>> currentProgram;
 	private Color[] currentTheme;
@@ -213,8 +208,13 @@ public class Frame extends JFrame implements ViewInterface {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
 			System.out.println("ERROR: "+e1.getMessage());
 		}
-		getContentPane().setLayout(new GridBagLayout());
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
+		gridBagLayout.rowHeights = new int[] {0, 0, 0};
+		getContentPane().setLayout(gridBagLayout);
 		setTitle("CECIL");
+		if(System.getProperties().getProperty("sun.desktop").equals("raspbian"))
+			setTitle("CECILRPi");
 
 		if (instructionList == null) {
 			//Default instructions
@@ -671,7 +671,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
-		comboBox = new JComboBox<String>(temp);
+		comboBox = new JComboBox(temp);
 		comboBox.setEditable(true);
 		AutoCompleteDecorator.decorate(comboBox);
 
@@ -767,7 +767,7 @@ public class Frame extends JFrame implements ViewInterface {
 		for (int i = 0; i < 1024; i++) {
 			mdlMemory.addColumn(i, new Object[]{""});
 		}
-
+		
 		tblMemory = new JTable(mdlMemory);
 		tblMemory.getTableHeader().setReorderingAllowed(false);
 		tblMemory.setEnabled(false);
@@ -1098,7 +1098,7 @@ public class Frame extends JFrame implements ViewInterface {
 		((TitledBorder)((CompoundBorder) southPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblMemory.getTableHeader().setFont(currentFont);
 		tblMemory.setFont(currentFont);
-		tblMemory.setRowHeight(40);
+		tblMemory.setRowHeight(30);
 	}
 
 	/**
