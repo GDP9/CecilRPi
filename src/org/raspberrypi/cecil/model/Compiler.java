@@ -15,13 +15,19 @@ import org.raspberrypi.cecil.pojo.Program;
 
 /**
  * CECIL assembly language Compiler
+ * Compiles CECIL Language user input programs
+ * Handles compilation errors and adds them to StreamOutputError list
+ * If successful compilation - sends a standard output message to the view
  * 
- * MIT Open Source License
- * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
  * Southampton University, United Kingdom
- * @version 1.1
+ * @version 1.2
  * 
- * @date 01/11/2013
+ * @date 14/11/2013
+ * 
  */
 
 public class Compiler {
@@ -32,8 +38,12 @@ public class Compiler {
 	private ErrorOutputStream errorStream;
 
 	/**
-	 * Parametric Constructor
-	 * @param filepath
+	 * Compiler parametric constructor
+	 * Calls in the parser and lexer to act upon user input
+	 * Checks if all data fields have corresponding label fields
+	 * Sending standard output on successful compilation
+	 * @param filepath of user input
+	 * @param Program object
 	 */
 	public Compiler(String filepath, Program program) {
 		try {
@@ -49,52 +59,45 @@ public class Compiler {
 
 			/* type checking for labels */
 			for(int i: parser.getDatafield().keySet()){
-					if(parser.getLabelfield().keySet().contains(parser.getDatafield().get(i))) 
-						this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
+				if(parser.getLabelfield().keySet().contains(parser.getDatafield().get(i))) 
+					this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
 
 				else { 
 					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
 					this.sim40.setSuccessCompile(false);
 				}
 			}
-			/* checking for stop instruction */
-//			if(!parser.getInstructionfield().containsValue("stop")) {
-//				this.errorStream.getErrors().add(new OutputError(program.getProgramStatements().size(), "Program needs at least one stop instruction"));
-//				this.sim40.setSuccessCompile(false);
-//			}
 
-			/* Writing successful compilation to std stream */
+			/* Writing successful compilation to StandardOutputStream */
 			if(this.sim40.isCompileSuccess()) {
 				this.stdStream.getOutput().add("Program has successfully compiled"); 
 				this.sim40.setSuccessCompile(true);
 			}
-			
+
 		} catch (IOException | RecognitionException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Gets instruction HashMap <int memory adress, String instruction name> from parser
+	 * @return HashMap<int, String> instructions
 	 */
 	public HashMap<Integer, String> getInstructionField() {
 		return parser.getInstructionfield();
 	}
 
-
 	/**
-	 * 
-	 * @return
+	 * Gets Simulator object
+	 * @return Simulator object
 	 */
 	public Simulator getSimulator() {
 		return this.sim40;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * gets Parser object
+	 * @return Parser object
 	 */
 	public CecilParser getParser() {
 		return parser;
@@ -102,10 +105,11 @@ public class Compiler {
 
 
 	/**
-	 * 
-	 * @param memory
-	 * @param key
-	 * @return
+	 * Looks up all related instructions recursively.
+	 * Not in use at the moment.
+	 * @param int[] memory
+	 * @param int key in memory of instruction, data field
+	 * @return memory address related to argument
 	 */
 	public int recursive(int[] memory, int key) {
 		int i = memory[key];
@@ -117,14 +121,16 @@ public class Compiler {
 	}
 
 	/**
-	 * @return the stdStream
+	 * gets StandardOutputStream object
+	 * @return StandardOutputStream object
 	 */
 	public StandardOutputStream getStdStream() {
 		return stdStream;
 	}
 
 	/**
-	 * @return the errorStream
+	 * gets the ErrorOutputStream object
+	 * @return ErrorOutputStream object
 	 */
 	public ErrorOutputStream getErrorStream() {
 		return errorStream;
