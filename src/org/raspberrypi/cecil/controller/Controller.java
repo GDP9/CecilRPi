@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
-import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 import org.raspberrypi.cecil.view.Frame;
 
@@ -66,14 +65,7 @@ public class Controller implements ControllerInterface {
 		line.add("num2");
 		line.add(";");
 		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("print");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
 		line.add("printch");
@@ -87,9 +79,51 @@ public class Controller implements ControllerInterface {
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-
+		
 		line = new ArrayList<String>();
 		line.add(" ");
+		line.add("xor");
+		line.add("num2");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("printb");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("xdec");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("cset");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("jizero");
+		line.add("end");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(" ");
+		line.add("print");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		line.add(".end");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
@@ -106,13 +140,6 @@ public class Controller implements ControllerInterface {
 		line.add(".num2");
 		line.add("insert");
 		line.add("2");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("stop");
-		line.add(" ");
 		line.add(";");
 		program.add(line);
 

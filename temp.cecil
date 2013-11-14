@@ -1,9 +1,13 @@
-.start load nu?m1 ;
+.start load num1 ;
   add num2 ;
-  print   ;
   printch   ;
   printb   ;
-  stop   ;
+  xor num2 ;
+  printb   ;
+  xdec   ;
+  cset   ;
+  jizero end ;
+  print   ;
+.end stop   ;
 .num1 insert 63 ;
 .num2 insert 2 ;
-  stop   ;

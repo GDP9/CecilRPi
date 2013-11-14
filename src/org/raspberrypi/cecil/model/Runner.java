@@ -47,10 +47,11 @@ public class Runner {
 	 * @param i
 	 * @return
 	 */
-	public void stepthrough(int i) {
-		switch(i) {
+	public int stepthrough(int i) {
+		System.out.println("afsf "+i);
+		switch(sim40.memory[i]) {
 
-		case 0: return;
+		case 0: return -1;
 
 		case 1: case 2: case 3: 
 			this.stdStream.getOutput().add(result(i));
@@ -58,13 +59,18 @@ public class Runner {
 			break;
 
 		default:
-			i = execute(i);
+			if(sim40.memory[i] >=25 && sim40.memory[i]<=31)
+				i = compareExecute(i);
+			else
+				i = restExecute(i);
 		}
-
+		System.out.println("herrre " + i);
 
 		checkStatusFlags();
 		sim40.updateViewVars();
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
+		
+		return i;
 	}
 
 	/**
@@ -72,7 +78,6 @@ public class Runner {
 	 * @return
 	 */
 	public void run(int i) {
-
 		while(sim40.memory[i] != -1) {	
 			switch(sim40.memory[i]) {
 
@@ -84,11 +89,16 @@ public class Runner {
 				break;
 
 			default:
-				System.out.println(sim40.memory[i]);
-				i = execute(i);
+				if(sim40.memory[i] >=25 && sim40.memory[i]<=31) {
+					i = compareExecute(i);
+				}
+				else {
+					
+					i = restExecute(i);
 
-				checkStatusFlags();
-				sim40.updateViewVars();
+					checkStatusFlags();
+					sim40.updateViewVars();
+				}
 			}
 
 			sim40.memory[Simulator.PROGRAM_COUNTER] = i;
@@ -118,12 +128,42 @@ public class Runner {
 		return "";
 	}
 
-	/**
-	 * Executing each instruction
-	 * @param i
-	 * @return
-	 */
-	private int execute(int i) {
+	private int compareExecute(int i) {
+		switch(sim40.memory[i]) {
+
+		case 25: /* jump */
+			i = sim40.memory[i+1];
+			break;
+
+		case 26: /* comp */
+			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[i+1]);
+			negativeflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
+			break;
+
+		case 27: /* jineg */
+			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 1)
+				i = sim40.memory[i+1];
+			break;
+
+		case 28 : /* jipos */
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
+				i = sim40.memory[i+1];
+			break;
+
+		case 29: /* jizero */
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 1))
+				i = sim40.memory[i+1];
+			break;
+
+		case 31: /* jicarry */
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 1))
+				i = sim40.memory[i+1];
+			break;
+		}
+		return i;
+	}
+
+	private int restExecute(int i) {
 		switch(sim40.memory[i]) {
 
 		/* Unary Instructions */
@@ -132,27 +172,11 @@ public class Runner {
 			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<2);
 			i++;
 			break;
+
 		case 5: /* cset */
 			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
 			i++;
 			break;
-			//		case 6: /* lshift */
-			//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] <<= 1;
-			//			i++;
-			//			break;
-			//		case 7: /* rshift */
-			//			sim40.memory[Simulator.ACCUMULATOR_ADDRESS] >>= 1;
-			//			i++;
-			//			break;
-			//		case 8: /* pull */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-			//				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			//			}
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-			//
-			//			i++;
-			//			break;
 
 		case 9: /* xinc */
 			sim40.memory[Simulator.XREG_ADDRESS]++;
@@ -163,60 +187,6 @@ public class Runner {
 			sim40.memory[Simulator.XREG_ADDRESS]--;
 			i++;
 			break;
-
-			//		case 11: /* xpull */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-			//				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			//			}
-			//
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-			//
-			//			i++;
-			//			break;
-			//
-			//		case 12: /* xpush */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.XREG_ADDRESS];
-			//			}
-			//
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-			//
-			//			i++;
-			//			break;
-			//
-			//		case 13: /* push */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[sim40.memory[i++]];
-			//			}
-			//		
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-			//
-			//			i++;
-			//			break;
-			//
-			//		case 14: /* ypush */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_END) {
-			//				sim40.memory[++sim40.memory[Simulator.STACK_PTR]] = sim40.memory[Simulator.YREG_ADDRESS];
-			//			}
-			//
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot push because of overflow"));
-			//			i++;
-			//			break;
-			//
-			//		case 15: /* ypull */
-			//			if(sim40.memory[Simulator.STACK_PTR] != Simulator.STACK_BEGIN) {
-			//				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[Simulator.STACK_PTR]--;
-			//			}
-			//
-			//			else 
-			//				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[i],"Cannot pull because of underflow"));
-			//
-			//			i++;
-			//			break;
 
 		case 16: /* yinc */
 			sim40.memory[Simulator.YREG_ADDRESS]++;
@@ -308,41 +278,6 @@ public class Runner {
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
 			break;
-
-		case 25: /* jump */
-			i = sim40.memory[i+1];
-			break;
-
-		case 26: /* comp */
-			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[i+1]);
-			negativeflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
-			break;
-
-		case 27: /* jineg */
-			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 1)
-				i = sim40.memory[i+1];
-			break;
-
-		case 28 : /* jipos */
-			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
-				i = sim40.memory[i+1];
-			break;
-
-		case 29: /* jizero */
-			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 1))
-				i = sim40.memory[i+1];
-			break;
-
-//		case 30: /* jmptosr */
-//			sim40.memory[sim40.memory[Simulator.STACK_PTR]] = sim40.memory[i];
-//			i = sim40.memory[i+1];
-//			break;
-
-		case 31: /* jicarry */
-			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 1))
-				i = sim40.memory[i+1];
-			break;
-
 		case 32: /* xload */
 			if(checkInsert(i))	
 				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[sim40.memory[++i]];
@@ -395,9 +330,9 @@ public class Runner {
 			negativeflagstatus(Simulator.YREG_ADDRESS, sim40.memory[++i]);
 			break;
 		}
-
 		return i;
 	}
+
 	/**
 	 * 
 	 */
@@ -411,7 +346,6 @@ public class Runner {
 
 	private void checkFlags(int register) {
 		/* checking zero flag status */
-		System.out.println(sim40.memory[register]);
 		if(sim40.memory[register] >= 1024) 
 			setRegToMax(register);
 
@@ -439,7 +373,7 @@ public class Runner {
 	private void setRegToMin(int register) {
 		if(sim40.memory[register] < 0)
 			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
-		
+
 		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
 		sim40.memory[register] = 0;
 	}

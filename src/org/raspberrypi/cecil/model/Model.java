@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
@@ -88,7 +87,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	@Override
 	public void stepThrough() {
-		this.runner.stepthrough(ptr);
+		ptr = this.runner.stepthrough(ptr);
+		if(ptr == -1) ptr = 0;
 	}
 
 	@Override
@@ -120,9 +120,6 @@ public class Model implements ModelInterface, SimulatorInterface {
 			
 			/* Generate the input file string */
 			input += a.get(0) + " " + a.get(1) + " " + a.get(2) + " " + a.get(3) + "\n";
-			
-			/* Save the instruction corresponding to the line number */
-			//sim40.getInstructionLineNumber().put(line, a.get(1));
 		}
 
 		/* Writing to file */
