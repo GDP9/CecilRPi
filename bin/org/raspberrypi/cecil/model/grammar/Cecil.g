@@ -1,15 +1,20 @@
 /**
  * CECIL assembly language grammar definition
- * This grammar constitutes all the lexer rules employed by CECIL.
+ * This grammar constitutes all the lexer rules employed by CECIL and corresponding parsing rules.
  * It is a version of the CECIL Language originally developed by David Argles.
  * it contains 39 simple instructions and user input datafields and labelfields.
+ * It catches the relevant errors thrown by the lexer and parser.
+ * The language used is Java.
  * 
- * MIT Open Source License
- * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
  * Southampton University, United Kingdom
- * @version 1.1
+ * @version 1.2
  * 
- * @date 01/11/2013
+ * @date 14/11/2013
+ *
  */
  
 grammar Cecil;
@@ -18,7 +23,7 @@ options {
     language = Java;
 }
 
-/* package and import declaration for parser */
+/*Header with package and import declaration for parser*/
 @header { 
   package org.raspberrypi.cecil.model.grammar;
   import java.util.HashMap;
@@ -29,17 +34,10 @@ options {
   import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 }
 
-/* package and import declaration for lexer */
+/*Header with package and import declaration for lexer*/
 @lexer::header {
   package org.raspberrypi.cecil.model.grammar;
 }
-
-//@lexer::members{
-// @Override
-//  public void reportError(RecognitionException e) {
-//    throw new RuntimeException("I quit!\n" + e.getMessage()); 
-//  }
-//}
 
 /* Member function and field declaration */
 @parser::members { 
@@ -56,9 +54,9 @@ options {
     private HashMap<Integer, String> instructionfield;    
     private ErrorOutputStream stream;
     
-    /*
-    * Method to be invoked before call to .program method
-    */
+    /**
+     * This method is invoked before calling the .program method
+     */
     public void initialise() {
       pointer = 0;
       
@@ -128,7 +126,6 @@ labelfield
 mnemonicdata 
   : (binaryinstruction datafield {
       /* if instruction is insert and data is integer then add value to memory */
-        
          if(($binaryinstruction.text).equals("insert")) {
           if(($datafield.text).matches("^[0-9]+$")) {
             instructionfield.put(pointer, "insert");
