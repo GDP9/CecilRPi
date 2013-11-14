@@ -1441,6 +1441,7 @@ public class Frame extends JFrame implements ViewInterface {
 			currentTheme = GREEN_THEME;
 		}
 		setupColours();
+		repaint();
 	}
 
 	/*
