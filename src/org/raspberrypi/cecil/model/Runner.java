@@ -48,7 +48,6 @@ public class Runner {
 	 * @return
 	 */
 	public int stepthrough(int i) {
-		System.out.println("afsf "+i);
 		switch(sim40.memory[i]) {
 
 		case 0: return -1;
@@ -61,13 +60,20 @@ public class Runner {
 		default:
 			if(sim40.memory[i] >=25 && sim40.memory[i]<=31)
 				i = compareExecute(i);
-			else
+			
+			else if(sim40.memory[i] == 4 || sim40.memory[i] == 5) {
 				i = restExecute(i);
+				checkStatusFlags();
+				sim40.updateViewFlags();
+			}
+			
+			else {
+				i = restExecute(i);
+				checkStatusFlags();
+				sim40.updateViewVars();
+			}
 		}
-		System.out.println("herrre " + i);
-
-		checkStatusFlags();
-		sim40.updateViewVars();
+		
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		
 		return i;
@@ -89,13 +95,17 @@ public class Runner {
 				break;
 
 			default:
-				if(sim40.memory[i] >=25 && sim40.memory[i]<=31) {
+				if(sim40.memory[i] >=25 && sim40.memory[i]<=31)
 					i = compareExecute(i);
-				}
-				else {
-					
+				
+				else if(sim40.memory[i] == 4 || sim40.memory[i] == 5) {
 					i = restExecute(i);
-
+					checkStatusFlags();
+					sim40.updateViewFlags();
+				}
+				
+				else {
+					i = restExecute(i);
 					checkStatusFlags();
 					sim40.updateViewVars();
 				}

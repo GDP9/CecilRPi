@@ -62,26 +62,21 @@ public class Simulator {
 		memory[XREG_ADDRESS] = 0;
 		memory[YREG_ADDRESS] = 0;
 
+		successCompile = true;
+		zeroFlag = carryFlag = negativeFlag = false;
+
 		xReg = new ArrayList<Integer>();
 		yReg = new ArrayList<Integer>();
 		acc = new ArrayList<Integer>();
 
-		successCompile = true;
-		zeroFlag = carryFlag = negativeFlag = false;
+		xReg.add(0);
+		yReg.add(0);
+		acc.add(0);
+
 	}
 
-	/**
-	 * Method to update the view variables
-	 */
-	public void updateViewVars() {
-		if(memory[XREG_ADDRESS] != -1)
-			xReg.add(memory[XREG_ADDRESS]);
-		if(memory[YREG_ADDRESS] != -1)
-			yReg.add(memory[YREG_ADDRESS]);
-		if(memory[ACCUMULATOR_ADDRESS] != -1) {
-			acc.add(memory[ACCUMULATOR_ADDRESS]);
-		}
-		
+	public void updateViewFlags() {
+
 		if( (memory[STATUS_ADDRESS] & (1<< 0)) == 0)
 			zeroFlag = false;
 		else zeroFlag = true;
@@ -95,7 +90,32 @@ public class Simulator {
 		}
 		else carryFlag = true;
 
-		}
+	}
+
+	public void updateViewRegisters() {
+		System.out.println("Acc "+acc.size());
+		System.out.println("X re "+xReg.size());
+		System.out.println("Y re "+yReg.size());
+
+		if(memory[XREG_ADDRESS] != xReg.get(xReg.size() - 1))
+			xReg.add(memory[XREG_ADDRESS]);
+
+		if(memory[YREG_ADDRESS] != yReg.get(yReg.size() - 1))
+			yReg.add(memory[YREG_ADDRESS]);
+
+		if(memory[ACCUMULATOR_ADDRESS]!= acc.get(acc.size() - 1)) 
+			acc.add(memory[ACCUMULATOR_ADDRESS]);
+
+
+	}
+
+	/**
+	 * Method to update the view variables
+	 */
+	public void updateViewVars() {
+		this.updateViewFlags();
+		this.updateViewRegisters();
+	}
 
 	public void setLineNumbers(Program program) {
 		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
@@ -212,7 +232,7 @@ public class Simulator {
 	public int[] getMemory() {
 		return memory;
 	}
-	
+
 	/**
 	 * 
 	 * @return stack pointer
@@ -220,5 +240,5 @@ public class Simulator {
 	public static int getStackPtr() {
 		return STACK_PTR;
 	}
-	
+
 }

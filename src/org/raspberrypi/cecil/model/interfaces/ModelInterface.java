@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 import org.raspberrypi.cecil.pojo.Instruction;
-import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 public interface ModelInterface {
