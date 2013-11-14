@@ -12,7 +12,6 @@ import org.raspberrypi.cecil.view.Frame;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
@@ -36,9 +35,15 @@ public class Controller implements ControllerInterface {
 	/**
 	 * Launches the application by creating a new CecilController.
 	 */
-	public static void main(String[] args) {
-		new Controller();
-	}
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Controller();
+            }
+        });
+    }
 
 
 	/**

@@ -1403,6 +1403,9 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void highlightStepThrough(int currNo) {
 		tblInput.clearSelection();
 		
