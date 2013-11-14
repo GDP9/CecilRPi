@@ -22,10 +22,13 @@ public interface ModelInterface {
 	public ErrorOutputStream getErrorStream();
 	public StandardOutputStream getStdStream();
 	public void setErrorStream(ErrorOutputStream stream);
+	
 	public ArrayList<Instruction> getInstructions();
 	public void setToDefault();
+	
 	public int instructionToMnemonic(String name);
 	public boolean isBinaryInstruction(String name);
+	public boolean isInstruction(String name);
 	
 	/**
 	 * Input editor converter

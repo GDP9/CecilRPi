@@ -264,6 +264,12 @@ public class Controller implements ControllerInterface {
 				}
 			}
 			
+			/* Checking for valid instruction */
+			else if(!model.isInstruction(input.get(1))) {
+				addErrorToOutputstream(i+1, "Invalid instruction provided");
+				return false;
+			}
+			
 			else {
 				/* Checking for missing datafield following binary instruction */
 				if(model.isBinaryInstruction(input.get(1))) {

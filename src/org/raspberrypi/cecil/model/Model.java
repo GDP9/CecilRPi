@@ -70,13 +70,24 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 * @return
 	 */
 	public boolean isBinaryInstruction(String name){
-		boolean isBinary = false;
-		if(instructionToMnemonic(name)>=18){
-			isBinary= true;
-		}
-		return isBinary;
+		if(instructionToMnemonic(name) >= 18)
+			return true;
+		
+		return false;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean isInstruction(String name) {
+		if(instructionToMnemonic(name) == -1)
+			return false;
+		
+		return true;
+	}
+	
 	@Override
 	public void run() {
 		this.runner.run(0);
