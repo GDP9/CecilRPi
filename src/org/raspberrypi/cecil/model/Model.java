@@ -99,6 +99,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 		}
 		else if(ptr==0 && !isCompileClicked()){
 			this.setViewToDefault();
+			refreshOutputs();
 		}
 		this.runner.run(ptr);
 		this.sim40 = this.runner.getSimulator();
@@ -108,13 +109,13 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	@Override
 	public int stepThrough() {
-		if(ptr==0 && isCompileClicked()){
+		if(ptr==0 && isCompileClicked() && isCompileSuccess()){
 			setCompileClicked(false);
 			this.setViewToDefault();
 		}
-		else if(ptr==0 && !isCompileClicked()){
-			this.setViewToDefault();
-		}
+		else if(ptr==0 && !isCompileClicked() && isCompileSuccess())
+			refreshOutputs();
+		
 		ptr = this.runner.stepthrough(ptr);
 		if(ptr == -1) ptr = 0;
 		this.sim40 = this.runner.getSimulator();
@@ -125,14 +126,14 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	@Override
 	public void compile(Program program) {	
+		this.setCompileClicked(true);
 		ptr = 0;
 		File file = programToFile(program, "temp.cecil");
 		this.compiler = new Compiler(file.getAbsolutePath(), program);
 		this.sim40 = this.compiler.getSimulator();
 		this.errorStream = this.compiler.getErrorStream();
 		this.stdStream = this.compiler.getStdStream();
-		this.runner = new Runner(this.compiler);
-		this.setCompileClicked(true);
+		this.runner = new Runner(this.compiler);	
 	}
 
 	private void setCompileClicked (boolean hasOccured){
@@ -141,6 +142,13 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	private boolean isCompileClicked (){
 		return this.compileClicked;
+	}
+
+	private void refreshOutputs(){
+		if(errorStream !=null)
+			errorStream.setErrors(new ArrayList<OutputError>());
+		if(stdStream !=null)
+			stdStream.setOutput(new ArrayList<String>());
 	}
 
 	/**
@@ -177,8 +185,6 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	public void setViewToDefault(){
 		sim40 = new Simulator();
-		errorStream.setErrors(new ArrayList<OutputError>());
-		stdStream.setOutput(new ArrayList<String>());
 	}
 
 	/**
