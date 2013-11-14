@@ -288,6 +288,7 @@ public class Controller implements ControllerInterface {
 						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
 						return false;
 					}
+					continue;
 				}
 
 				/* Checking for existing datafield following unary instruction */
