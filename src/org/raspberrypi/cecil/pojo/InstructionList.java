@@ -13,9 +13,9 @@ import java.util.ArrayList;
 * 
 * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
 * Southampton University, United Kingdom
-* @version 1.1
+* @version 1.2
 * 
-* @date 09/11/2013
+* @date 14/11/2013
 *  
 */
 public class InstructionList {

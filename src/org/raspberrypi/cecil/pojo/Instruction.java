@@ -10,11 +10,11 @@ package org.raspberrypi.cecil.pojo;
 * The MIT License (MIT)
 * Copyright (c) 2013 Southampton University group GDP9
 * 
-* @authors Cathy Jin (cj8g10), Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+* @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10), Cathy Jin (cj8g10)
 * Southampton University, United Kingdom
-* @version 1.1
+* @version 1.2
 * 
-* @date 09/11/2013
+* @date 14/11/2013
 *  
 *
 * Instruction language reference:
@@ -292,7 +292,7 @@ package org.raspberrypi.cecil.pojo;
 */
 public class Instruction {
 
-	/**
+	/*
 	 * name, tool-tip description, machine code mnemonic fields
 	 */
 	private String name;
@@ -313,27 +313,24 @@ public class Instruction {
 	}
 	
 	/**
-	 * Getter method for this instruction's name
-	 * 
-	 * @return name: String
+	 * Gets instruction name
+	 * @return String name
 	 */
 	public String getName() {
 		return this.name;
 	}
 	
 	/**
-	 * Getter method for this instruction's tool-tip description
-	 * 
-	 * @return description: String
+	 * Gets an instruction's tool-tip description
+	 * @return String description
 	 */
 	public String getDescription() {
 		return this.description;
 	}
 	
 	/**
-	 * Getter method for this instruction's machine mnemonic code
-	 * 
-	 * @return mnemonic: int
+	 * Gets an instruction's machine mnemonic code
+	 * @return int mnemonic
 	 */
 	public int getMnemonic() {
 		return this.mnemonic;
