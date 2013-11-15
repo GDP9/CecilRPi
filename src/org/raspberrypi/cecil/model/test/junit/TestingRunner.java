@@ -16,24 +16,28 @@ import org.junit.runners.JUnit4;
 
 /**
  *
- * CECIL Compiler JUnit tests.
- * Performs JUnit assertion tests to Compiler.
- * Takes correct and incorrect input.
- * Uses JUnit4.
+ * CECIL Runner JUnit tests
+ * Performs JUnit assertion tests to Runner
+ * Takes correct input
+ * Uses JUnit4
  *
  * The MIT License (MIT)
  * Copyright (c) 2013 Southampton University group GDP9
- *
- * @authors Carolina Ferreira (cf4g09)
- * Southampton University, United Kingdom
- * @version 1.1
  * 
- * @date 11/11/2013
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+ * Southampton University, United Kingdom
+ * @version 1.2
+ * 
+ * @date 14/11/2013
  *
  */
 @RunWith (JUnit4.class)
 public class TestingRunner {
 
+	/**
+	 * Supplies a set of bitwise and algebraic instructions to be used in tests
+	 * @return ArrayList<String> bitwise_algebraic_Operators
+	 */
 	private ArrayList<String> getbitwise_algebraic_operators() {
 		ArrayList<String> bitwise_algebraic_Operators = new ArrayList<String>();
 		bitwise_algebraic_Operators.add("add");
@@ -44,6 +48,10 @@ public class TestingRunner {
 		return bitwise_algebraic_Operators;
 	}
 
+	/**
+	 * Supplies a set of instructions, which operate on the carry flag, to be used in tests
+	 * @return ArrayList<String> carryOperators
+	 */
 	private ArrayList<String> getCarryOperators(){
 		ArrayList<String> carryOperators = new ArrayList<String>();
 		carryOperators.add("cclear");
@@ -51,14 +59,17 @@ public class TestingRunner {
 		return carryOperators;
 	}
 
-
+	/**
+	 * Supplies a set of instructions, which operate on registers, to be used in tests
+	 * @return ArrayList<String> accOperators
+	 */
 	private ArrayList<String> getRegisterOperators(){
-		ArrayList<String> accOperators = new ArrayList<String>();
-		accOperators.add("xdec");
-		accOperators.add("xinc");
-		accOperators.add("ydec");
-		accOperators.add("yinc");
-		return accOperators;
+		ArrayList<String> regOperators = new ArrayList<String>();
+		regOperators.add("xdec");
+		regOperators.add("xinc");
+		regOperators.add("ydec");
+		regOperators.add("yinc");
+		return regOperators;
 	}
 
 	/**
@@ -203,13 +214,11 @@ public class TestingRunner {
 			//org.junit.Assert.assertEquals(negative, sim40.isNegativeFlag());
 			org.junit.Assert.assertEquals(zero, sim40.isZeroFlag());
 		}
-		//org.junit.Assert.assertEquals(0, (int)(sim40.getXReg().get(sim40.getXReg().size()-1)));
-
 	}
 
 	/**
-	 * Correct input used in compiler test.
-	 * @return Compiler object using correct input
+	 * Correct input used in Runner test
+	 * @return Runner object using correct input
 	 */
 	private Runner getCorrect(String op, String cOp, String regOp){
 		ArrayList<ArrayList<String>> userinput = new ArrayList<ArrayList<String>>();
@@ -287,8 +296,6 @@ public class TestingRunner {
 			input.add(";");
 			userinput.add(input);
 		}
-
-
 		Program program = new Program(userinput);
 		Model m = new Model();
 

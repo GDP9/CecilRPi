@@ -1,8 +1,6 @@
 .start load num1 ;
-      ;
-  xinc   ;
-  print   ;
+  add   ;
   printch   ;
-  printb   ;
-  stop   ;
 .num1 insert 63 ;
+.num2 insert 2 ;
+  stop   ;
