@@ -6,20 +6,28 @@ import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * CECIL assembly language Memory Model - Static final variables declaration
+ * CECIL assembly language Simulator
+ * Contains static final memory allocation variables (e.g. Accumulator address)
+ * Sets all variables used in the view with values retrieved from the model (e.g. Accumulator stack)
  * 
- * MIT Open Source License
- * @authors Shreeprabha Aggarwal (sa10g10), Carolina Ferreira (cf4g09)
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
  * Southampton University, United Kingdom
- * @version 1.1
+ * @version 1.2
  * 
- * @date 01/11/2013
+ * @date 14/11/2013
  *
  *  Memory Model :
- *
- *  accumulator : 1026
- *  x-reg : 1027
- *  y-reg : 1028
+ *  	accumulator address : 1026
+ *  	x-reg address: 1027
+ *  	y-reg address: 1028
+ *  	status address (flags): 1025
+ *  	memory length address: 1029
+ *  	stack pointers : 908,1006,1007
+ *  	program counter (used to track user input program): 1024 
+ *  
  */
 public class Simulator {
 
@@ -33,6 +41,7 @@ public class Simulator {
 	private boolean zeroFlag;
 	private boolean negativeFlag;
 	private boolean successCompile;
+	
 	/*
 	 * Model variables
 	 */
@@ -46,11 +55,15 @@ public class Simulator {
 	static final int STACK_END = 1006;
 	static final int STACK_PTR = 1007;
 
+	/*
+	 * Memory allocation addresses and user input program lines
+	 */ 
 	public int[] memory = new int[MEMORY_LENGTH]; 
 	public int[] lines = new int[MEMORY_LENGTH];
 
 	/**
-	 * Constuctor: initialse memory to store -1
+	 * Simulator constructor
+	 * Initializes all variables to default values and memory to store -1
 	 */
 	public Simulator() {
 		for(int i = 0 ; i < MEMORY_LENGTH; i++)
@@ -75,6 +88,12 @@ public class Simulator {
 
 	}
 
+	/**
+	 * Updates flag variables used in the view:
+	 * 	- Carry flag (2nd bit in STATUS_ADDRESS) - boolean carryFlag
+	 *  - Negative flag (1st bit in STATUS_ADDRESS) - boolean negativeFlag
+	 *  - Zero flag (0th bit in STATUS_ADDRESS) - boolean zeroFlag
+	 */
 	public void updateViewFlags() {
 
 		if( (memory[STATUS_ADDRESS] & (1<< 0)) == 0)
@@ -92,6 +111,9 @@ public class Simulator {
 
 	}
 
+	/**
+	 * Updates register variables used in view 
+	 */
 	public void updateViewRegisters() {
 		if(memory[XREG_ADDRESS] != xReg.get(xReg.size() - 1))
 			xReg.add(memory[XREG_ADDRESS]);
@@ -106,13 +128,17 @@ public class Simulator {
 	}
 
 	/**
-	 * Method to update the view variables
+	 * Updates all the view variables
 	 */
 	public void updateViewVars() {
 		this.updateViewFlags();
 		this.updateViewRegisters();
 	}
 
+	/**
+	 * Gets the line numbers of user input program and stores them in lines[]
+	 * @param Program object
+	 */
 	public void setLineNumbers(Program program) {
 		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
 			for(int j = 1; j <= 2; j++) {
@@ -125,113 +151,128 @@ public class Simulator {
 	}
 
 	/**
-	 * @return the xReg
+	 * Gets xReg stack
+	 * @return ArrayList<Integer> xReg
 	 */
 	public ArrayList<Integer> getXReg() {
 		return this.xReg;
 	}
 
 	/**
-	 * @param xReg the xReg to set
+	 * Sets the xReg stack
+	 * @param ArrayList<Integer> xReg
 	 */
 	public void setxReg(ArrayList<Integer> xReg) {
 		this.xReg = xReg;
 	}
 
 	/**
-	 * @return the yReg
+	 * Gets yReg stack
+	 * @return ArrayList<Integer> yReg
 	 */
 	public ArrayList<Integer> getYReg() {
 		return this.yReg;
 	}
 
 	/**
-	 * @param yReg the yReg to set
+	 * Sets the yReg stack
+	 * @param ArrayList<Integer> yReg
 	 */
 	public void setyReg(ArrayList<Integer> yReg) {
 		this.yReg = yReg;
 	}
 
 	/**
-	 * @return the acc
+	 * Gets accumulator stack
+	 * @return ArrayList<Integer> acc
 	 */
 	public ArrayList<Integer> getAcc() {
 		return this.acc;
 	}
 
 	/**
-	 * @param acc the acc to set
+	 * Sets the accumulator stack
+	 * @param ArrayList<Integer> acc
 	 */
 	public void setAcc(ArrayList<Integer> acc) {
 		this.acc = acc;
 	}
 
 	/**
-	 * @return the carryFlag
+	 * Gets the carryFlag boolean variable
+	 * @return boolean carryFlag
 	 */
 	public boolean isCarryFlag() {
 		return carryFlag;
 	}
 
 	/**
-	 * @param carryFlag the carryFlag to set
+	 * Sets the carryFlag boolean variable
+	 * @param boolean carryFlag 
 	 */
 	public void setCarryFlag(boolean carryFlag) {
 		this.carryFlag = carryFlag;
 	}
 
 	/**
-	 * @return the zeroFlag
+	 * Gets the zeroFlag boolean variable
+	 * @return boolean zeroFlag
 	 */
 	public boolean isZeroFlag() {
 		return zeroFlag;
 	}
 
 	/**
-	 * @param zeroFlag the zeroFlag to set
+	 * Sets the zeroFlag boolean variable
+	 * @param boolean zeroFlag 
 	 */
 	public void setZeroFlag(boolean zeroFlag) {
 		this.zeroFlag = zeroFlag;
 	}
 
 	/**
-	 * @return the negativeFlag
+	 * Gets the negativeFlag boolean variable
+	 * @return boolean zeroFlag
 	 */
 	public boolean isNegativeFlag() {
 		return negativeFlag;
 	}
 
 	/**
-	 * @param negativeFlag the negativeFlag to set
+	 * Sets the negativeFlag boolean variable
+	 * @param boolean zeroFlag 
 	 */
 	public void setNegativeFlag(boolean negativeFlag) {
 		this.negativeFlag = negativeFlag;
 	}
 
 	/**
-	 * @return the successCompile
+	 * Gets the isCompileSuccess boolean variable
+	 * @return boolean successCompile
 	 */
 	public boolean isCompileSuccess() {
 		return successCompile;
 	}
 
 	/**
-	 * @param successCompile the successCompile to set
+	 * Sets the successCompile boolean variable
+	 * @param boolean successCompile 
 	 */
 	public void setSuccessCompile(boolean successCompile) {
 		this.successCompile = successCompile;
 	}
 
 	/**
-	 * @return the memory
+	 * Gets the memory variable
+	 * @return int[] memory
 	 */
 	public int[] getMemory() {
 		return memory;
 	}
 
 	/**
-	 * 
-	 * @return stack pointer
+	 * Gets the STACK_PTR variable
+	 * @return in STAKC_PTR
 	 */
 	public static int getStackPtr() {
 		return STACK_PTR;
