@@ -9,7 +9,7 @@ import org.raspberrypi.cecil.pojo.Instruction;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * CECIL Application Model Interface
+ * CECIL Application ModelInterface
  * Implemented by Model.java
  * Contains methods to be called from Model.java by the Controller
  * 

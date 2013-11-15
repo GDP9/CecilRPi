@@ -23,9 +23,9 @@ import com.pi4j.io.gpio.RaspiPin;
  * MIT Open Source License
  * @author Cathy Jin (cj8g10), Shreeprabha Aggarwal (sa10g10)
  * Southampton University, United Kingdom
- * @version 1.1
+ * @version 1.2
  * 
- * @date 11/11/2013
+ * @date 14/11/2013
  *
  */
 public class Controller implements ControllerInterface {
