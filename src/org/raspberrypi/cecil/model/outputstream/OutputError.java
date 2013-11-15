@@ -1,46 +1,63 @@
 package org.raspberrypi.cecil.model.outputstream;
 
 /**
- * A cecil error is associated with a line number of the input editor and the error message
+ * CECIL Application OutputError
+ * Constitutes CECIL error associated with 
+ * 	- line number of the input editor
+ * 	- error message collected from Compiler, Runner, Lexer and Parser
  *  
- * @author sa10g10
+ * The MIT License (MIT)
+ * Copyright (c) 2013 Southampton University group GDP9
+ * 
+ * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+ * Southampton University, United Kingdom
+ * @version 1.2
+ * 
+ * @date 14/11/2013
+ * 
  */
 public class OutputError {
 
-	/**
-	 * Private Variables
-	 */
 	private int line;
 	private String message;
 	
+	/**
+	 * OutputError parametric constructor
+	 * @param int line number of input editor
+	 * @param String error message
+	 */
 	public OutputError(int line, String message){
 		this.line=line;
 		this.message = message;
 	}
 	
 	/**
-	 * @return the line
+	 * Gets the line number in the user input program
+	 * @return int line number
 	 */
 	public int getLine() {
 		return line;
 	}
 	
 	/**
-	 * @param line the line to set
+	 * Sets the line number in the input user program
+	 * @param int line number
 	 */
 	public void setLine(int line) {
 		this.line = line;
 	}
 	
 	/**
-	 * @return the message
+	 * Gets the error message collected from the Compiler, Runner, Lexer and Parser
+	 * @return String error message
 	 */
 	public String getMessage() {
 		return message;
 	}
 	
 	/**
-	 * @param message the message to set
+	 * Sets the error message 
+	 * @param String error message
 	 */
 	public void setMessage(String message) {
 		this.message = message;
