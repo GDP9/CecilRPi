@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.raspberrypi.cecil.model.test.manual;
 
 import java.io.BufferedReader;
@@ -12,13 +9,27 @@ import java.util.ArrayList;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.pojo.Program;
 
+
 /**
- * @author Shreeprabha
- *
- */
+*
+* CECIL ProgramFileConverter model manual tests
+* Tests to the Program File Converter functionality
+*
+* The MIT License (MIT)
+* Copyright (c) 2013 Southampton University group GDP9
+* 
+* @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+* Southampton University, United Kingdom
+* @version 1.2
+* 
+* @date 14/11/2013
+*
+*/
 public class ProgramFileConverter {
 
 	/**
+	 * Main method to execute manual test
+	 * Takes in incorrect and correct program input from TestInput.java
 	 * @param args
 	 */
 	public static void main(String[] args) {

@@ -1,19 +1,32 @@
-/**
- * 
- */
 package org.raspberrypi.cecil.model.test.manual;
 
 import java.util.ArrayList;
 
 /**
- * @author Shreeprabha
- *
- */
+*
+* CECIL TestInput model manual tests
+* Tests are supplied to ProgramFileConverter.java 
+* Produces Incorrect and correct inputs
+*
+* The MIT License (MIT)
+* Copyright (c) 2013 Southampton University group GDP9
+* 
+* @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
+* Southampton University, United Kingdom
+* @version 1.2
+* 
+* @date 14/11/2013
+*
+*/
 public class TestInput {
 	
 	private ArrayList<ArrayList<String>> correctInput;
 	private ArrayList<ArrayList<String>> incorrectInput;
 	
+	/**
+	 * TestInput constructor
+	 * Sets incorrect and correct program inputs to be used by ProgramFileConverter.java 
+	 */
 	public TestInput() {
 		incorrectInput = new ArrayList<ArrayList<String>>();
 		correctInput = new ArrayList<ArrayList<String>>();
@@ -92,10 +105,18 @@ public class TestInput {
 		incorrectInput.add(input);
 	}
 	
+	/**
+	 * Gets the correct program input
+	 * @return ArrayList<ArrayList<String>> correctInput
+	 */
 	public ArrayList<ArrayList<String>> getCorrectInput() {
 		return this.correctInput;
 	}
 	
+	/**
+	 * Gets the incorrect program input
+	 * @return ArrayList<ArrayList<String>> incorrectInput
+	 */
 	public ArrayList<ArrayList<String>> getIncorrectInput() {
 		return this.incorrectInput;
 	}

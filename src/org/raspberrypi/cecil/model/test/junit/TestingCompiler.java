@@ -12,13 +12,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 /**
  *
  * CECIL Compiler JUnit tests
  * Performs JUnit assertion tests to Compiler
  * Takes correct and incorrect input
- * Uses JUnit4.
+ * Uses JUnit4
  *
  * The MIT License (MIT)
  * Copyright (c) 2013 Southampton University group GDP9
