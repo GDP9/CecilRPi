@@ -32,7 +32,7 @@ public interface ControllerInterface {
 	/**
 	 * Notify the controller that the step through button has been clicked.
 	 */
-	public void stepThroughClicked();
+	public void stepThroughClicked(int line);
 	
 	/**
 	 * Notify the controller that a file has been opened.
@@ -45,4 +45,12 @@ public interface ControllerInterface {
 	 * @param code An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
 	 */
 	public void saveToFile(ArrayList<ArrayList<String>> code, String filename);
+	
+	/**
+	 * Notify the controller that the use io checkbox has been clicked.
+	 * 
+	 * @param ioPortsEnabled State of the checkbox.
+	 */
+	public void ioCheckClicked(boolean ioPortsEnabled);
+
 }

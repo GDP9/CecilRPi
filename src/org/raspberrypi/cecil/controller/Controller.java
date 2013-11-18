@@ -181,7 +181,8 @@ public class Controller implements ControllerInterface {
 	}
 
 	@Override
-	public void stepThroughClicked() {
+	public void stepThroughClicked(int line) {
+		//Check if line is -1
 		view.highlightStepThrough(model.stepThrough());
 		this.setViewOutput();
 	}
@@ -383,5 +384,11 @@ public class Controller implements ControllerInterface {
 			File file = model.programToFile(program, filename);
 			view.setFilename(file.getName());
 		}
+	}
+	
+	@Override
+	public void ioCheckClicked(boolean ioPortsEnabled) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

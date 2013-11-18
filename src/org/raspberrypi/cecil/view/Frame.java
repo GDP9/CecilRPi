@@ -4,6 +4,7 @@ import java.awt.ItemSelectable;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -149,6 +150,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JMenu fileMenu;
 	private JMenu settingsMenu;
 	private JMenu helpMenu;
+	private JMenu ioMenu;
 	private JMenuItem menuNew;
 	private JMenuItem menuOpen;
 	private JMenuItem menuSave;
@@ -160,11 +162,12 @@ public class Frame extends JFrame implements ViewInterface {
 
 	//Misc
 	private JTextField input;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	private FontUIResource currentFont;
 	private ArrayList<ArrayList<String>> currentProgram;
 	private Color[] currentTheme;
 	private ArrayList<OutputError> errors;
+	private boolean ioPortsEnabled;
 
 	/**
 	 * Creates the view with default fonts, colours, and values.
@@ -354,6 +357,45 @@ public class Frame extends JFrame implements ViewInterface {
 		helpMenu.add(menuDocumentation);
 		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
+		
+		ioMenu = new JMenu("Use IO ports");
+		ioPortsEnabled = false;
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+			ioMenu.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			System.out.println("Error creating buttons: could not set button icon");
+		}
+		ioMenu.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ioMenu.requestFocus();
+				try {
+					ioPortsEnabled = !ioPortsEnabled;
+					if (ioPortsEnabled) {
+						Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
+						ioMenu.setIcon(new ImageIcon(img));
+					} else {
+						Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+						ioMenu.setIcon(new ImageIcon(img));
+					}
+					ioMenu.setSelected(false);
+					onIOCheckClicked();
+				} catch (IOException e1) {
+					System.out.println("Error creating buttons: could not set button icon");
+				}
+			}
+		});
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(ioMenu);
 
 		setJMenuBar(menuBar);
 
@@ -1076,6 +1118,7 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu.setFont(currentFont);
 		settingsMenu.setFont(currentFont);
 		helpMenu.setFont(currentFont);
+		ioMenu.setFont(currentFont);
 		menuNew.setFont(currentFont);
 		menuOpen.setFont(currentFont);
 		menuSave.setFont(currentFont);
@@ -1277,7 +1320,7 @@ public class Frame extends JFrame implements ViewInterface {
 	 * Notifies the controller that the step through button has been clicked.
 	 */
 	private void onStepThroughClicked()  {
-		controller.stepThroughClicked() ;
+		controller.stepThroughClicked(tblInput.getSelectedRow());
 	}
 
 	/**
@@ -1368,6 +1411,13 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 	}
 
+	/**
+	 * Notify the controller of the new IO port checkbox state.
+	 */
+	private void onIOCheckClicked() {
+		controller.ioCheckClicked(ioPortsEnabled);
+	}
+	
 	/**
 	 * Loads a program into the input editor.
 	 * 
@@ -1638,6 +1688,5 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		repaint();
 	}
-
 
 }
