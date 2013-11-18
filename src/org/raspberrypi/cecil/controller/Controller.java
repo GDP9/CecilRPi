@@ -171,6 +171,22 @@ public class Controller implements ControllerInterface {
 
 		line = new ArrayList<String>();
 		
+		line.add(" ");
+		line.add("printch");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		
+		line.add(" ");
+		line.add("stop");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+		
+		line = new ArrayList<String>();
+		
 		line.add(".num1");
 		line.add("insert");
 		line.add("60");
@@ -184,24 +200,6 @@ public class Controller implements ControllerInterface {
 		line.add("5");
 		line.add(";");
 		program.add(line);
-
-		line = new ArrayList<String>();
-		
-		line.add(" ");
-		line.add("printch");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		
-		line.add(" ");
-		line.add("stop");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
 		
 		return program;
 	}

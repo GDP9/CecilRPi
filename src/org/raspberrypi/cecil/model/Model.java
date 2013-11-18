@@ -109,18 +109,26 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 */
 	@Override
 	public void run() {
-		if(ptr==0 && isCompileClicked()){
-			setCompileClicked(false);
+
+
+		if(ptr==0){
+			this.runner = new Runner(this.compiler);
+			if(isCompileClicked()){
+				setCompileClicked(false);
+			}
+			else{
+				refreshOutputs();
+			}
 			this.setViewToDefault();
 		}
-		else if(ptr==0 && !isCompileClicked()){
-			this.setViewToDefault();
-			refreshOutputs();
-		}
+		else
+			this.runner= new Runner(this.compiler,this.sim40);
+
 		this.runner.run(ptr);
 		this.sim40 = this.runner.getSimulator();
 		this.errorStream = this.runner.getErrorStream();
 		this.stdStream = this.runner.getStdStream();
+		ptr = 0;
 	}
 
 	/**
@@ -129,13 +137,22 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 */
 	@Override
 	public int stepThrough() {
-		if(ptr==0 && isCompileClicked() && isCompileSuccess()){
-			setCompileClicked(false);
-			this.setViewToDefault();
+
+		if(ptr==0){
+			if(isCompileClicked()){
+				setCompileClicked(false);
+				this.setViewToDefault();
+			}
+			else{
+				refreshOutputs();
+				this.setViewToDefault();
+			}
+			this.runner = new Runner(this.compiler);
 		}
-		else if(ptr==0 && !isCompileClicked() && isCompileSuccess())
-			refreshOutputs();
-		
+		else{
+			this.runner = new Runner(this.compiler, this.sim40);
+		}
+
 		ptr = this.runner.stepthrough(ptr);
 		if(ptr == -1) ptr = 0;
 		this.sim40 = this.runner.getSimulator();
@@ -156,8 +173,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 		this.compiler = new Compiler(file.getAbsolutePath(), program);
 		this.sim40 = this.compiler.getSimulator();
 		this.errorStream = this.compiler.getErrorStream();
-		this.stdStream = this.compiler.getStdStream();
-		this.runner = new Runner(this.compiler);	
+		this.stdStream = this.compiler.getStdStream();	
 	}
 
 	/**
@@ -221,7 +237,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 * Sets the Simulator to initiation values
 	 */
 	public void setViewToDefault(){
-		sim40 = new Simulator();
+		this.sim40 = new Simulator();
 	}
 
 	/**
@@ -376,7 +392,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	public void setErrorStream(ErrorOutputStream stream){
 		this.errorStream = stream;
 	}
-	
+
 	/**
 	 * gets the ErrorOutputStream object
 	 * @return ErrorOutputStream object

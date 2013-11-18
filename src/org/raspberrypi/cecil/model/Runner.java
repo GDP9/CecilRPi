@@ -35,10 +35,25 @@ public class Runner {
 	 */
 	public Runner(Compiler compiler) {
 		this.compiler = compiler;
-		this.sim40 = compiler.getSimulator();
+		this.sim40 = new Simulator();
+		this.sim40.memory = compiler.getSimulator().getMemory();
+		this.sim40.lines = compiler.getSimulator().lines;
 		this.errorStream = new ErrorOutputStream();
 		this.stdStream = new StandardOutputStream();
 	}
+	
+	/**
+	 * Runner Parametric constructor
+	 * Initalises Simulator, ErrorOutputStream and StandardOutputStream
+	 * @param Simulator object
+	 */
+	public Runner(Compiler compiler , Simulator sim40) {
+		this.compiler = compiler;
+		this.sim40 = sim40;
+		this.errorStream = new ErrorOutputStream();
+		this.stdStream = new StandardOutputStream();
+	}
+
 
 	/**
 	 * gets Simulator object
