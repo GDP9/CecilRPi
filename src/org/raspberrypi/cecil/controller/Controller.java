@@ -65,7 +65,7 @@ public class Controller implements ControllerInterface {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = new ArrayList<String>();
 
-		line.add(".start");
+		/*line.add(".start");
 		line.add("load");
 		line.add("num1");
 		line.add(";");
@@ -153,8 +153,56 @@ public class Controller implements ControllerInterface {
 		line.add("insert");
 		line.add("2");
 		line.add(";");
+		program.add(line);*/
+
+		line.add(".start");
+		line.add("load");
+		line.add("num1");
+		line.add(";");
 		program.add(line);
 
+		line = new ArrayList<String>();
+		
+		line.add(" ");
+		line.add("add");
+		line.add("num2");
+		line.add(";");
+		program.add(line);
+
+		line = new ArrayList<String>();
+		
+		line.add(".num1");
+		line.add("insert");
+		line.add("60");
+		line.add(";");
+		program.add(line);
+
+		line = new ArrayList<String>();
+		
+		line.add(".num2");
+		line.add("insert");
+		line.add("5");
+		line.add(";");
+		program.add(line);
+
+		line = new ArrayList<String>();
+		
+		line.add(" ");
+		line.add("printch");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+
+		line = new ArrayList<String>();
+		
+		line.add(" ");
+		line.add("stop");
+		line.add(" ");
+		line.add(";");
+		program.add(line);
+
+		line = new ArrayList<String>();
+		
 		return program;
 	}
 
