@@ -231,14 +231,20 @@ public class Frame extends JFrame implements ViewInterface {
 		 */
 		menuBar = new BackgroundMenuBar();
 
-		ImageIcon icon = new ImageIcon(getClass().getResource("/resources/cecil_title.png").getPath());
-		JMenuItem iconItem = new JMenuItem();
-		iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
-		iconItem.setIcon(icon);
-		Dimension iconSize = new Dimension(170, 120);
-		iconItem.setMaximumSize(iconSize);
-		iconItem.setMinimumSize(iconSize);
-		menuBar.add(iconItem);
+		try {
+			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
+			ImageIcon icon = new ImageIcon(img);
+			JMenuItem iconItem = new JMenuItem();
+			iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
+			iconItem.setOpaque(false);
+			iconItem.setIcon(icon);
+			Dimension iconSize = new Dimension(170, 120);
+			iconItem.setMaximumSize(iconSize);
+			iconItem.setMinimumSize(iconSize);
+			menuBar.add(iconItem);
+		} catch (IOException e1) {
+			System.out.println("Error creating logo: could not set logo image");
+		}
 		repaint();
 
 		fileMenu = new JMenu("File");
