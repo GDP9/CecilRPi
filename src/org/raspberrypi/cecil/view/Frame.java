@@ -1314,6 +1314,7 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	private void onRunClicked() {
 		controller.runClicked();
+		tblInput.clearSelection();
 	}
 
 	/**
