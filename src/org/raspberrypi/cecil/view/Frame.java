@@ -93,10 +93,10 @@ public class Frame extends JFrame implements ViewInterface {
 	private static final int WIDTH = 1100;
 	private static final int HEIGHT = 750;
 
-	private static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
-	private static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
-	private static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
-	private static final Color[] DEFAULT_THEME = null;
+	public static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
+	public static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
+	public static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
+	public static final Color[] DEFAULT_THEME = null;
 
 	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
@@ -766,19 +766,31 @@ public class Frame extends JFrame implements ViewInterface {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_ENTER:
 					mdlInput.insertRow(tblInput.getSelectedRow()+1, new Object[] {0, "", "", "",";"});
+					if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+						setButtonsEnabled(false);
+					}
 					break;
 				case KeyEvent.VK_BACK_SPACE:
 					if (selectedRow > 0) {
 						mdlInput.removeRow(selectedRow);
+						if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+							setButtonsEnabled(false);
+						}
 						tblInput.setRowSelectionInterval(selectedRow-1, selectedRow-1);
 						tblInput.getCellEditor().cancelCellEditing();
 					} else if (selectedRow == 0 && selectedRow+1 == tblInput.getRowCount()){
 						mdlInput.removeRow(selectedRow);
+						if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+							setButtonsEnabled(false);
+						}
 						mdlInput.addRow(new Object[] {0, "", "", "", ";"});
 						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
 						tblInput.getCellEditor().cancelCellEditing();
 					} else if (selectedRow == 0 && selectedRow+1 < tblInput.getRowCount()) {
 						mdlInput.removeRow(selectedRow);
+						if (currentProgram != null && !currentProgram.equals(getProgramCode())) {
+							setButtonsEnabled(false);
+						}
 						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
 						tblInput.getCellEditor().cancelCellEditing();
 					}

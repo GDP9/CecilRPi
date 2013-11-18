@@ -2,6 +2,10 @@ package org.raspberrypi.cecil.view;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.colorchooser.*;
 import javax.swing.text.*;
 
@@ -11,7 +15,7 @@ import java.awt.peer.FontPeer;
 
 public class FontChooser extends JDialog {
 
-	Color panelcolour = new Color(255, 148, 82);
+	Color panelcolour;
 	JComboBox fontName;
 	JComboBox fontSize;
 	JLabel sampleText;
@@ -27,9 +31,11 @@ public class FontChooser extends JDialog {
 	JRadioButton medium;
 	JRadioButton large;
 	Frame frame;
+	LineBorder border;
 
 	public FontChooser(Frame frame) {
 		this.frame = frame;
+		panelcolour = frame.ORANGE_THEME[0];
 		// super(parent, "Font Chooser", true);
 		setSize(350, 350);
 		setFrame();
@@ -46,7 +52,8 @@ public class FontChooser extends JDialog {
 	private void setFrame() {
 		getContentPane().setLayout(new GridBagLayout());
 		getContentPane().setBackground(panelcolour);
-
+		setTitle("Preferences");
+		
 		fontPanel = new JPanel();
 		 ActionListener fontsize = new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
@@ -55,10 +62,10 @@ public class FontChooser extends JDialog {
 			  };
 		 ButtonGroup bg = new ButtonGroup();
 		small = new JRadioButton("Small");
-		small.setSelected(true);
 		small.setFont(new Font("Arial", Font.PLAIN, 12));
 		small.addActionListener(fontsize);
 		medium = new JRadioButton("Medium");
+		medium.setSelected(true);
 		medium.setFont(new Font("Arial", Font.PLAIN, 18));
 		medium.addActionListener(fontsize);
 		large = new JRadioButton("Large");
@@ -91,6 +98,8 @@ public class FontChooser extends JDialog {
 		gbc_fontlabel.weightx = 1;
 		gbc_fontlabel.weighty = 0;
 		fontPreview.add(sampleText, gbc_fontlabel);
+		border = new LineBorder(frame.ORANGE_THEME[0], 3, true);
+		fontPreview.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), new TitledBorder(null, "Font", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 
 		colourName = new JComboBox(new String[] { "Green", "Orange", "Blue",
 				"Default" });
@@ -102,10 +111,12 @@ public class FontChooser extends JDialog {
 		});
 		colourPreview = new JPanel(new BorderLayout());
 		image = new JTextArea();
-		image.setBackground(new Color(255, 230, 214));
+		image.setBackground(frame.ORANGE_THEME[2]);
 		image.setEditable(false);
 		colourPreview.add(colourName, BorderLayout.NORTH);
 		colourPreview.add(image, BorderLayout.CENTER);
+		colourPreview.setOpaque(false);
+		colourPreview.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 10), new TitledBorder(null, "Colour", TitledBorder.LEADING, TitledBorder.TOP, null, null)), new EmptyBorder(10, 10, 10, 10)));
 
 		GridBagConstraints gbc_font = new GridBagConstraints();
 		gbc_font.fill = GridBagConstraints.BOTH;
@@ -160,7 +171,7 @@ public class FontChooser extends JDialog {
 		small.setBackground(panelcolour);
 		medium.setBackground(panelcolour);
 		large.setBackground(panelcolour);
-
+		repaint();
 	}
 
 	/* updates the sample text to the new font */
@@ -195,20 +206,38 @@ public class FontChooser extends JDialog {
 	protected void updateColour() {
 		// Image will be shown here.
 		if (colourName.getSelectedIndex() == 1) {
-			image.setBackground(new Color(255, 230, 214));
-			panelcolour = new Color(255, 148, 82);
+//			image.setBackground(new Color(255, 230, 214));
+//			panelcolour = new Color(255, 148, 82);
+//			newColor = "Orange";
+			
+//			LineBorder lineBorder = new LineBorder(frame.ORANGE_THEME[1], 2, true);
+			image.setBackground(frame.ORANGE_THEME[2]);
+			panelcolour = frame.ORANGE_THEME[0];
+			UIManager.put("TitledBorder.border", new LineBorder(frame.ORANGE_THEME[1], 3, true));
 			newColor = "Orange";
 		} else if (colourName.getSelectedIndex() == 0) {
-			image.setBackground(new Color(191, 252, 172));
-			panelcolour = new Color(6, 209, 46);
+//			image.setBackground(new Color(191, 252, 172));
+//			panelcolour = new Color(6, 209, 46);
+			
+			image.setBackground(frame.GREEN_THEME[2]);
+			panelcolour = frame.GREEN_THEME[0];
+			UIManager.put("TitledBorder.border", new LineBorder(frame.GREEN_THEME[1], 3, true));
 			newColor = "Green";
 		} else if (colourName.getSelectedIndex() == 2) {
-			image.setBackground(new Color(152, 221, 255));
-			panelcolour = new Color(67, 178, 233);
+//			image.setBackground(new Color(152, 221, 255));
+//			panelcolour = new Color(67, 178, 233);
+			
+			image.setBackground(frame.BLUE_THEME[2]);
+			panelcolour = frame.BLUE_THEME[0];
+			UIManager.put("TitledBorder.border", new LineBorder(frame.BLUE_THEME[1], 3, true));
 			newColor = "Blue";
 		} else if (colourName.getSelectedIndex() == 3) {
-			image.setBackground(new Color(224, 224, 224));
-			panelcolour = new Color(224, 224, 224);
+//			image.setBackground(new Color(224, 224, 224));
+//			panelcolour = new Color(224, 224, 224);
+			
+			image.setBackground(Color.WHITE);
+			panelcolour = UIManager.getColor("Panel.background");
+			UIManager.put("TitledBorder.border", new EtchedBorder());
 			newColor = "Default";
 		}
 		setColour();
