@@ -230,13 +230,14 @@ public class Frame extends JFrame implements ViewInterface {
 		 * Menu bar
 		 */
 		menuBar = new BackgroundMenuBar();
-
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
 			ImageIcon icon = new ImageIcon(img);
-			JMenuItem iconItem = new JMenuItem();
+			JMenu iconItem = new JMenu();
 			iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
 			iconItem.setOpaque(false);
+			iconItem.setEnabled(false);
+			iconItem.setDisabledIcon(icon);
 			iconItem.setIcon(icon);
 			Dimension iconSize = new Dimension(170, 120);
 			iconItem.setMaximumSize(iconSize);
@@ -789,7 +790,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		memoryScroll.setOpaque(true);
+		memoryScroll.setOpaque(false);
 
 		GridBagConstraints gbc_south_table = new GridBagConstraints();
 		gbc_south_table.fill = GridBagConstraints.BOTH;
