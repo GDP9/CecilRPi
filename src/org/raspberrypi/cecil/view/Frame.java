@@ -216,8 +216,9 @@ public class Frame extends JFrame implements ViewInterface {
 		gridBagLayout.rowHeights = new int[] {0, 0, 0};
 		getContentPane().setLayout(gridBagLayout);
 		setTitle("CECIL");
-		if(System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm"))
-		setTitle("CECILRPi");
+		if (System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm")) {
+			setTitle("CECIL RPi");
+		}
 
 		if (instructionList == null) {
 			//Default instructions
@@ -252,6 +253,7 @@ public class Frame extends JFrame implements ViewInterface {
 		repaint();
 
 		fileMenu = new JMenu("File");
+		fileMenu.setToolTipText("File");
 		fileMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -307,6 +309,7 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu.add(menuExit);
 
 		settingsMenu = new JMenu("Settings");
+		settingsMenu.setToolTipText("Settings");
 		settingsMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -333,6 +336,7 @@ public class Frame extends JFrame implements ViewInterface {
 		settingsMenu.add(menuPreferences);
 
 		helpMenu = new JMenu("Help");
+		helpMenu.setToolTipText("Help");
 		helpMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -358,7 +362,8 @@ public class Frame extends JFrame implements ViewInterface {
 		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
 		
-		ioMenu = new JMenu("Use IO ports");
+		ioMenu = new JMenu("Output to IO ports");
+		ioMenu.setToolTipText("Check to enable output to physical IO ports (only available on Raspberry Pi)");
 		ioPortsEnabled = false;
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
@@ -378,19 +383,21 @@ public class Frame extends JFrame implements ViewInterface {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				ioMenu.requestFocus();
-				try {
-					ioPortsEnabled = !ioPortsEnabled;
-					if (ioPortsEnabled) {
-						Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
-						ioMenu.setIcon(new ImageIcon(img));
-					} else {
-						Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
-						ioMenu.setIcon(new ImageIcon(img));
+				if (ioMenu.isEnabled()) {
+					try {
+						ioPortsEnabled = !ioPortsEnabled;
+						if (ioPortsEnabled) {
+							Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
+							ioMenu.setIcon(new ImageIcon(img));
+						} else {
+							Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+							ioMenu.setIcon(new ImageIcon(img));
+						}
+						ioMenu.setSelected(false);
+						onIOCheckClicked();
+					} catch (IOException e1) {
+						System.out.println("Error creating buttons: could not set button icon");
 					}
-					ioMenu.setSelected(false);
-					onIOCheckClicked();
-				} catch (IOException e1) {
-					System.out.println("Error creating buttons: could not set button icon");
 				}
 			}
 		});
@@ -1700,6 +1707,11 @@ public class Frame extends JFrame implements ViewInterface {
 			((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitle("Program - Untitled");
 		}
 		repaint();
+	}
+
+	@Override
+	public void setIOEnabled(boolean isEnabled) {
+		ioMenu.setEnabled(isEnabled);
 	}
 
 }

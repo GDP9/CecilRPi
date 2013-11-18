@@ -118,5 +118,18 @@ public interface ViewInterface {
 	 */
 	public void clearVisualisations();
 	
+	/**
+	 * Highlight the given line for the step through.
+	 * 
+	 * @param currNo Line to highlight.
+	 */
 	public void highlightStepThrough(int currNo); 
+	
+	/**
+	 * Set the state of the IO port checkbox to be enabled or disabled.
+	 * The state should be disabled unless the application is running on a Raspberry Pi.
+	 * 
+	 * @param isEnabled The state to be displayed.
+	 */
+	public void setIOEnabled(boolean isEnabled);
 }

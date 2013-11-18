@@ -55,6 +55,8 @@ public class Controller implements ControllerInterface {
 
 		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
+		
+		view.setIOEnabled(System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm"));
 	}
 
 	/**
