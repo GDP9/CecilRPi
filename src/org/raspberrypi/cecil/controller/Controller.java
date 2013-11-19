@@ -31,6 +31,8 @@ import com.pi4j.io.gpio.RaspiPin;
 public class Controller implements ControllerInterface {
 	private Frame view;
 	private Model model;
+	private boolean usingRPi;
+	private boolean sendToIO;
 
 	/**
 	 * Launches the application by creating a new CecilController.
@@ -56,7 +58,9 @@ public class Controller implements ControllerInterface {
 		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
 		
-		view.setIOEnabled(System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm"));
+		sendToIO = false;
+		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
+		view.setIOEnabled(usingRPi);
 	}
 
 	/**
@@ -218,7 +222,6 @@ public class Controller implements ControllerInterface {
 			this.setViewOutput();
 			view.setConsoleError(model.getErrorStream().getErrors());
 		}
-
 	}
 
 	@Override
@@ -226,6 +229,9 @@ public class Controller implements ControllerInterface {
 		//model.setToDefault();
 		model.run();
 		this.setViewOutput();
+		if (sendToIO) {
+			sendOutputToGPIO();
+		}
 	}
 
 	@Override
@@ -233,6 +239,9 @@ public class Controller implements ControllerInterface {
 		//Check if line is -1
 		view.highlightStepThrough(model.stepThrough());
 		this.setViewOutput();
+		if (sendToIO) {
+			sendOutputToGPIO();
+		}
 	}
 
 	/**
@@ -436,7 +445,8 @@ public class Controller implements ControllerInterface {
 	
 	@Override
 	public void ioCheckClicked(boolean ioPortsEnabled) {
-		// TODO Auto-generated method stub
-		
-	}	
+		if (ioPortsEnabled && usingRPi) {
+			sendToIO = ioPortsEnabled;
+		}
+	}
 }
