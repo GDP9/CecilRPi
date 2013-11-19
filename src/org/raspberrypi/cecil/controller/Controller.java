@@ -33,6 +33,7 @@ public class Controller implements ControllerInterface {
 	private Model model;
 	private boolean usingRPi;
 	private boolean sendToIO;
+	private int previousLine;
 
 	/**
 	 * Launches the application by creating a new CecilController.
@@ -236,8 +237,15 @@ public class Controller implements ControllerInterface {
 
 	@Override
 	public void stepThroughClicked(int line) {
-		//Check if line is -1
-		view.highlightStepThrough(model.stepThrough());
+		int lineNo = model.stepThrough();
+		System.out.println(lineNo);
+		if (lineNo < 1) {
+			view.highlightStepThrough(previousLine+1);
+		} else {
+			previousLine = lineNo;
+			view.highlightStepThrough(lineNo);
+		}
+		
 		this.setViewOutput();
 		if (sendToIO) {
 			sendOutputToGPIO();
