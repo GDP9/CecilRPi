@@ -110,7 +110,6 @@ public class Model implements ModelInterface, SimulatorInterface {
 	@Override
 	public void run() {
 
-
 		if(ptr==0){
 			this.runner = new Runner(this.compiler);
 			if(isCompileClicked()){

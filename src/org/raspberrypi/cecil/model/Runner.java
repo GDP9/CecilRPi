@@ -70,6 +70,7 @@ public class Runner {
 	 * @return next line number
 	 */
 	public int stepthrough(int i) {
+		System.out.println("i "+i+"  mem "+sim40.memory[i]);
 		switch(sim40.memory[i]) {
 
 		case 0: return -1;
@@ -109,6 +110,7 @@ public class Runner {
 	 */
 	public void run(int i) {
 		while(sim40.memory[i] != -1) {	
+			System.out.println("i "+i+"  mem "+sim40.memory[i]);
 			switch(sim40.memory[i]) {
 
 			case 0: return;
@@ -182,23 +184,34 @@ public class Runner {
 			break;
 
 		case 27: /* jineg */
-			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 1)
+			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 2) {
+				System.out.println("rhrehwrh");
 				i = sim40.memory[i+1];
+				
+			}
+			else 
+				i = i+2;
 			break;
 
 		case 28 : /* jipos */
 			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
 				i = sim40.memory[i+1];
+			else 
+				i = i+2;
 			break;
 
 		case 29: /* jizero */
 			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 1))
 				i = sim40.memory[i+1];
+			else 
+				i = i+2;
 			break;
 
 		case 31: /* jicarry */
-			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 1))
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 4))
 				i = sim40.memory[i+1];
+			else 
+				i = i+2;
 			break;
 		}
 		return i;
@@ -326,9 +339,11 @@ public class Runner {
 
 			break;
 		case 32: /* xload */
-			if(checkInsert(i))	
+			
+			if(checkInsert(i))	{
 				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[sim40.memory[++i]];
-
+				i++;
+			}
 			else 
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 			break;
@@ -353,8 +368,10 @@ public class Runner {
 			break;
 
 		case 36: /* yload */
-			if(checkInsert(i))	
-				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[sim40.memory[++i]];
+			if(checkInsert(i))	{
+				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[sim40.memory[++i]]; 
+				i++;
+			}
 			else 
 				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
