@@ -157,9 +157,8 @@ public class Frame extends JFrame implements ViewInterface {
 	private JMenuItem menuSave;
 	private JMenuItem menuExit;
 	private JMenuItem menuPreferences;
-	private JMenuItem menuWelcome;
 	private JMenuItem menuAbout;
-	private JMenuItem menuDocumentation;
+	private JMenuItem menuUserManual;
 
 	//Misc
 	private JTextField input;
@@ -354,13 +353,10 @@ public class Frame extends JFrame implements ViewInterface {
 		});
 		menuBar.add(helpMenu);
 
-		menuWelcome = new JMenuItem("Welcome");
-		menuDocumentation = new JMenuItem("Documentation");
+		menuUserManual = new JMenuItem("User Manual");
 		menuAbout = new JMenuItem("About CECIL");
 
-		helpMenu.add(menuWelcome);
-		helpMenu.add(menuDocumentation);
-		helpMenu.addSeparator();
+		helpMenu.add(menuUserManual);
 		helpMenu.add(menuAbout);
 		
 		ioMenu = new JMenu("Output to IO ports");
@@ -1144,8 +1140,7 @@ public class Frame extends JFrame implements ViewInterface {
 		menuSave.setFont(currentFont);
 		menuExit.setFont(currentFont);
 		menuPreferences.setFont(currentFont);
-		menuWelcome.setFont(currentFont);
-		menuDocumentation.setFont(currentFont);
+		menuUserManual.setFont(currentFont);
 		menuAbout.setFont(currentFont);
 
 		((TitledBorder)((CompoundBorder) flagPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
