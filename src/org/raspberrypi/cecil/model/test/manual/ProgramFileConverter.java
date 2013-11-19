@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.pojo.Program;
 
@@ -36,7 +37,8 @@ public class ProgramFileConverter {
 
 		Program program = new Program((new TestInput()).getCorrectInput());
 
-		Model model = new Model();
+		Controller controller = new Controller();
+		Model model = new Model(controller);
 		File file = model.programToFile(program, "test.cecil");
 
 		try {

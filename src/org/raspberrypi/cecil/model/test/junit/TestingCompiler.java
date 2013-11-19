@@ -102,10 +102,9 @@ public class TestingCompiler {
 		//		userinput.add(input);
 
 		Program program = new Program(userinput);
-		Model m = new Model();
+		Model m = new Model(new Controller());
 
 		File sample  = m.programToFile(program, "sample.cecil");
-		Controller control = new Controller();
 		Compiler c = null;
 		c = new Compiler(sample.getAbsolutePath(), program);
 		return c;
@@ -175,7 +174,7 @@ public class TestingCompiler {
 		userinput.add(input);
 
 		Program program = new Program(userinput);
-		Model m = new Model();
+		Model m = new Model(new Controller());
 
 		File sample  = m.programToFile(program, "sample.cecil");
 		Controller control = new Controller();

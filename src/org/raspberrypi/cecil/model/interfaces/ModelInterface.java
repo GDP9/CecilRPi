@@ -45,6 +45,10 @@ public interface ModelInterface {
 	public boolean isBinaryInstruction(String name);
 	public boolean isInstruction(String name);
 	
+	public void updateLine();
+	public boolean isProgramTerminated();
+	public void setIsProgramTerminated(boolean isEnabled);
+	public void resetPtrs();
 	/*
 	 * Calls on input editor converter
 	 */

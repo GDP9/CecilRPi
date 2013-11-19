@@ -54,11 +54,11 @@ public class Controller implements ControllerInterface {
 	 */
 	public Controller() {
 		view = new Frame(this);		
-		model = new Model();
+		model = new Model(this);
 
 		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
-		
+
 		sendToIO = false;
 		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
 		view.setIOEnabled(usingRPi);
@@ -169,7 +169,7 @@ public class Controller implements ControllerInterface {
 		program.add(line);
 
 		line = new ArrayList<String>();
-		
+
 		line.add(" ");
 		line.add("add");
 		line.add("num2");
@@ -177,23 +177,23 @@ public class Controller implements ControllerInterface {
 		program.add(line);
 
 		line = new ArrayList<String>();
-		
+
 		line.add(" ");
 		line.add("printch");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
-		
+
 		line.add(" ");
 		line.add("stop");
 		line.add(" ");
 		line.add(";");
 		program.add(line);
-		
+
 		line = new ArrayList<String>();
-		
+
 		line.add(".num1");
 		line.add("insert");
 		line.add("60");
@@ -201,13 +201,13 @@ public class Controller implements ControllerInterface {
 		program.add(line);
 
 		line = new ArrayList<String>();
-		
+
 		line.add(".num2");
 		line.add("insert");
 		line.add("5");
 		line.add(";");
 		program.add(line);
-		
+
 		return program;
 	}
 
@@ -216,6 +216,11 @@ public class Controller implements ControllerInterface {
 		if(checkCorrectInput(code)) {
 			model.compile(new Program(code));
 			this.setViewOutput();
+			if(model.isCompileSuccess()){
+				model.setIsProgramTerminated(false);
+				view.setStepThroughButtonEnabled(true);
+				view.setButtonsEnabled(model.isCompileSuccess());
+			}
 		}
 
 		else { 
@@ -235,20 +240,28 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	public void setButtonsEnabled(boolean isEnabled) {
+		view.setButtonsEnabled(isEnabled);
+	}
+	
 	@Override
 	public void stepThroughClicked(int line) {
-		int lineNo = model.stepThrough();
-		System.out.println(lineNo);
-		if (lineNo < 1) {
-			view.highlightStepThrough(previousLine+1);
-		} else {
-			previousLine = lineNo;
-			view.highlightStepThrough(lineNo);
+		//int lineNo = model.stepThrough();
+		
+		//previousLine = lineNo;
+		if(model.isProgramTerminated())  {
+			view.setButtonsEnabled(false);
+			model.resetPtrs();
 		}
 		
-		this.setViewOutput();
-		if (sendToIO) {
-			sendOutputToGPIO();
+		else {
+			view.highlightStepThrough(model.stepThrough());
+			model.updateLine();
+			this.setViewOutput();
+
+			if (sendToIO) {
+				sendOutputToGPIO();
+			}
 		}
 	}
 
@@ -325,7 +338,7 @@ public class Controller implements ControllerInterface {
 					}
 					continue;
 				}
-				
+
 				else if(!input.get(2).matches(alphanumeric)) {
 					addErrorToOutputstream(i+1, "Incorrectly formed data");
 					return false;
@@ -341,7 +354,7 @@ public class Controller implements ControllerInterface {
 				}
 			}
 
-			
+
 			/* Checking for valid instruction */
 			else if(!model.isInstruction(input.get(1))) {
 				System.out.println("gets here");
@@ -427,8 +440,9 @@ public class Controller implements ControllerInterface {
 			view.setConsoleError(model.getErrorStream().getErrors());
 		} else {
 			view.setConsoleResult(model.getStdStream().getOutput());
+			
 		}
-		view.setButtonsEnabled(model.isCompileSuccess());
+		
 	}
 
 
@@ -454,7 +468,7 @@ public class Controller implements ControllerInterface {
 			view.setFilename(file.getName());
 		}
 	}
-	
+
 	@Override
 	public void ioCheckClicked(boolean ioPortsEnabled) {
 		if (ioPortsEnabled && usingRPi) {

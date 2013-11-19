@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.antlr.grammar.v3.LeftRecursiveRuleWalker.outerAlternative_return;
 import org.antlr.gunit.swingui.parsers.StGUnitParser.output_return;
+import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
@@ -46,15 +47,19 @@ public class Model implements ModelInterface, SimulatorInterface {
 	private Compiler compiler;
 	private Runner runner;
 	private boolean compileClicked = false;
+	private Controller controller;
 
 	private static int ptr;
+	private static int linePtr;
 
 	/**
 	 * Default model constructor
 	 * Sets the starting location (addressable memory location) for running and stepping through the program to 0
 	 */
-	public Model() {
+	public Model(Controller controller) {
+		this.controller = controller;
 		ptr = 0;
+		linePtr = 1;
 	}
 
 	/**
@@ -148,18 +153,33 @@ public class Model implements ModelInterface, SimulatorInterface {
 			}
 			this.runner = new Runner(this.compiler);
 		}
-		else{
+		else {
 			this.runner = new Runner(this.compiler, this.sim40);
 		}
 
+		System.out.println("1 ptr "+ptr+"  is terminated "+this.runner.isProgramTerminated());
+
 		ptr = this.runner.stepthrough(ptr);
-		if(ptr == -1) ptr = 0;
+		
+		if(this.runner.isProgramTerminated()) {
+			this.controller.setButtonsEnabled(false);
+		}
+
+
 		this.sim40 = this.runner.getSimulator();
 		this.errorStream = this.runner.getErrorStream();
 		this.stdStream = this.runner.getStdStream();
-		
-		System.out.println("ptr "+ptr + " line "+ this.sim40.lines[ptr]);
-		return this.sim40.lines[ptr];
+
+		return this.sim40.lines[linePtr];
+	}
+
+	public void updateLine() {
+		linePtr = ptr;
+	}
+	
+	public void resetPtrs() {
+		ptr = 0;
+		linePtr = 1;
 	}
 
 	/**
@@ -170,6 +190,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	public void compile(Program program) {	
 		this.setCompileClicked(true);
 		ptr = 0;
+		linePtr = 1;
 		File file = programToFile(program, "temp.cecil");
 		this.compiler = new Compiler(file.getAbsolutePath(), program);
 		this.sim40 = this.compiler.getSimulator();
@@ -414,5 +435,25 @@ public class Model implements ModelInterface, SimulatorInterface {
 		if(this.stdStream==null)
 			return new StandardOutputStream();
 		return this.stdStream;
+	}
+
+	/**
+	 * gets boolean isProgramEnabled
+	 * @return boolean isProgramEnabled
+	 */
+	@Override
+	public boolean isProgramTerminated() {
+		if(this.runner == null) return false;
+		return this.runner.isProgramTerminated();
+	}
+
+	/**
+	 * sets boolean isProgramEnabled
+	 * @param boolean isEnabled
+	 */
+	@Override
+	public void setIsProgramTerminated(boolean isEnabled) {
+		if(this.runner != null)
+			this.runner.setIsProgramTerminated(isEnabled);
 	}
 }

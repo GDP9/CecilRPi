@@ -3,6 +3,8 @@ package org.raspberrypi.cecil.model.test.junit;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.Compiler;
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.model.Runner;
@@ -296,7 +298,7 @@ public class TestingRunner {
 			userinput.add(input);
 		}
 		Program program = new Program(userinput);
-		Model m = new Model();
+		Model m = new Model(new Controller());
 
 		File sample  = m.programToFile(program, "sample.cecil");
 		Compiler c = new Compiler(sample.getAbsolutePath(), program);

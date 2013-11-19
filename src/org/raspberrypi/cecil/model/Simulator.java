@@ -140,14 +140,18 @@ public class Simulator {
 	 * @param Program object
 	 */
 	public void setLineNumbers(Program program) {
-		for(int line = 0, ctr = 1; line < program.getProgramStatements().size(); line++) {
+		for(int line = 0, ctr = 0; line < program.getProgramStatements().size(); line++) {
 			for(int j = 1; j <= 2; j++) {
 				if(program.getProgramStatements().get(line).get(j) != null 
 						&& !program.getProgramStatements().get(line).get(j).equals(" ")
-						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr])
-					lines[ctr++] = line;
+						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr]) {
+					lines[ctr++] = line+1;
+					//System.out.println("i "+(ctr-1)+"  mem val "+memory[ctr-1]+ "  line "+lines[ctr-1]);
+				}
 			}
 		}
+		
+		
 	}
 
 	/**

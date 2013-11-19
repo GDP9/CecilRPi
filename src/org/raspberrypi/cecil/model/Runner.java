@@ -27,6 +27,7 @@ public class Runner {
 	private Simulator sim40;
 	private ErrorOutputStream errorStream;
 	private StandardOutputStream stdStream;
+	private boolean isProgramTerminated;
 
 	/**
 	 * Runner Parametric constructor
@@ -40,6 +41,23 @@ public class Runner {
 		this.sim40.lines = compiler.getSimulator().lines;
 		this.errorStream = new ErrorOutputStream();
 		this.stdStream = new StandardOutputStream();
+		this.isProgramTerminated = false;
+	}
+	
+	/**
+	 * Gets boolean isProgramTerminated
+	 * @return boolean isProgramTerminated
+	 */
+	public boolean isProgramTerminated() {
+		return this.isProgramTerminated;
+	}
+
+	/**
+	 * Sets boolean isProgramTerminated
+	 * @param boolean isEnabled
+	 */
+	public void setIsProgramTerminated(boolean isEnabled) {
+		this.isProgramTerminated = isEnabled;
 	}
 	
 	/**
@@ -52,6 +70,7 @@ public class Runner {
 		this.sim40 = sim40;
 		this.errorStream = new ErrorOutputStream();
 		this.stdStream = new StandardOutputStream();
+		this.isProgramTerminated = false;
 	}
 
 
@@ -70,9 +89,11 @@ public class Runner {
 	 * @return next line number
 	 */
 	public int stepthrough(int i) {
+		//System.out.println("into runner step "+i);
 		switch(sim40.memory[i]) {
 
-		case 0: return -1;
+		case 0: this.isProgramTerminated = true; //System.out.println("val from runner "+i);
+		return i;
 
 		case 1: case 2: case 3: 
 			this.stdStream.getOutput().add(result(i));
@@ -98,6 +119,7 @@ public class Runner {
 		
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		
+		//System.out.println("val from runner "+i);
 		return i;
 	}
 
@@ -183,7 +205,6 @@ public class Runner {
 
 		case 27: /* jineg */
 			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 2) {
-				System.out.println("rhrehwrh");
 				i = sim40.memory[i+1];
 				
 			}
