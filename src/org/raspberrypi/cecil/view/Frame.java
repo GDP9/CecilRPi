@@ -1352,11 +1352,13 @@ public class Frame extends JFrame implements ViewInterface {
 			int returnValue = JOptionPane.showConfirmDialog(this, "You have not saved your program! Do you want to continue anyway?", "Warning", JOptionPane.YES_NO_OPTION);
 			if (returnValue == JOptionPane.OK_OPTION) {
 				clearVisualisations();
+				setButtonsEnabled(false);
 				loadNewProgram();
 				setFilename("Untitled");
 			}
 		} else {
 			clearVisualisations();
+			setButtonsEnabled(false);
 			loadNewProgram();
 			setFilename("Untitled");
 		}

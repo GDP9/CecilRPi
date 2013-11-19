@@ -437,6 +437,7 @@ public class Controller implements ControllerInterface {
 		Program program = model.fileToProgram(file);
 		if (program != null && program.getProgramStatements() != null) {
 			view.clearVisualisations();
+			view.setButtonsEnabled(false);
 			view.setProgramCode(program.getProgramStatements());
 			view.setFilename(file.getName());
 		}
