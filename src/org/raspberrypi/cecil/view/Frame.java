@@ -60,6 +60,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.border.BevelBorder;
@@ -1409,7 +1410,28 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	private void onSaveClicked() {
 		ArrayList<ArrayList<String>> code = getProgramCode();
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new JFileChooser(){
+		    @Override
+		    public void approveSelection(){
+		        File f = getSelectedFile();
+		        if (f.exists() && getDialogType() == SAVE_DIALOG){
+		            int result = JOptionPane.showConfirmDialog(this,"This file already exists, overwrite?", "Existing file",JOptionPane.YES_NO_CANCEL_OPTION);
+		            switch(result){
+		                case JOptionPane.YES_OPTION:
+		                    super.approveSelection();
+		                    return;
+		                case JOptionPane.NO_OPTION:
+		                    return;
+		                case JOptionPane.CLOSED_OPTION:
+		                    return;
+		                case JOptionPane.CANCEL_OPTION:
+		                    cancelSelection();
+		                    return;
+		            }
+		        }
+		    	super.approveSelection();
+		    }
+		};
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
 		fileChooser.setFileFilter(filter);
 		int returnValue = fileChooser.showSaveDialog(this);

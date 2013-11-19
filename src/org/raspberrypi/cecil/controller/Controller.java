@@ -446,6 +446,9 @@ public class Controller implements ControllerInterface {
 	@Override
 	public void saveToFile(ArrayList<ArrayList<String>> code, String filename) {
 		if (code != null && filename != null) {
+			if (!filename.endsWith(".cecil")) {
+				filename += ".cecil";
+			}
 			Program program = new Program(code);
 			File file = model.programToFile(program, filename);
 			view.setFilename(file.getName());
