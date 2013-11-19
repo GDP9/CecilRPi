@@ -47,8 +47,6 @@ public interface ModelInterface {
 	
 	public void updateLine();
 	public boolean isProgramTerminated();
-	public void setIsProgramTerminated(boolean isEnabled);
-	public void resetPtrs();
 	/*
 	 * Calls on input editor converter
 	 */

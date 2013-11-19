@@ -114,14 +114,6 @@ public interface ViewInterface {
 	public void setButtonsEnabled(boolean isEnabled);
 	
 	/**
-	 * Set the state of the step through button to be enabled or disabled.
-	 * The buttons should be disabled until a successful compile has completed.
-	 * 
-	 * @param isEnabled The state to be displayed.
-	 */
-	public void setStepThroughButtonEnabled(boolean isEnabled);
-	
-	/**
 	 * Clear all visualisation views of their current values.
 	 */
 	public void clearVisualisations();

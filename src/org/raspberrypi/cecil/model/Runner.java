@@ -65,11 +65,11 @@ public class Runner {
 	 * Initalises Simulator, ErrorOutputStream and StandardOutputStream
 	 * @param Simulator object
 	 */
-	public Runner(Compiler compiler , Simulator sim40) {
+	public Runner(Compiler compiler , Simulator sim40, ErrorOutputStream errorStream, StandardOutputStream stdStream) {
 		this.compiler = compiler;
 		this.sim40 = sim40;
-		this.errorStream = new ErrorOutputStream();
-		this.stdStream = new StandardOutputStream();
+		this.errorStream = errorStream;
+		this.stdStream = stdStream;
 		this.isProgramTerminated = false;
 	}
 

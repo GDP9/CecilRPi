@@ -1,9 +1,6 @@
-.start xload counter ;
-  load ascA ;
-.loop printch   ;
-  xdec   ;
-  jineg end ;
-  jump loop ;
-.end stop   ;
-.counter insert 2 ;counter defined
-.ascA insert 65 ;ascii value of A
+.start load num1 ;
+  add num2 ;
+  printch   ;
+  stop   ;
+.num1 insert 60 ;
+.num2 insert 5 ;

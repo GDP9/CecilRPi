@@ -126,13 +126,14 @@ public class Model implements ModelInterface, SimulatorInterface {
 			this.setViewToDefault();
 		}
 		else
-			this.runner= new Runner(this.compiler,this.sim40);
+			this.runner= new Runner(this.compiler,this.sim40, this.errorStream, this.stdStream);
 
 		this.runner.run(ptr);
 		this.sim40 = this.runner.getSimulator();
 		this.errorStream = this.runner.getErrorStream();
 		this.stdStream = this.runner.getStdStream();
 		ptr = 0;
+		linePtr = 1;
 	}
 
 	/**
@@ -154,10 +155,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 			this.runner = new Runner(this.compiler);
 		}
 		else {
-			this.runner = new Runner(this.compiler, this.sim40);
+			this.runner = new Runner(this.compiler, this.sim40, this.errorStream, this.stdStream);
 		}
-
-		System.out.println("1 ptr "+ptr+"  is terminated "+this.runner.isProgramTerminated());
 
 		ptr = this.runner.stepthrough(ptr);
 		
@@ -173,10 +172,16 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return this.sim40.lines[linePtr];
 	}
 
+	/**
+	 * updates lines in view for highlighting purposes on step through
+	 */
 	public void updateLine() {
 		linePtr = ptr;
 	}
 	
+	/**
+	 * resets all counters in step through
+	 */
 	public void resetPtrs() {
 		ptr = 0;
 		linePtr = 1;
@@ -445,15 +450,5 @@ public class Model implements ModelInterface, SimulatorInterface {
 	public boolean isProgramTerminated() {
 		if(this.runner == null) return false;
 		return this.runner.isProgramTerminated();
-	}
-
-	/**
-	 * sets boolean isProgramEnabled
-	 * @param boolean isEnabled
-	 */
-	@Override
-	public void setIsProgramTerminated(boolean isEnabled) {
-		if(this.runner != null)
-			this.runner.setIsProgramTerminated(isEnabled);
 	}
 }

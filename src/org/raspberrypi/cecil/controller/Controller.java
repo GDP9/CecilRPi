@@ -217,8 +217,6 @@ public class Controller implements ControllerInterface {
 			model.compile(new Program(code));
 			this.setViewOutput();
 			if(model.isCompileSuccess()){
-				model.setIsProgramTerminated(false);
-				view.setStepThroughButtonEnabled(true);
 				view.setButtonsEnabled(model.isCompileSuccess());
 			}
 		}
@@ -243,25 +241,15 @@ public class Controller implements ControllerInterface {
 	public void setButtonsEnabled(boolean isEnabled) {
 		view.setButtonsEnabled(isEnabled);
 	}
-	
+
 	@Override
 	public void stepThroughClicked(int line) {
-		//int lineNo = model.stepThrough();
-		
-		//previousLine = lineNo;
-		if(model.isProgramTerminated())  {
-			view.setButtonsEnabled(false);
-			model.resetPtrs();
-		}
-		
-		else {
-			view.highlightStepThrough(model.stepThrough());
-			model.updateLine();
-			this.setViewOutput();
+		view.highlightStepThrough(model.stepThrough());
+		model.updateLine();
+		this.setViewOutput();
 
-			if (sendToIO) {
-				sendOutputToGPIO();
-			}
+		if (sendToIO) {
+			sendOutputToGPIO();
 		}
 	}
 
@@ -440,9 +428,9 @@ public class Controller implements ControllerInterface {
 			view.setConsoleError(model.getErrorStream().getErrors());
 		} else {
 			view.setConsoleResult(model.getStdStream().getOutput());
-			
+
 		}
-		
+
 	}
 
 

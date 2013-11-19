@@ -1732,11 +1732,4 @@ public class Frame extends JFrame implements ViewInterface {
 	public void setIOEnabled(boolean isEnabled) {
 		ioMenu.setEnabled(isEnabled);
 	}
-
-	@Override
-	public void setStepThroughButtonEnabled(boolean isEnabled) {
-		System.out.println("what is ur value "+isEnabled);
-		btnStepThrough.setEnabled(isEnabled);
-	}
-
 }
