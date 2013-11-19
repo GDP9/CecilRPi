@@ -157,6 +157,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 		this.sim40 = this.runner.getSimulator();
 		this.errorStream = this.runner.getErrorStream();
 		this.stdStream = this.runner.getStdStream();
+		
+		System.out.println("ptr "+ptr + " line "+ this.sim40.lines[ptr]);
 		return this.sim40.lines[ptr];
 	}
 

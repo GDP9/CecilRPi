@@ -70,7 +70,6 @@ public class Runner {
 	 * @return next line number
 	 */
 	public int stepthrough(int i) {
-		System.out.println("i "+i+"  mem "+sim40.memory[i]);
 		switch(sim40.memory[i]) {
 
 		case 0: return -1;
@@ -110,7 +109,6 @@ public class Runner {
 	 */
 	public void run(int i) {
 		while(sim40.memory[i] != -1) {	
-			System.out.println("i "+i+"  mem "+sim40.memory[i]);
 			switch(sim40.memory[i]) {
 
 			case 0: return;
