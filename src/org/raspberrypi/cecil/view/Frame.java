@@ -355,6 +355,13 @@ public class Frame extends JFrame implements ViewInterface {
 
 		menuUserManual = new JMenuItem("User Manual");
 		menuAbout = new JMenuItem("About CECIL");
+		final About about = new About();
+		menuAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				about.setVisible(true);
+			}
+		});
+		settingsMenu.add(menuPreferences);
 
 		helpMenu.add(menuUserManual);
 		helpMenu.add(menuAbout);

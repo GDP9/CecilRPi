@@ -101,8 +101,7 @@ public class FontChooser extends JDialog {
 		border = new LineBorder(frame.ORANGE_THEME[0], 3, true);
 		fontPreview.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), new TitledBorder(null, "Font", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 
-		colourName = new JComboBox(new String[] { "Green", "Orange", "Blue",
-				"Default" });
+		colourName = new JComboBox(new String[] { "Green", "Orange", "Blue","Default" });
 		colourName.setSelectedIndex(1);
 		colourName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
