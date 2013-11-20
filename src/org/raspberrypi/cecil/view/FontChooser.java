@@ -62,19 +62,19 @@ public class FontChooser extends JDialog {
 			  };
 		 ButtonGroup bg = new ButtonGroup();
 		small = new JRadioButton("Small");
-		small.setFont(new Font("Arial", Font.PLAIN, 12));
+		small.setFont(frame.FONT_SMALL);
 		small.addActionListener(fontsize);
 		medium = new JRadioButton("Medium");
 		medium.setSelected(true);
-		medium.setFont(new Font("Arial", Font.PLAIN, 18));
+		medium.setFont(frame.FONT_MEDIUM);
 		medium.addActionListener(fontsize);
 		large = new JRadioButton("Large");
-		large.setFont(new Font("Arial", Font.PLAIN, 24));
+		large.setFont(frame.FONT_LARGE);
 		large.addActionListener(fontsize);
 		bg.add(small);
 		bg.add(medium);
 		bg.add(large);
-		fontPanel.setBackground(new Color(255, 148, 82));		
+		fontPanel.setBackground(frame.ORANGE_THEME[0]);		
 		fontPanel.add(small);
 		fontPanel.add(medium);
 		fontPanel.add(large);
@@ -82,7 +82,7 @@ public class FontChooser extends JDialog {
 		fontPreview = new JPanel(new GridBagLayout());
 		fontPreview.setBackground(panelcolour);
 		sampleText = new JLabel("The Text looks like this");
-		sampleText.setFont(new Font("Courier", Font.PLAIN, 12));
+		sampleText.setFont(frame.FONT_MEDIUM);
 		GridBagConstraints gbc_fontPanel = new GridBagConstraints();
 		gbc_fontPanel.fill = GridBagConstraints.BOTH;
 		gbc_fontPanel.gridx = 0;
@@ -176,26 +176,22 @@ public class FontChooser extends JDialog {
 	/* updates the sample text to the new font */
 	protected void updateFont(String font) {
 
-		int size = 12;
 		if (font == "Small") {
-			size = 12;
 			newFont = "Small";
-			sampleText.setFont(new Font("Courier", Font.PLAIN, 12));
-			frame.tblMemory.setRowHeight(90);
+			sampleText.setFont(frame.FONT_SMALL);
+//			frame.tblMemory.setRowHeight(90);
 		} 
 		
 		else if (font == "Medium") {
-			size = 18;
 			newFont = "Medium";
-			sampleText.setFont(new Font("Courier", Font.PLAIN, 18));
-			frame.tblMemory.setRowHeight(30);
+			sampleText.setFont(frame.FONT_MEDIUM);
+//			frame.tblMemory.setRowHeight(30);
 		}
 		
 		else if (font == "Large") {
-			size = 24;
 			newFont = "Large";
-			sampleText.setFont(new Font("Courier", Font.PLAIN, 24));
-			frame.tblMemory.setRowHeight(90);
+			sampleText.setFont(frame.FONT_LARGE);
+//			frame.tblMemory.setRowHeight(90);
 			
 		}
 		

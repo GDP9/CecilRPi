@@ -60,6 +60,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
@@ -91,17 +92,20 @@ import org.raspberrypi.cecil.pojo.Instruction;
  *
  */
 public class Frame extends JFrame implements ViewInterface {
-	private static final int WIDTH = 1100;
-	private static final int HEIGHT = 750;
+	private static int WIDTH;
+	private static int HEIGHT;
+	
+	private static final Dimension ICON_MEDIUM = new Dimension(32, 32);
+	private static final Dimension ICON_SMALL = new Dimension(24, 24);
 
 	public static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
 	public static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
 	public static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
 	public static final Color[] DEFAULT_THEME = null;
 
-	private static final FontUIResource FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
-	private static final FontUIResource FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
-	private static final FontUIResource FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
+	public FontUIResource FONT_SMALL;
+	public FontUIResource FONT_MEDIUM;
+	public FontUIResource FONT_LARGE;
 
 	//Controller
 	private Controller controller;
@@ -168,6 +172,8 @@ public class Frame extends JFrame implements ViewInterface {
 	private Color[] currentTheme;
 	private ArrayList<OutputError> errors;
 	private boolean ioPortsEnabled;
+	private int scaleType;
+	private Dimension resolution;
 
 	/**
 	 * Creates the view with default fonts, colours, and values.
@@ -175,6 +181,32 @@ public class Frame extends JFrame implements ViewInterface {
 	public Frame(Controller controller) {
 		this.controller = controller;
 		currentTheme = ORANGE_THEME;
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		resolution = new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight());
+		
+		if (resolution.width <= 1280 || resolution.height <= 720) {
+			scaleType = 0;
+			WIDTH = 800;
+			HEIGHT = 650;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 14);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 18);
+		} else if (resolution.width <= 1600 || resolution.height <= 900) {
+			scaleType = 1;
+			WIDTH = 1000;
+			HEIGHT = 750;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 16);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 22);
+		} else {
+			scaleType = 2;
+			WIDTH = 1200;
+			HEIGHT = 900;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 14);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
+		}
 		currentFont = FONT_MEDIUM;
 		drawFrame();
 	}
@@ -212,8 +244,6 @@ public class Frame extends JFrame implements ViewInterface {
 			System.out.println("ERROR: "+e1.getMessage());
 		}
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
-		gridBagLayout.rowHeights = new int[] {0, 0, 0};
 		getContentPane().setLayout(gridBagLayout);
 		setTitle("CECIL");
 		if (System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm")) {
@@ -236,6 +266,9 @@ public class Frame extends JFrame implements ViewInterface {
 		menuBar = new BackgroundMenuBar();
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(100, 30, Image.SCALE_SMOOTH);
+			}
 			ImageIcon icon = new ImageIcon(img);
 			JMenu iconItem = new JMenu();
 			iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -254,6 +287,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		fileMenu = new JMenu("File");
 		fileMenu.setToolTipText("File");
+		fileMenu.setOpaque(false);
 		fileMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -310,6 +344,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		settingsMenu = new JMenu("Settings");
 		settingsMenu.setToolTipText("Settings");
+		settingsMenu.setOpaque(false);
 		settingsMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -337,6 +372,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		helpMenu = new JMenu("Help");
 		helpMenu.setToolTipText("Help");
+		helpMenu.setOpaque(false);
 		helpMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -364,13 +400,18 @@ public class Frame extends JFrame implements ViewInterface {
 		settingsMenu.add(menuPreferences);
 
 		helpMenu.add(menuUserManual);
+		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
 		
 		ioMenu = new JMenu("Output to IO ports");
 		ioMenu.setToolTipText("Check to enable output to physical IO ports (only available on Raspberry Pi)");
+		ioMenu.setOpaque(false);
 		ioPortsEnabled = false;
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			ioMenu.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -392,9 +433,15 @@ public class Frame extends JFrame implements ViewInterface {
 						ioPortsEnabled = !ioPortsEnabled;
 						if (ioPortsEnabled) {
 							Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
+							if (scaleType < 2) {
+								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+							}
 							ioMenu.setIcon(new ImageIcon(img));
 						} else {
 							Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+							if (scaleType < 2) {
+								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+							}
 							ioMenu.setIcon(new ImageIcon(img));
 						}
 						ioMenu.setSelected(false);
@@ -422,7 +469,7 @@ public class Frame extends JFrame implements ViewInterface {
 		centerLeftPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 5), new TitledBorder(null, "Program - Untitled", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 
 		centerRightPanel = new JPanel();
-		centerRightPanel.setLayout(new GridLayout(2,1));
+		centerRightPanel.setLayout(new GridBagLayout());
 
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(1,2));
@@ -433,7 +480,7 @@ public class Frame extends JFrame implements ViewInterface {
 		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 20, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		//southPanel.setToolTipText("Each cell in the memory is an address."
 		//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
-		southPanel.setLayout(new GridBagLayout());
+		southPanel.setLayout(new GridLayout(1,1));
 
 		/*
 		 * Add north panel
@@ -443,7 +490,6 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_north.gridx = 0;
 		gbc_north.gridy = 0;
 		gbc_north.weightx = 1;
-		gbc_north.weighty = 0.05;
 		getContentPane().add(northPanel, gbc_north);
 
 		/*
@@ -454,7 +500,11 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_centre.gridx = 0;
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
-		gbc_centre.weighty = 0.55;
+		if (resolution.width <= 800 || resolution.height <= 600) {
+			gbc_centre.weighty = 0.6;
+		} else {
+			gbc_centre.weighty = 0.7;
+		}
 		getContentPane().add(centerPanel, gbc_centre);		
 
 		/*
@@ -465,7 +515,11 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_south.gridx = 0;
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
-		gbc_south.weighty = 0.4;
+		if (resolution.width <= 800 || resolution.height <= 600) {
+			gbc_south.weighty = 0.4;
+		} else {
+			gbc_south.weighty = 0.3;
+		}
 		getContentPane().add(southPanel, gbc_south);
 
 		/*
@@ -507,22 +561,17 @@ public class Frame extends JFrame implements ViewInterface {
 		/*
 		 * Registers
 		 */
-		JPanel centerRightTopPanel = new JPanel();
-		centerRightTopPanel.setLayout(new GridBagLayout());
-		centerRightTopPanel.setOpaque(false);
-		centerRightPanel.add(centerRightTopPanel);
-
 		registerPanel = new JPanel();
 		registerPanel.setLayout(new GridLayout(1,3));
 		registerPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Registers", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 
-		GridBagConstraints gbc_register = new GridBagConstraints();
-		gbc_register.fill = GridBagConstraints.BOTH;
-		gbc_register.gridx = 0;
-		gbc_register.gridy = 0;
-		gbc_register.weightx = 1;
-		gbc_register.weighty = 0.9;
-		centerRightTopPanel.add(registerPanel, gbc_register);
+		GridBagConstraints gbc_top = new GridBagConstraints();
+		gbc_top.fill = GridBagConstraints.BOTH;
+		gbc_top.gridx = 0;
+		gbc_top.gridy = 0;
+		gbc_top.weightx = 1;
+		gbc_top.weighty = 0.3;
+		centerRightPanel.add(registerPanel, gbc_top);
 
 		/*
 		 * X register
@@ -590,13 +639,12 @@ public class Frame extends JFrame implements ViewInterface {
 		flagPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Flags", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		flagPanel.setLayout(new GridLayout(1,3));
 
-		GridBagConstraints gbc_flagpanel = new GridBagConstraints();
-		gbc_flagpanel.fill = GridBagConstraints.BOTH;
-		gbc_flagpanel.gridx = 0;
-		gbc_flagpanel.gridy = 1;
-		gbc_flagpanel.weightx = 1;
-		gbc_flagpanel.weighty = 0.1;
-		centerRightTopPanel.add(flagPanel, gbc_flagpanel);
+		GridBagConstraints gbc_middle = new GridBagConstraints();
+		gbc_middle.fill = GridBagConstraints.BOTH;
+		gbc_middle.gridx = 0;
+		gbc_middle.gridy = 1;
+		gbc_middle.weightx = 1;
+		centerRightPanel.add(flagPanel, gbc_middle);
 
 		JPanel carryPanel = new JPanel(new GridLayout(1,1));
 		carryPanel.setOpaque(false);
@@ -622,7 +670,7 @@ public class Frame extends JFrame implements ViewInterface {
 		negativePanel.setOpaque(false);
 		negativePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lblNegative = new JLabel("Negative", SwingConstants.CENTER);
-		lblNegative.setToolTipText("this flag is switched on when the value at any of the registers is < 0");
+		lblNegative.setToolTipText("This flag is switched on when the value at any of the registers is < 0");
 		lblNegative.setBorder(BorderFactory.createCompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(5, 5, 5, 5)));
 		lblNegative.setOpaque(true);
 		negativePanel.add(lblNegative);
@@ -634,11 +682,17 @@ public class Frame extends JFrame implements ViewInterface {
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
 		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		centerRightPanel.add(consolePanel);
+		
+		GridBagConstraints gbc_bottom = new GridBagConstraints();
+		gbc_bottom.fill = GridBagConstraints.BOTH;
+		gbc_bottom.gridx = 0;
+		gbc_bottom.gridy = 2;
+		gbc_bottom.weightx = 1;
+		gbc_bottom.weighty = 0.7;
+		centerRightPanel.add(consolePanel, gbc_bottom);
 
 		txtConsole = new JList<String>();
 		txtConsole.setToolTipText("Output console");
-
 		txtConsole.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -746,7 +800,6 @@ public class Frame extends JFrame implements ViewInterface {
 		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
 		aligncenter.setHorizontalAlignment(JLabel.CENTER);
 		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
-		tblInput.setRowHeight(25);
 		tblInput.setFillsViewportHeight(true);
 
 		for (int i = 0; i < tblInput.getColumnCount(); i++) {
@@ -842,6 +895,8 @@ public class Frame extends JFrame implements ViewInterface {
 		
 		tblMemory = new JTable(mdlMemory);
 		tblMemory.getTableHeader().setReorderingAllowed(false);
+		((DefaultTableCellRenderer) tblMemory.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		tblMemory.setDefaultRenderer(Object.class, aligncenter);
 		tblMemory.setEnabled(false);
 		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -857,13 +912,7 @@ public class Frame extends JFrame implements ViewInterface {
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		memoryScroll.setOpaque(false);
 
-		GridBagConstraints gbc_south_table = new GridBagConstraints();
-		gbc_south_table.fill = GridBagConstraints.BOTH;
-		gbc_south_table.gridx = 0;
-		gbc_south_table.gridy = 0;
-		gbc_south_table.weightx = 1;
-		gbc_south_table.weighty = 1;
-		southPanel.add(memoryScroll, gbc_south_table);
+		southPanel.add(memoryScroll);
 	}
 
 	/**
@@ -951,9 +1000,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnCompile.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnCompile.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -962,9 +1017,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//Run
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnRun.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-play-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnRun.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -973,9 +1034,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//Step through
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnStepThrough.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-step-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			btnStepThrough.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -984,9 +1051,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//File
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			fileMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			fileMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -999,6 +1072,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					fileMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1008,6 +1084,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					fileMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1022,9 +1101,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//Settings
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			settingsMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			settingsMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -1037,6 +1122,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					settingsMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1046,6 +1134,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					settingsMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1060,9 +1151,15 @@ public class Frame extends JFrame implements ViewInterface {
 		//Help
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			helpMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			helpMenu.setRolloverIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -1075,6 +1172,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					helpMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1084,6 +1184,9 @@ public class Frame extends JFrame implements ViewInterface {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
+					if (scaleType < 2) {
+						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+					}
 					helpMenu.setIcon(new ImageIcon(img));
 				} catch (IOException e1) {
 					System.out.println("Error creating buttons: could not set button icon");
@@ -1103,6 +1206,9 @@ public class Frame extends JFrame implements ViewInterface {
 	private void setupFlagIcons() {
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			lblCarry.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -1110,6 +1216,9 @@ public class Frame extends JFrame implements ViewInterface {
 
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			lblZero.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -1117,6 +1226,9 @@ public class Frame extends JFrame implements ViewInterface {
 
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+			if (scaleType < 2) {
+				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+			}
 			lblNegative.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
@@ -1165,12 +1277,22 @@ public class Frame extends JFrame implements ViewInterface {
 		txtConsole.setFont(new Font("Consolas", Font.PLAIN, currentFont.getSize()));
 		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblInput.getTableHeader().setFont(currentFont);
-		tblInput.setRowHeight(40);
+		
 		tblInput.setFont(currentFont);
 		((TitledBorder)((CompoundBorder) southPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblMemory.getTableHeader().setFont(currentFont);
 		tblMemory.setFont(currentFont);
-		tblMemory.setRowHeight(30);
+		
+		if (scaleType == 0) {
+			tblInput.setRowHeight(25);
+			tblMemory.setRowHeight(25);
+		} else if (scaleType == 1) {
+			tblInput.setRowHeight(35);
+			tblMemory.setRowHeight(35);
+		} else if (scaleType == 2) {
+			tblInput.setRowHeight(45);
+			tblMemory.setRowHeight(45);
+		}
 	}
 
 	/**
@@ -1596,8 +1718,14 @@ public class Frame extends JFrame implements ViewInterface {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			}
 			lblCarry.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
@@ -1611,8 +1739,14 @@ public class Frame extends JFrame implements ViewInterface {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			}
 			lblZero.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
@@ -1626,8 +1760,14 @@ public class Frame extends JFrame implements ViewInterface {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
+				if (scaleType < 2) {
+					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+				}
 			}
 			lblNegative.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
