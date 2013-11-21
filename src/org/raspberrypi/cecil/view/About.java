@@ -2,10 +2,7 @@ package org.raspberrypi.cecil.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -17,6 +14,11 @@ import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 
 public class About extends JDialog  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public About() {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);

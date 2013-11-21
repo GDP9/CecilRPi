@@ -92,9 +92,13 @@ import org.raspberrypi.cecil.pojo.Instruction;
  *
  */
 public class Frame extends JFrame implements ViewInterface {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static int WIDTH;
 	private static int HEIGHT;
-	
+
 	private static final Dimension ICON_MEDIUM = new Dimension(32, 32);
 	private static final Dimension ICON_SMALL = new Dimension(24, 24);
 
@@ -135,7 +139,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private JList<String> txtConsole;
 
 	//Input
-	private JTable tblInput;
+	JTable tblInput;
 
 	//Memory
 	JTable tblMemory;
@@ -173,18 +177,18 @@ public class Frame extends JFrame implements ViewInterface {
 	private ArrayList<OutputError> errors;
 	private boolean ioPortsEnabled;
 	private int scaleType;
-	private Dimension resolution;
-
+	Dimension resolution;
+	private JScrollPane memoryScroll;
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
 	public Frame(Controller controller) {
 		this.controller = controller;
 		currentTheme = ORANGE_THEME;
-		
+
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		resolution = new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight());
-		
+		System.out.println(resolution.height);
 		if (resolution.width <= 1280 || resolution.height <= 720) {
 			scaleType = 0;
 			WIDTH = 800;
@@ -192,14 +196,16 @@ public class Frame extends JFrame implements ViewInterface {
 			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 14);
 			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 18);
-		} else if (resolution.width <= 1600 || resolution.height <= 900) {
+		} 
+		else if (resolution.width <= 1600 || resolution.height <= 900) {
 			scaleType = 1;
 			WIDTH = 1000;
 			HEIGHT = 750;
 			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
 			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 16);
 			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 22);
-		} else {
+		}
+		else {
 			scaleType = 2;
 			WIDTH = 1200;
 			HEIGHT = 900;
@@ -402,7 +408,7 @@ public class Frame extends JFrame implements ViewInterface {
 		helpMenu.add(menuUserManual);
 		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
-		
+
 		ioMenu = new JMenu("Output to IO ports");
 		ioMenu.setToolTipText("Check to enable output to physical IO ports (only available on Raspberry Pi)");
 		ioMenu.setOpaque(false);
@@ -682,7 +688,7 @@ public class Frame extends JFrame implements ViewInterface {
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
 		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		
+
 		GridBagConstraints gbc_bottom = new GridBagConstraints();
 		gbc_bottom.fill = GridBagConstraints.BOTH;
 		gbc_bottom.gridx = 0;
@@ -892,13 +898,13 @@ public class Frame extends JFrame implements ViewInterface {
 		for (int i = 0; i < 1024; i++) {
 			mdlMemory.addColumn(i, new Object[]{""});
 		}
-		
+
 		tblMemory = new JTable(mdlMemory);
 		tblMemory.getTableHeader().setReorderingAllowed(false);
 		((DefaultTableCellRenderer) tblMemory.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		tblMemory.setDefaultRenderer(Object.class, aligncenter);
 		tblMemory.setEnabled(false);
-		tblMemory.setFillsViewportHeight(true);
+		//tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMemory.setToolTipText("Each cell in the memory is an address."
 				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc");
@@ -908,7 +914,7 @@ public class Frame extends JFrame implements ViewInterface {
 		//		memoryScroll.setOpaque(false);
 		//		southPanel.add(memoryScroll);
 
-		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		memoryScroll.setOpaque(false);
 
@@ -1277,21 +1283,65 @@ public class Frame extends JFrame implements ViewInterface {
 		txtConsole.setFont(new Font("Consolas", Font.PLAIN, currentFont.getSize()));
 		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblInput.getTableHeader().setFont(currentFont);
-		
+
 		tblInput.setFont(currentFont);
 		((TitledBorder)((CompoundBorder) southPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblMemory.getTableHeader().setFont(currentFont);
 		tblMemory.setFont(currentFont);
-		
+
+		System.out.println("Scale type "+scaleType);
+		System.out.println("font size "+currentFont.getSize());
+
 		if (scaleType == 0) {
-			tblInput.setRowHeight(25);
-			tblMemory.setRowHeight(25);
-		} else if (scaleType == 1) {
-			tblInput.setRowHeight(35);
-			tblMemory.setRowHeight(35);
+			if(currentFont.getSize() == 14) {
+				tblInput.setRowHeight((int) (resolution.height/20));
+				tblMemory.setRowHeight((int) (resolution.height/20));
+			}
+			
+			else if(currentFont.getSize() == 12) {
+				tblInput.setRowHeight((int) (resolution.height/17));
+				tblMemory.setRowHeight((int) (resolution.height/17));
+			}
+			
+			else {
+				tblInput.setRowHeight((int) (resolution.height/40));
+				tblMemory.setRowHeight((int) (resolution.height/40));
+			}
+			
+		} 
+		
+		else if (scaleType == 1) {
+			if(currentFont.getSize() == 16) {
+				tblInput.setRowHeight((int) (resolution.height/12.4));
+				tblMemory.setRowHeight((int) (resolution.height/12.4));
+			}
+			
+			else if(currentFont.getSize() == 12) {
+				tblInput.setRowHeight((int) (resolution.height/10.7));
+				tblMemory.setRowHeight((int) (resolution.height/10.7));
+			}
+			
+			else {
+				tblInput.setRowHeight((int) (resolution.height/18.3));
+				tblMemory.setRowHeight((int) (resolution.height/18.3));
+			}
+			
 		} else if (scaleType == 2) {
-			tblInput.setRowHeight(45);
-			tblMemory.setRowHeight(45);
+			if(currentFont.getSize() == 18) {
+				tblInput.setRowHeight((int) (resolution.height/12.4));
+				tblMemory.setRowHeight((int) (resolution.height/12.4));
+			}
+			
+			else if(currentFont.getSize() == 14) {
+				tblInput.setRowHeight((int) (resolution.height/10.7));
+				tblMemory.setRowHeight((int) (resolution.height/10.7));
+			}
+			
+			else {
+				tblInput.setRowHeight((int) (resolution.height/18.3));
+				tblMemory.setRowHeight((int) (resolution.height/18.3));
+			}
+			
 		}
 	}
 
@@ -1535,26 +1585,26 @@ public class Frame extends JFrame implements ViewInterface {
 	private void onSaveClicked() {
 		ArrayList<ArrayList<String>> code = getProgramCode();
 		JFileChooser fileChooser = new JFileChooser(){
-		    @Override
-		    public void approveSelection(){
-		        File f = getSelectedFile();
-		        if (f.exists() && getDialogType() == SAVE_DIALOG){
-		            int result = JOptionPane.showConfirmDialog(this,"This file already exists, overwrite?", "Existing file",JOptionPane.YES_NO_CANCEL_OPTION);
-		            switch(result){
-		                case JOptionPane.YES_OPTION:
-		                    super.approveSelection();
-		                    return;
-		                case JOptionPane.NO_OPTION:
-		                    return;
-		                case JOptionPane.CLOSED_OPTION:
-		                    return;
-		                case JOptionPane.CANCEL_OPTION:
-		                    cancelSelection();
-		                    return;
-		            }
-		        }
-		    	super.approveSelection();
-		    }
+			@Override
+			public void approveSelection(){
+				File f = getSelectedFile();
+				if (f.exists() && getDialogType() == SAVE_DIALOG){
+					int result = JOptionPane.showConfirmDialog(this,"This file already exists, overwrite?", "Existing file",JOptionPane.YES_NO_CANCEL_OPTION);
+					switch(result){
+					case JOptionPane.YES_OPTION:
+						super.approveSelection();
+						return;
+					case JOptionPane.NO_OPTION:
+						return;
+					case JOptionPane.CLOSED_OPTION:
+						return;
+					case JOptionPane.CANCEL_OPTION:
+						cancelSelection();
+						return;
+					}
+				}
+				super.approveSelection();
+			}
 		};
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CECIL File", "cecil");
 		fileChooser.setFileFilter(filter);
@@ -1585,7 +1635,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private void onIOCheckClicked() {
 		controller.ioCheckClicked(ioPortsEnabled);
 	}
-	
+
 	/**
 	 * Loads a program into the input editor.
 	 * 
@@ -1633,11 +1683,11 @@ public class Frame extends JFrame implements ViewInterface {
 	 */
 	public void highlightStepThrough(int currNo) {
 		tblInput.clearSelection();
-		
+
 		tblInput.setRowSelectionInterval(currNo-1, currNo-1);
 		tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(currNo-1, 0, true)));
 	}
-	
+
 	/**
 	 * Change the application font size.
 	 * 
