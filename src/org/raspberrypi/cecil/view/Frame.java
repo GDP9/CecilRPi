@@ -786,7 +786,7 @@ public class Frame extends JFrame implements ViewInterface {
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
 		comboBox = new JComboBox(temp);
-		comboBox.setEditable(true);
+		comboBox.setEditable(false);
 		AutoCompleteDecorator.decorate(comboBox);
 
 		ActionListener actionListener = new ActionListener() {
