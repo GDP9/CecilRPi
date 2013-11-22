@@ -179,22 +179,22 @@ public class FontChooser extends JDialog {
 		if (font == "Small") {
 			newFont = "Small";
 			sampleText.setFont(frame.FONT_SMALL);
-			frame.tblInput.setRowHeight(70);
-			frame.tblMemory.setRowHeight(70);
+//			frame.tblInput.setRowHeight(70);
+//			frame.tblMemory.setRowHeight(70);
 		} 
 		
 		else if (font == "Medium") {
 			newFont = "Medium";
 			sampleText.setFont(frame.FONT_MEDIUM);
-			frame.tblInput.setRowHeight((int) (frame.resolution.height/12.4));
-			frame.tblMemory.setRowHeight((int) (frame.resolution.height/12.4));
+//			frame.tblInput.setRowHeight((int) (frame.resolution.height/12.4));
+//			frame.tblMemory.setRowHeight((int) (frame.resolution.height/12.4));
 		}
 		
 		else if (font == "Large") {
 			newFont = "Large";
 			sampleText.setFont(frame.FONT_LARGE);
-			frame.tblInput.setRowHeight(55);
-			frame.tblMemory.setRowHeight(55);
+//			frame.tblInput.setRowHeight(55);
+//			frame.tblMemory.setRowHeight(55);
 		}
 		
 	

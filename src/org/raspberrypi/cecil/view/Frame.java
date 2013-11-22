@@ -188,7 +188,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		resolution = new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight());
-		System.out.println(resolution.height);
+//		System.out.println(resolution.height);
 		if (resolution.width <= 1280 || resolution.height <= 720) {
 			scaleType = 0;
 			WIDTH = 800;
@@ -483,7 +483,7 @@ public class Frame extends JFrame implements ViewInterface {
 		centerPanel.add(centerRightPanel);
 
 		southPanel = new JPanel();
-		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 20, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 15, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		//southPanel.setToolTipText("Each cell in the memory is an address."
 		//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
 		southPanel.setLayout(new GridLayout(1,1));
@@ -507,7 +507,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
 		if (resolution.width <= 800 || resolution.height <= 600) {
-			gbc_centre.weighty = 0.6;
+			gbc_centre.weighty = 0.55;
 		} else {
 			gbc_centre.weighty = 0.7;
 		}
@@ -522,7 +522,7 @@ public class Frame extends JFrame implements ViewInterface {
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
 		if (resolution.width <= 800 || resolution.height <= 600) {
-			gbc_south.weighty = 0.4;
+			gbc_south.weighty = 0.45;
 		} else {
 			gbc_south.weighty = 0.3;
 		}
@@ -1289,60 +1289,71 @@ public class Frame extends JFrame implements ViewInterface {
 		tblMemory.getTableHeader().setFont(currentFont);
 		tblMemory.setFont(currentFont);
 
-		System.out.println("Scale type "+scaleType);
-		System.out.println("font size "+currentFont.getSize());
-
 		if (scaleType == 0) {
-			if(currentFont.getSize() == 14) {
-				tblInput.setRowHeight((int) (resolution.height/20));
-				tblMemory.setRowHeight((int) (resolution.height/20));
-			}
-			
-			else if(currentFont.getSize() == 12) {
-				tblInput.setRowHeight((int) (resolution.height/17));
-				tblMemory.setRowHeight((int) (resolution.height/17));
-			}
-			
-			else {
-				tblInput.setRowHeight((int) (resolution.height/40));
-				tblMemory.setRowHeight((int) (resolution.height/40));
-			}
-			
-		} 
-		
-		else if (scaleType == 1) {
-			if(currentFont.getSize() == 16) {
-				tblInput.setRowHeight((int) (resolution.height/12.4));
-				tblMemory.setRowHeight((int) (resolution.height/12.4));
-			}
-			
-			else if(currentFont.getSize() == 12) {
-				tblInput.setRowHeight((int) (resolution.height/10.7));
-				tblMemory.setRowHeight((int) (resolution.height/10.7));
-			}
-			
-			else {
-				tblInput.setRowHeight((int) (resolution.height/18.3));
-				tblMemory.setRowHeight((int) (resolution.height/18.3));
-			}
-			
+			tblInput.setRowHeight(30);
+			tblMemory.setRowHeight(30);
+		} else if (scaleType == 1) {
+			tblInput.setRowHeight(40);
+			tblMemory.setRowHeight(40);
 		} else if (scaleType == 2) {
-			if(currentFont.getSize() == 18) {
-				tblInput.setRowHeight((int) (resolution.height/12.4));
-				tblMemory.setRowHeight((int) (resolution.height/12.4));
-			}
-			
-			else if(currentFont.getSize() == 14) {
-				tblInput.setRowHeight((int) (resolution.height/10.7));
-				tblMemory.setRowHeight((int) (resolution.height/10.7));
-			}
-			
-			else {
-				tblInput.setRowHeight((int) (resolution.height/18.3));
-				tblMemory.setRowHeight((int) (resolution.height/18.3));
-			}
-			
+			tblInput.setRowHeight(50);
+			tblMemory.setRowHeight(50);
 		}
+
+//		System.out.println("Scale type "+scaleType);
+//		System.out.println("font size "+currentFont.getSize());
+//
+//		if (scaleType == 0) {
+//			if(currentFont.getSize() == 14) {
+//				tblInput.setRowHeight((int) (resolution.height/20));
+//				tblMemory.setRowHeight((int) (resolution.height/20));
+//			}
+//			
+//			else if(currentFont.getSize() == 12) {
+//				tblInput.setRowHeight((int) (resolution.height/17));
+//				tblMemory.setRowHeight((int) (resolution.height/17));
+//			}
+//			
+//			else {
+//				tblInput.setRowHeight((int) (resolution.height/40));
+//				tblMemory.setRowHeight((int) (resolution.height/40));
+//			}
+//			
+//		} 
+//		
+//		else if (scaleType == 1) {
+//			if(currentFont.getSize() == 16) {
+//				tblInput.setRowHeight((int) (resolution.height/12.4));
+//				tblMemory.setRowHeight((int) (resolution.height/12.4));
+//			}
+//			
+//			else if(currentFont.getSize() == 12) {
+//				tblInput.setRowHeight((int) (resolution.height/10.7));
+//				tblMemory.setRowHeight((int) (resolution.height/10.7));
+//			}
+//			
+//			else {
+//				tblInput.setRowHeight((int) (resolution.height/18.3));
+//				tblMemory.setRowHeight((int) (resolution.height/18.3));
+//			}
+//			
+//		} else if (scaleType == 2) {
+//			if(currentFont.getSize() == 18) {
+//				tblInput.setRowHeight((int) (resolution.height/12.4));
+//				tblMemory.setRowHeight((int) (resolution.height/12.4));
+//			}
+//			
+//			else if(currentFont.getSize() == 14) {
+//				tblInput.setRowHeight((int) (resolution.height/10.7));
+//				tblMemory.setRowHeight((int) (resolution.height/10.7));
+//			}
+//			
+//			else {
+//				tblInput.setRowHeight((int) (resolution.height/18.3));
+//				tblMemory.setRowHeight((int) (resolution.height/18.3));
+//			}
+//			
+//		}
 	}
 
 	/**
