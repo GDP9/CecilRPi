@@ -2,10 +2,16 @@ package org.raspberrypi.cecil.view;
 
 import java.awt.ItemSelectable;
 
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleIcon;
+import javax.accessibility.AccessibleTable;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -20,6 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -37,11 +46,15 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.JComboBox;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,7 +104,7 @@ import org.raspberrypi.cecil.pojo.Instruction;
  * @date 07/11/2013
  *
  */
-public class Frame extends JFrame implements ViewInterface {
+public class Frame extends JFrame implements ViewInterface, Accessible {
 	/**
 	 * 
 	 */
@@ -123,7 +136,6 @@ public class Frame extends JFrame implements ViewInterface {
 	private JPanel centerRightPanel;
 	private JPanel centerLeftPanel;
 	private JPanel southPanel;
-	private JPanel consolePanel;
 	private JPanel registerPanel;
 	private JPanel flagPanel;
 
@@ -137,12 +149,14 @@ public class Frame extends JFrame implements ViewInterface {
 
 	//Console
 	private JList<String> txtConsole;
+	private JScrollPane consoleScroll;
 
 	//Input
-	JTable tblInput;
+	private JTable tblInput;
 
 	//Memory
-	JTable tblMemory;
+	private JTable tblMemory;
+	private JScrollPane memoryScroll;
 
 	//Action buttons
 	private JButton btnCompile;
@@ -156,6 +170,7 @@ public class Frame extends JFrame implements ViewInterface {
 
 	//Menu
 	private BackgroundMenuBar menuBar;
+	private JMenu iconItem;
 	private JMenu fileMenu;
 	private JMenu settingsMenu;
 	private JMenu helpMenu;
@@ -178,7 +193,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private boolean ioPortsEnabled;
 	private int scaleType;
 	Dimension resolution;
-	private JScrollPane memoryScroll;
+	
 	/**
 	 * Creates the view with default fonts, colours, and values.
 	 */
@@ -227,6 +242,7 @@ public class Frame extends JFrame implements ViewInterface {
 		setupFlagIcons();
 		setupFonts();
 		setupProgramCode();
+		setupAccessibility();
 		repaint();
 		setVisible(true);
 	}
@@ -251,6 +267,8 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		getContentPane().setLayout(gridBagLayout);
+		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language");
+		
 		setTitle("CECIL");
 		if (System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm")) {
 			setTitle("CECIL RPi");
@@ -270,18 +288,25 @@ public class Frame extends JFrame implements ViewInterface {
 		 * Menu bar
 		 */
 		menuBar = new BackgroundMenuBar();
+		menuBar.getAccessibleContext().setAccessibleName("Menu bar");
+		menuBar.getAccessibleContext().setAccessibleDescription("Press alt to focus the menu bar");
+		menuBar.setFocusable(true);
+
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
 			if (scaleType < 2) {
 				img = img.getScaledInstance(100, 30, Image.SCALE_SMOOTH);
 			}
 			ImageIcon icon = new ImageIcon(img);
-			JMenu iconItem = new JMenu();
+			iconItem = new JMenu();
+			iconItem.getAccessibleContext().setAccessibleName("Cecil logo");
+			iconItem.getAccessibleContext().setAccessibleDescription("Image of Cecil title");
 			iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
 			iconItem.setOpaque(false);
 			iconItem.setEnabled(false);
 			iconItem.setDisabledIcon(icon);
 			iconItem.setIcon(icon);
+			iconItem.getAccessibleContext().setAccessibleName("Cecil logo");
 			Dimension iconSize = new Dimension(170, 120);
 			iconItem.setMaximumSize(iconSize);
 			iconItem.setMinimumSize(iconSize);
@@ -292,8 +317,10 @@ public class Frame extends JFrame implements ViewInterface {
 		repaint();
 
 		fileMenu = new JMenu("File");
-		fileMenu.setToolTipText("File");
+		fileMenu.getAccessibleContext().setAccessibleName("File");
+		fileMenu.getAccessibleContext().setAccessibleDescription("Opens the file options");
 		fileMenu.setOpaque(false);
+		fileMenu.setFocusable(true);
 		fileMenu.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -308,9 +335,19 @@ public class Frame extends JFrame implements ViewInterface {
 				fileMenu.requestFocus();
 			}
 		});
+		fileMenu.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent arg0) {}
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				fileMenu.doClick();
+			}
+		});
 		menuBar.add(fileMenu);
 
 		menuNew = new JMenuItem("New");
+		menuNew.getAccessibleContext().setAccessibleName("New");
+		menuNew.getAccessibleContext().setAccessibleDescription("Creates a new Cecil program");
 		menuNew.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -319,6 +356,8 @@ public class Frame extends JFrame implements ViewInterface {
 		});
 
 		menuOpen = new JMenuItem("Open");
+		menuOpen.getAccessibleContext().setAccessibleName("Open");
+		menuOpen.getAccessibleContext().setAccessibleDescription("Opens a file chooser window");
 		menuOpen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -327,6 +366,8 @@ public class Frame extends JFrame implements ViewInterface {
 		});
 
 		menuSave = new JMenuItem("Save");
+		menuSave.getAccessibleContext().setAccessibleName("Save");
+		menuSave.getAccessibleContext().setAccessibleDescription("Opens a file saver window");
 		menuSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -335,6 +376,8 @@ public class Frame extends JFrame implements ViewInterface {
 		});
 
 		menuExit = new JMenuItem("Exit");
+		menuExit.getAccessibleContext().setAccessibleName("Exit");
+		menuExit.getAccessibleContext().setAccessibleDescription("Exits the application");
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -349,7 +392,10 @@ public class Frame extends JFrame implements ViewInterface {
 		fileMenu.add(menuExit);
 
 		settingsMenu = new JMenu("Settings");
+		settingsMenu.getAccessibleContext().setAccessibleName("Settings");
+		settingsMenu.getAccessibleContext().setAccessibleDescription("Opens the settings options");
 		settingsMenu.setToolTipText("Settings");
+		settingsMenu.setFocusable(true);
 		settingsMenu.setOpaque(false);
 		settingsMenu.addMouseListener(new MouseListener() {
 			@Override
@@ -365,9 +411,19 @@ public class Frame extends JFrame implements ViewInterface {
 				settingsMenu.requestFocus();
 			}
 		});
+		settingsMenu.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent arg0) {}
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				settingsMenu.doClick();
+			}
+		});
 		menuBar.add(settingsMenu);
 
 		menuPreferences = new JMenuItem("Preferences");
+		menuPreferences.getAccessibleContext().setAccessibleName("Preferences");
+		menuPreferences.getAccessibleContext().setAccessibleDescription("Opens a preferences window");
 		final FontChooser fc = new FontChooser(this);
 		menuPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -377,7 +433,9 @@ public class Frame extends JFrame implements ViewInterface {
 		settingsMenu.add(menuPreferences);
 
 		helpMenu = new JMenu("Help");
-		helpMenu.setToolTipText("Help");
+		helpMenu.getAccessibleContext().setAccessibleName("Help");
+		helpMenu.getAccessibleContext().setAccessibleDescription("Opens the help options");
+		helpMenu.setFocusable(true);
 		helpMenu.setOpaque(false);
 		helpMenu.addMouseListener(new MouseListener() {
 			@Override
@@ -393,11 +451,26 @@ public class Frame extends JFrame implements ViewInterface {
 				helpMenu.requestFocus();
 			}
 		});
+		helpMenu.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent arg0) {}
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				helpMenu.doClick();
+			}
+		});
 		menuBar.add(helpMenu);
 
 		menuUserManual = new JMenuItem("User Manual");
+		menuUserManual.getAccessibleContext().setAccessibleName("User manual");
+		menuUserManual.getAccessibleContext().setAccessibleDescription("Opens the user manual in a new window");
+		
 		menuAbout = new JMenuItem("About CECIL");
+		menuAbout.getAccessibleContext().setAccessibleName("About CECIL");
+		menuAbout.getAccessibleContext().setAccessibleDescription("Opens the about page in a new window");
 		final About about = new About();
+		about.getAccessibleContext().setAccessibleName("About CECIL page");
+		about.getAccessibleContext().setAccessibleDescription("Describes the CECIL application");
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				about.setVisible(true);
@@ -410,7 +483,10 @@ public class Frame extends JFrame implements ViewInterface {
 		helpMenu.add(menuAbout);
 
 		ioMenu = new JMenu("Output to IO ports");
+		ioMenu.getAccessibleContext().setAccessibleName("IO port checkbox");
+		ioMenu.getAccessibleContext().setAccessibleDescription("Press to allow output to physical ports (only available on Raspberry Pi");
 		ioMenu.setToolTipText("Check to enable output to physical IO ports (only available on Raspberry Pi)");
+		ioMenu.setFocusable(true);
 		ioMenu.setOpaque(false);
 		ioPortsEnabled = false;
 		try {
@@ -418,7 +494,9 @@ public class Frame extends JFrame implements ViewInterface {
 			if (scaleType < 2) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
-			ioMenu.setIcon(new ImageIcon(img));
+			ImageIcon icon = new ImageIcon(img);
+			icon.getAccessibleContext().setAccessibleName("Unchecked IO ports checkbox");
+			ioMenu.setIcon(icon);
 		} catch (IOException e) {
 			System.out.println("Error creating buttons: could not set button icon");
 		}
@@ -442,13 +520,17 @@ public class Frame extends JFrame implements ViewInterface {
 							if (scaleType < 2) {
 								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 							}
-							ioMenu.setIcon(new ImageIcon(img));
+							ImageIcon icon = new ImageIcon(img);
+							icon.getAccessibleContext().setAccessibleName("Checked IO ports checkbox");
+							ioMenu.setIcon(icon);
 						} else {
 							Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
 							if (scaleType < 2) {
 								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 							}
-							ioMenu.setIcon(new ImageIcon(img));
+							ImageIcon icon = new ImageIcon(img);
+							icon.getAccessibleContext().setAccessibleName("Unchecked IO ports checkbox");
+							ioMenu.setIcon(icon);
 						}
 						ioMenu.setSelected(false);
 						onIOCheckClicked();
@@ -532,7 +614,10 @@ public class Frame extends JFrame implements ViewInterface {
 		 * Setup north panel buttons
 		 */		
 		btnCompile = new JButton("Compile");
+		btnCompile.getAccessibleContext().setAccessibleName("Compile");
+		btnCompile.getAccessibleContext().setAccessibleDescription("Compiles the program");
 		btnCompile.setToolTipText("Compile");
+//		btnCompile.requestFocus();
 		btnCompile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -543,6 +628,8 @@ public class Frame extends JFrame implements ViewInterface {
 		northPanel.add(btnCompile);
 
 		btnRun = new JButton("Run");
+		btnRun.getAccessibleContext().setAccessibleName("Run");
+		btnRun.getAccessibleContext().setAccessibleDescription("Runs the compiled program");
 		btnRun.setToolTipText("Run");
 		btnRun.setEnabled(false);
 		btnRun.addActionListener(new ActionListener() {
@@ -554,6 +641,8 @@ public class Frame extends JFrame implements ViewInterface {
 		northPanel.add(btnRun);
 
 		btnStepThrough = new JButton("Step through");
+		btnStepThrough.getAccessibleContext().setAccessibleName("Step through");
+		btnStepThrough.getAccessibleContext().setAccessibleDescription("Steps through one line of the compiled program at the selected line");
 		btnStepThrough.setToolTipText("Step through");
 		btnStepThrough.setEnabled(false);
 		btnStepThrough.addActionListener(new ActionListener() {
@@ -583,12 +672,10 @@ public class Frame extends JFrame implements ViewInterface {
 		 * X register
 		 */
 		xRegister = new JList<String>();
-		xRegister.setCellRenderer(new DefaultListCellRenderer(){
-			public int getHorizontalAlignment() {
-				return CENTER;
-			}
-		});
-		xRegister.setEnabled(false);
+		xRegister.getAccessibleContext().setAccessibleName("X register");
+		xRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the x register newest to oldest");
+		xRegister.setCellRenderer(new PermanentCellRenderer());
+//		xRegister.setEnabled(false);
 		xRegister.setToolTipText("Internal memory store for data within CPU.");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -596,12 +683,10 @@ public class Frame extends JFrame implements ViewInterface {
 		 * Y register
 		 */
 		yRegister = new JList<String>();
-		yRegister.setCellRenderer(new DefaultListCellRenderer() {
-			public int getHorizontalAlignment() {
-				return CENTER;
-			}
-		});
-		yRegister.setEnabled(false);
+		yRegister.getAccessibleContext().setAccessibleName("Y register");
+		yRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the y register newest to oldest");
+		yRegister.setCellRenderer(new PermanentCellRenderer());
+//		yRegister.setEnabled(false);
 		yRegister.setToolTipText("Internal memory store for data within CPU.");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -609,12 +694,10 @@ public class Frame extends JFrame implements ViewInterface {
 		 * Acc register
 		 */
 		accRegister = new JList<String>();
-		accRegister.setCellRenderer(new DefaultListCellRenderer(){
-			public int getHorizontalAlignment() {
-				return CENTER;
-			}
-		});
-		accRegister.setEnabled(false);
+		accRegister.getAccessibleContext().setAccessibleName("Accumulator");
+		accRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the accumulator newest to oldest");
+		accRegister.setCellRenderer(new PermanentCellRenderer());
+//		accRegister.setEnabled(false);
 		accRegister.setToolTipText("Memory store for performing arithmetic and logical operations.");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -624,6 +707,7 @@ public class Frame extends JFrame implements ViewInterface {
 		 */
 		xScroll = new JScrollPane(xRegister);
 		xScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "X", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
+//		((TitledBorder) ((CompoundBorder) xScroll.getBorder()).getInsideBorder()).
 		xScroll.setOpaque(false);
 		registerPanel.add(xScroll);
 
@@ -661,7 +745,7 @@ public class Frame extends JFrame implements ViewInterface {
 		lblCarry.setOpaque(true);
 		carryPanel.add(lblCarry);
 		flagPanel.add(carryPanel);
-
+		
 		JPanel zeroPanel = new JPanel(new GridLayout(1,1));
 		zeroPanel.setOpaque(false);
 		zeroPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -685,20 +769,9 @@ public class Frame extends JFrame implements ViewInterface {
 		/*
 		 * Console
 		 */		
-		consolePanel = new JPanel();
-		consolePanel.setLayout(new GridLayout(1,1));
-		consolePanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-
-		GridBagConstraints gbc_bottom = new GridBagConstraints();
-		gbc_bottom.fill = GridBagConstraints.BOTH;
-		gbc_bottom.gridx = 0;
-		gbc_bottom.gridy = 2;
-		gbc_bottom.weightx = 1;
-		gbc_bottom.weighty = 0.7;
-		centerRightPanel.add(consolePanel, gbc_bottom);
-
 		txtConsole = new JList<String>();
 		txtConsole.setToolTipText("Output console");
+		txtConsole.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		txtConsole.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -722,10 +795,19 @@ public class Frame extends JFrame implements ViewInterface {
 				}
 			}
 		});
-		JScrollPane consoleScroll = new JScrollPane(txtConsole);
+//		txtConsole.setCellRenderer(new DefaultListCellRenderer)
+		
+		consoleScroll = new JScrollPane(txtConsole);
 		consoleScroll.setOpaque(false);
-		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		consolePanel.add(consoleScroll);
+		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		
+		GridBagConstraints gbc_bottom = new GridBagConstraints();
+		gbc_bottom.fill = GridBagConstraints.BOTH;
+		gbc_bottom.gridx = 0;
+		gbc_bottom.gridy = 2;
+		gbc_bottom.weightx = 1;
+		gbc_bottom.weighty = 0.7;
+		centerRightPanel.add(consoleScroll, gbc_bottom);
 
 		/*
 		 * Input editor
@@ -758,6 +840,7 @@ public class Frame extends JFrame implements ViewInterface {
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
 		tblInput.getColumnModel().getColumn(0).setMinWidth(35);
 		tblInput.getColumnModel().getColumn(0).setMaxWidth(35);
+
 		JTableHeader headerforinput = tblInput.getTableHeader();
 
 		ToolTipsforinput tips = new ToolTipsforinput();
@@ -780,18 +863,11 @@ public class Frame extends JFrame implements ViewInterface {
 			}
 		}
 		headerforinput.addMouseMotionListener(tips);
-		/*JLabel headerRenderer = new DefaultTableCellRenderer();
-	    String columnName = tblInput.getModel().getColumnName(0);
-	    headerRenderer.setText(columnName);
-	    headerRenderer.setBackground(Color.GRAY);
-	    headerRenderer.setToolTipText("Wave");
-	    TableColumnModel columnModel = tblInput.getColumnModel();
-	    TableColumn englishColumn = columnModel.getColumn(0);
-	    englishColumn.setHeaderRenderer((TableCellRenderer) headerRenderer);*/
 
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
 		comboBox = new JComboBox(temp);
+		comboBox.getAccessibleContext().setAccessibleName("Instruction");
 		comboBox.setEditable(false);
 		AutoCompleteDecorator.decorate(comboBox);
 
@@ -803,18 +879,35 @@ public class Frame extends JFrame implements ViewInterface {
 		comboBox.addActionListener(actionListener);				
 		comboBox.setRenderer(new MyComboBoxRenderer()); 				
 		input = new JTextField();
-		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
-		aligncenter.setHorizontalAlignment(JLabel.CENTER);
-		tblInput.getColumnModel().getColumn(0).setCellRenderer(aligncenter);
+//		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
+//		aligncenter.setHorizontalAlignment(JLabel.CENTER);
+//		((DefaultTableCellRenderer) tblInput.getColumnModel().getColumn(0).getCellRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		tblInput.setFillsViewportHeight(true);
 
 		for (int i = 0; i < tblInput.getColumnCount(); i++) {
 			TableColumn column = tblInput.getColumnModel().getColumn(i);
 
 			if (i != 2) {
-				column.setCellEditor(new DefaultCellEditor(input));
+				column.setCellEditor(new DefaultCellEditor(input) {
+			        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			        	Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+			        	
+			        	cell.getAccessibleContext().setAccessibleName("Editor");
+			            cell.getAccessibleContext().setAccessibleDescription("Editor has been entered");
+			            
+			            return cell;
+			        }
+				});
 			} else {
-				column.setCellEditor(new ComboBoxCellEditor(comboBox));
+				column.setCellEditor(new ComboBoxCellEditor(comboBox) {
+			        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			        	Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+			        	
+			        	cell.getAccessibleContext().setAccessibleName("Instructions list");
+			            cell.getAccessibleContext().setAccessibleDescription("Dropdown box has been entered");
+			            return cell;
+			        }
+				});
 			}
 			column.getCellEditor().addCellEditorListener(new CellEditorListener() {
 				@Override
@@ -867,7 +960,6 @@ public class Frame extends JFrame implements ViewInterface {
 					break;
 				case KeyEvent.VK_TAB:
 					if (selectedColumn == 1) {
-						System.out.println("Hello");
 						tblInput.setRowSelectionInterval(selectedRow, selectedRow);
 						tblInput.setColumnSelectionInterval(selectedColumn, selectedColumn);
 						tblInput.requestFocus();
@@ -899,11 +991,39 @@ public class Frame extends JFrame implements ViewInterface {
 			mdlMemory.addColumn(i, new Object[]{""});
 		}
 
-		tblMemory = new JTable(mdlMemory);
+		tblMemory = new JTable(mdlMemory) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		tblMemory.getTableHeader().setReorderingAllowed(false);
 		((DefaultTableCellRenderer) tblMemory.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-		tblMemory.setDefaultRenderer(Object.class, aligncenter);
-		tblMemory.setEnabled(false);
+		tblMemory.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
+	            Component cell = super.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+
+	            cell.getAccessibleContext().setAccessibleName("Row "+row+", column "+column);
+	            if (obj != null && !obj.toString().isEmpty()) {
+	            	cell.getAccessibleContext().setAccessibleDescription("Value is "+obj.toString());
+	            } else {
+	            	cell.getAccessibleContext().setAccessibleDescription("Blank");
+	            }
+	            
+	            return cell;
+	        }
+
+			@Override
+			public void setHorizontalAlignment(int alignment) {
+				super.setHorizontalAlignment(JLabel.CENTER);
+			}
+		});
+		tblMemory.setCellSelectionEnabled(false);
 		//tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMemory.setToolTipText("Each cell in the memory is an address."
@@ -955,7 +1075,7 @@ public class Frame extends JFrame implements ViewInterface {
 			lblZero.setBackground(inner);
 			lblNegative.setBackground(inner);
 
-			consolePanel.setBackground(background);
+			consoleScroll.setBackground(background);
 			txtConsole.setBackground(inner);
 			txtConsole.setSelectionBackground(highlight);
 
@@ -988,7 +1108,7 @@ public class Frame extends JFrame implements ViewInterface {
 			lblZero.setBackground(Color.WHITE);
 			lblNegative.setBackground(Color.WHITE);
 
-			consolePanel.setBackground(UIManager.getColor("Panel.background"));
+//			consoleScroll.setBackground(UIManager.getColor("Panel.background"));
 			txtConsole.setBackground(Color.WHITE);
 			txtConsole.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 
@@ -1210,35 +1330,9 @@ public class Frame extends JFrame implements ViewInterface {
 	 * These icons change colour depending on the flag state.
 	 */
 	private void setupFlagIcons() {
-		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-			if (scaleType < 2) {
-				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
-			}
-			lblCarry.setIcon(new ImageIcon(img));
-		} catch (IOException e) {
-			System.out.println("Error creating buttons: could not set button icon");
-		}
-
-		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-			if (scaleType < 2) {
-				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
-			}
-			lblZero.setIcon(new ImageIcon(img));
-		} catch (IOException e) {
-			System.out.println("Error creating buttons: could not set button icon");
-		}
-
-		try {
-			Image img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-			if (scaleType < 2) {
-				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
-			}
-			lblNegative.setIcon(new ImageIcon(img));
-		} catch (IOException e) {
-			System.out.println("Error creating buttons: could not set button icon");
-		}
+		setCarryFlag(false);
+		setZeroFlag(false);
+		setNegativeFlag(false);
 	}
 
 	/**
@@ -1279,7 +1373,7 @@ public class Frame extends JFrame implements ViewInterface {
 		((TitledBorder)((CompoundBorder) yScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);	
 		accRegister.setFont(currentFont);
 		((TitledBorder)((CompoundBorder) accScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
-		((TitledBorder)((CompoundBorder) consolePanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		((TitledBorder)((CompoundBorder) consoleScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		txtConsole.setFont(new Font("Consolas", Font.PLAIN, currentFont.getSize()));
 		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblInput.getTableHeader().setFont(currentFont);
@@ -1299,63 +1393,76 @@ public class Frame extends JFrame implements ViewInterface {
 			tblInput.setRowHeight(50);
 			tblMemory.setRowHeight(50);
 		}
-
-//		System.out.println("Scale type "+scaleType);
-//		System.out.println("font size "+currentFont.getSize());
-//
-//		if (scaleType == 0) {
-//			if(currentFont.getSize() == 14) {
-//				tblInput.setRowHeight((int) (resolution.height/20));
-//				tblMemory.setRowHeight((int) (resolution.height/20));
-//			}
-//			
-//			else if(currentFont.getSize() == 12) {
-//				tblInput.setRowHeight((int) (resolution.height/17));
-//				tblMemory.setRowHeight((int) (resolution.height/17));
-//			}
-//			
-//			else {
-//				tblInput.setRowHeight((int) (resolution.height/40));
-//				tblMemory.setRowHeight((int) (resolution.height/40));
-//			}
-//			
-//		} 
-//		
-//		else if (scaleType == 1) {
-//			if(currentFont.getSize() == 16) {
-//				tblInput.setRowHeight((int) (resolution.height/12.4));
-//				tblMemory.setRowHeight((int) (resolution.height/12.4));
-//			}
-//			
-//			else if(currentFont.getSize() == 12) {
-//				tblInput.setRowHeight((int) (resolution.height/10.7));
-//				tblMemory.setRowHeight((int) (resolution.height/10.7));
-//			}
-//			
-//			else {
-//				tblInput.setRowHeight((int) (resolution.height/18.3));
-//				tblMemory.setRowHeight((int) (resolution.height/18.3));
-//			}
-//			
-//		} else if (scaleType == 2) {
-//			if(currentFont.getSize() == 18) {
-//				tblInput.setRowHeight((int) (resolution.height/12.4));
-//				tblMemory.setRowHeight((int) (resolution.height/12.4));
-//			}
-//			
-//			else if(currentFont.getSize() == 14) {
-//				tblInput.setRowHeight((int) (resolution.height/10.7));
-//				tblMemory.setRowHeight((int) (resolution.height/10.7));
-//			}
-//			
-//			else {
-//				tblInput.setRowHeight((int) (resolution.height/18.3));
-//				tblMemory.setRowHeight((int) (resolution.height/18.3));
-//			}
-//			
-//		}
 	}
 
+	private void setupAccessibility() {
+		lblCarry.setFocusable(true);
+		lblCarry.getAccessibleContext().setAccessibleDescription("Switches on when the value at any of the registers exceeds the max buffer size");
+		
+		lblZero.setFocusable(true);
+		lblZero.getAccessibleContext().setAccessibleDescription("Switches on when the value at any of the registers is equal to 0");
+		
+		lblNegative.setFocusable(true);
+		lblNegative.getAccessibleContext().setAccessibleDescription("Switches on when the value at any of the registers is less than 0");
+		
+		txtConsole.setFocusable(true);
+		txtConsole.getAccessibleContext().setAccessibleName("Results");
+		txtConsole.getAccessibleContext().setAccessibleDescription("Displays output results or errors");
+		
+		tblInput.getAccessibleContext().setAccessibleName("Program editor");
+		tblInput.getAccessibleContext().setAccessibleDescription("A table where the program code can be entered. The instructions column consists of a dropdown list of instructions.");
+		tblInput.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
+	            Component cell = super.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+
+	            if (column != 0) {
+	            	cell.getAccessibleContext().setAccessibleName("Row "+(row+1)+", "+table.getColumnName(column)+" column");
+	            } else {
+	            	cell.getAccessibleContext().setAccessibleName("Row "+(row+1)+", row number column");
+	            }
+	            
+	            if (column == 0 && obj != null && !obj.toString().isEmpty()) {
+	            	cell.getAccessibleContext().setAccessibleDescription("Value is "+obj.toString());
+	            } else {
+	            	cell.getAccessibleContext().setAccessibleDescription("");
+	            }
+	            
+	            return cell;
+	        }
+		});
+		
+		//Compile button gets default focus
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowGainedFocus(WindowEvent e) {
+				btnCompile.requestFocus();
+			}
+		});
+		
+		//Alt focuses the file menu
+		final String MENU_ACTION_KEY = "FOCUS_FIRST_MENU";
+		getRootPane().getActionMap().put(MENU_ACTION_KEY, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				fileMenu.doClick();
+			}
+		});
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ALT, 0, true), MENU_ACTION_KEY);
+	
+		final String CONTEXT_BUTTONS_ACTION_KEY = "FOCUS_COMPILE_BUTTON";
+		ioMenu.getActionMap().put(CONTEXT_BUTTONS_ACTION_KEY, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btnCompile.requestFocus();
+			}
+		});
+		ioMenu.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0, true), CONTEXT_BUTTONS_ACTION_KEY);
+	}
+	
 	/**
 	 * Set the current program code to display in the input editor.
 	 */
@@ -1388,12 +1495,16 @@ public class Frame extends JFrame implements ViewInterface {
 				setBackground(list.getBackground());
 				setForeground(list.getForeground());
 			}
+			
+			getAccessibleContext().setAccessibleName("Instructions list");
+			
 			setFont(list.getFont());
 			setText((value == null) ? "" : value.toString());
 			setBorder(getBorder());
 			return this;
 		}
 	}
+	
 	class ToolTipsforinput extends MouseMotionAdapter {
 		HashMap tooltips = new HashMap();
 		public void setToolTip(TableColumn col, String tooltip) {		    
@@ -1409,7 +1520,6 @@ public class Frame extends JFrame implements ViewInterface {
 
 		}
 	}
-
 
 	/**
 	 * Custom JMenuBar class which allows the background colour to be changed.
@@ -1480,6 +1590,65 @@ public class Frame extends JFrame implements ViewInterface {
 			return true;
 		}
 	}
+	
+	/**
+	 * 
+	 * Custom DefaultListCellRenderer class which permanently selects the first index.
+	 * 
+	 * MIT Open Source License
+	 * @author Cathy Jin (cj8g10)
+	 * Southampton University, United Kingdom
+	 * @version 1.1
+	 * 
+	 * @date 22/11/2013
+	 *
+	 */
+	private class PermanentCellRenderer extends DefaultListCellRenderer {
+		/**
+		 * Serial version UID to stop the warning.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public Component getListCellRendererComponent(JList list,
+				Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			if (index == 0) {
+				super.getListCellRendererComponent(list, value, index, true, cellHasFocus);
+			} else {
+				super.getListCellRendererComponent(list, value, index, false, cellHasFocus);
+			}
+			return this;
+		}
+		
+		public int getHorizontalAlignment() {
+			return CENTER;
+		}
+	}
+	
+//	private class AccessibleMETableCellRenderer extends DefaultTableCellRenderer {
+//        /**
+//		 * Serial version UID to stop the warning.
+//		 */
+//		private static final long serialVersionUID = 1L;
+//
+//		public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
+//            Component cell = super.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+//
+//            cell.getAccessibleContext().setAccessibleName("Row "+row+", column "+column);
+//            if (obj != null && !obj.toString().isEmpty()) {
+//            	cell.getAccessibleContext().setAccessibleDescription("Value is "+obj.toString());
+//            } else {
+//            	cell.getAccessibleContext().setAccessibleDescription("Empty");
+//            }
+//            
+//            return cell;
+//        }
+//
+//		@Override
+//		public void setHorizontalAlignment(int alignment) {
+//			super.setHorizontalAlignment(JLabel.CENTER);
+//		}
+//	}
 
 	/**
 	 * Retrieves the program code from the input editor and passes it to the controller.
@@ -1782,11 +1951,13 @@ public class Frame extends JFrame implements ViewInterface {
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblCarry.getAccessibleContext().setAccessibleName("Carry flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblCarry.getAccessibleContext().setAccessibleName("Carry flag off");
 			}
 			lblCarry.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
@@ -1803,11 +1974,13 @@ public class Frame extends JFrame implements ViewInterface {
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblZero.getAccessibleContext().setAccessibleName("Zero flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblZero.getAccessibleContext().setAccessibleName("Zero flag off");
 			}
 			lblZero.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
@@ -1824,11 +1997,13 @@ public class Frame extends JFrame implements ViewInterface {
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblNegative.getAccessibleContext().setAccessibleName("Negative flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
 				if (scaleType < 2) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
+				lblNegative.getAccessibleContext().setAccessibleName("Negative flag off");
 			}
 			lblNegative.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
