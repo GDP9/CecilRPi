@@ -1,51 +1,21 @@
 package org.raspberrypi.cecil.view;
 
-import java.awt.ItemSelectable;
-
-import javax.accessibility.Accessible;
-import javax.accessibility.AccessibleContext;
-import javax.accessibility.AccessibleIcon;
-import javax.accessibility.AccessibleTable;
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JList;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.Color;
 import java.awt.Component;
-
-import javax.swing.plaf.FontUIResource;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.JComboBox;
-
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.ItemSelectable;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -55,28 +25,39 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.GridLayout;
 
+import javax.accessibility.Accessible;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Image;
-import java.awt.FlowLayout;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -86,6 +67,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
@@ -267,7 +254,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		getContentPane().setLayout(gridBagLayout);
-		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language");
 		
 		setTitle("CECIL");
 		if (System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm")) {
@@ -288,10 +274,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 * Menu bar
 		 */
 		menuBar = new BackgroundMenuBar();
-		menuBar.getAccessibleContext().setAccessibleName("Menu bar");
-		menuBar.getAccessibleContext().setAccessibleDescription("Press alt to focus the menu bar");
-		menuBar.setFocusable(true);
-
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
 			if (scaleType < 2) {
@@ -304,9 +286,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			iconItem.setBorder(new EmptyBorder(5, 5, 5, 5));
 			iconItem.setOpaque(false);
 			iconItem.setEnabled(false);
+			iconItem.setFocusTraversalKeysEnabled(true);
 			iconItem.setDisabledIcon(icon);
 			iconItem.setIcon(icon);
-			iconItem.getAccessibleContext().setAccessibleName("Cecil logo");
 			Dimension iconSize = new Dimension(170, 120);
 			iconItem.setMaximumSize(iconSize);
 			iconItem.setMinimumSize(iconSize);
@@ -316,9 +298,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 		repaint();
 
-		fileMenu = new JMenu("File");
-		fileMenu.getAccessibleContext().setAccessibleName("File");
-		fileMenu.getAccessibleContext().setAccessibleDescription("Opens the file options");
+		fileMenu = new JMenu("File");		
 		fileMenu.setOpaque(false);
 		fileMenu.setFocusable(true);
 		fileMenu.addMouseListener(new MouseListener() {
@@ -335,19 +315,31 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				fileMenu.requestFocus();
 			}
 		});
-		fileMenu.addFocusListener(new FocusListener() {
+		fileMenu.addKeyListener(new KeyListener() {
+			
 			@Override
-			public void focusLost(FocusEvent arg0) {}
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
 			@Override
-			public void focusGained(FocusEvent arg0) {
-				fileMenu.doClick();
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					fileMenu.doClick();
+					System.out.println("Opening file menu");
+				}
 			}
 		});
 		menuBar.add(fileMenu);
 
 		menuNew = new JMenuItem("New");
-		menuNew.getAccessibleContext().setAccessibleName("New");
-		menuNew.getAccessibleContext().setAccessibleDescription("Creates a new Cecil program");
 		menuNew.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -356,8 +348,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		});
 
 		menuOpen = new JMenuItem("Open");
-		menuOpen.getAccessibleContext().setAccessibleName("Open");
-		menuOpen.getAccessibleContext().setAccessibleDescription("Opens a file chooser window");
 		menuOpen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -366,8 +356,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		});
 
 		menuSave = new JMenuItem("Save");
-		menuSave.getAccessibleContext().setAccessibleName("Save");
-		menuSave.getAccessibleContext().setAccessibleDescription("Opens a file saver window");
 		menuSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -376,8 +364,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		});
 
 		menuExit = new JMenuItem("Exit");
-		menuExit.getAccessibleContext().setAccessibleName("Exit");
-		menuExit.getAccessibleContext().setAccessibleDescription("Exits the application");
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -391,9 +377,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		fileMenu.addSeparator();
 		fileMenu.add(menuExit);
 
-		settingsMenu = new JMenu("Settings");
-		settingsMenu.getAccessibleContext().setAccessibleName("Settings");
-		settingsMenu.getAccessibleContext().setAccessibleDescription("Opens the settings options");
+		settingsMenu = new JMenu("Settings");		
 		settingsMenu.setToolTipText("Settings");
 		settingsMenu.setFocusable(true);
 		settingsMenu.setOpaque(false);
@@ -411,19 +395,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				settingsMenu.requestFocus();
 			}
 		});
-		settingsMenu.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {}
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				settingsMenu.doClick();
-			}
-		});
 		menuBar.add(settingsMenu);
 
 		menuPreferences = new JMenuItem("Preferences");
-		menuPreferences.getAccessibleContext().setAccessibleName("Preferences");
-		menuPreferences.getAccessibleContext().setAccessibleDescription("Opens a preferences window");
 		final FontChooser fc = new FontChooser(this);
 		menuPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -432,9 +406,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		});
 		settingsMenu.add(menuPreferences);
 
-		helpMenu = new JMenu("Help");
-		helpMenu.getAccessibleContext().setAccessibleName("Help");
-		helpMenu.getAccessibleContext().setAccessibleDescription("Opens the help options");
+		helpMenu = new JMenu("Help");		
 		helpMenu.setFocusable(true);
 		helpMenu.setOpaque(false);
 		helpMenu.addMouseListener(new MouseListener() {
@@ -451,23 +423,10 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				helpMenu.requestFocus();
 			}
 		});
-		helpMenu.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {}
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				helpMenu.doClick();
-			}
-		});
 		menuBar.add(helpMenu);
 
-		menuUserManual = new JMenuItem("User Manual");
-		menuUserManual.getAccessibleContext().setAccessibleName("User manual");
-		menuUserManual.getAccessibleContext().setAccessibleDescription("Opens the user manual in a new window");
-		
+		menuUserManual = new JMenuItem("User Manual");		
 		menuAbout = new JMenuItem("About CECIL");
-		menuAbout.getAccessibleContext().setAccessibleName("About CECIL");
-		menuAbout.getAccessibleContext().setAccessibleDescription("Opens the about page in a new window");
 		final About about = new About();
 		about.getAccessibleContext().setAccessibleName("About CECIL page");
 		about.getAccessibleContext().setAccessibleDescription("Describes the CECIL application");
@@ -482,9 +441,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		helpMenu.addSeparator();
 		helpMenu.add(menuAbout);
 
-		ioMenu = new JMenu("Output to IO ports");
-		ioMenu.getAccessibleContext().setAccessibleName("IO port checkbox");
-		ioMenu.getAccessibleContext().setAccessibleDescription("Press to allow output to physical ports (only available on Raspberry Pi");
+		ioMenu = new JMenu("Output to IO ports");		
 		ioMenu.setToolTipText("Check to enable output to physical IO ports (only available on Raspberry Pi)");
 		ioMenu.setFocusable(true);
 		ioMenu.setOpaque(false);
@@ -536,6 +493,43 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 						onIOCheckClicked();
 					} catch (IOException e1) {
 						System.out.println("Error creating buttons: could not set button icon");
+					}
+				}
+			}
+		});
+		ioMenu.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (ioMenu.isEnabled()) {
+						try {
+							ioPortsEnabled = !ioPortsEnabled;
+							if (ioPortsEnabled) {
+								Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
+								if (scaleType < 2) {
+									img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+								}
+								ImageIcon icon = new ImageIcon(img);
+								icon.getAccessibleContext().setAccessibleName("Checked IO ports checkbox");
+								ioMenu.setIcon(icon);
+							} else {
+								Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
+								if (scaleType < 2) {
+									img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
+								}
+								ImageIcon icon = new ImageIcon(img);
+								icon.getAccessibleContext().setAccessibleName("Unchecked IO ports checkbox");
+								ioMenu.setIcon(icon);
+							}
+							ioMenu.setSelected(false);
+							onIOCheckClicked();
+						} catch (IOException e1) {
+							System.out.println("Error creating buttons: could not set button icon");
+						}
 					}
 				}
 			}
@@ -614,10 +608,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 * Setup north panel buttons
 		 */		
 		btnCompile = new JButton("Compile");
-		btnCompile.getAccessibleContext().setAccessibleName("Compile");
-		btnCompile.getAccessibleContext().setAccessibleDescription("Compiles the program");
 		btnCompile.setToolTipText("Compile");
-//		btnCompile.requestFocus();
 		btnCompile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -628,8 +619,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		northPanel.add(btnCompile);
 
 		btnRun = new JButton("Run");
-		btnRun.getAccessibleContext().setAccessibleName("Run");
-		btnRun.getAccessibleContext().setAccessibleDescription("Runs the compiled program");
 		btnRun.setToolTipText("Run");
 		btnRun.setEnabled(false);
 		btnRun.addActionListener(new ActionListener() {
@@ -641,8 +630,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		northPanel.add(btnRun);
 
 		btnStepThrough = new JButton("Step through");
-		btnStepThrough.getAccessibleContext().setAccessibleName("Step through");
-		btnStepThrough.getAccessibleContext().setAccessibleDescription("Steps through one line of the compiled program at the selected line");
 		btnStepThrough.setToolTipText("Step through");
 		btnStepThrough.setEnabled(false);
 		btnStepThrough.addActionListener(new ActionListener() {
@@ -672,21 +659,15 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 * X register
 		 */
 		xRegister = new JList<String>();
-		xRegister.getAccessibleContext().setAccessibleName("X register");
-		xRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the x register newest to oldest");
 		xRegister.setCellRenderer(new PermanentCellRenderer());
-//		xRegister.setEnabled(false);
 		xRegister.setToolTipText("Internal memory store for data within CPU.");
 		xRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
+		
 		/*
 		 * Y register
 		 */
 		yRegister = new JList<String>();
-		yRegister.getAccessibleContext().setAccessibleName("Y register");
-		yRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the y register newest to oldest");
 		yRegister.setCellRenderer(new PermanentCellRenderer());
-//		yRegister.setEnabled(false);
 		yRegister.setToolTipText("Internal memory store for data within CPU.");
 		yRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -694,10 +675,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 * Acc register
 		 */
 		accRegister = new JList<String>();
-		accRegister.getAccessibleContext().setAccessibleName("Accumulator");
-		accRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the accumulator newest to oldest");
 		accRegister.setCellRenderer(new PermanentCellRenderer());
-//		accRegister.setEnabled(false);
 		accRegister.setToolTipText("Memory store for performing arithmetic and logical operations.");
 		accRegister.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -707,13 +685,11 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 */
 		xScroll = new JScrollPane(xRegister);
 		xScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "X", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
-//		((TitledBorder) ((CompoundBorder) xScroll.getBorder()).getInsideBorder()).
 		xScroll.setOpaque(false);
 		registerPanel.add(xScroll);
 
 		yScroll = new JScrollPane(accRegister);
 		yScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder(new EmptyBorder(0, 0, 0, 0), "Accumulator", TitledBorder.CENTER, TitledBorder.TOP, null, null)));
-		//yScroll.setToolTipText("Register in which intermediate arithmetic and logic results are stored.");
 		yScroll.setOpaque(false);
 		registerPanel.add(yScroll);
 
@@ -771,7 +747,8 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 */		
 		txtConsole = new JList<String>();
 		txtConsole.setToolTipText("Output console");
-		txtConsole.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
+		txtConsole.setEnabled(true);
+		txtConsole.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		txtConsole.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
@@ -789,17 +766,26 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseClicked(MouseEvent arg0) {
 				if (errors != null && errors.size() > 0) {
 					highlightError();
-
-				} else {
-					txtConsole.removeSelectionInterval(txtConsole.getSelectedIndex(), txtConsole.getSelectedIndex());
 				}
 			}
 		});
-//		txtConsole.setCellRenderer(new DefaultListCellRenderer)
+		txtConsole.setCellRenderer(new DefaultListCellRenderer() {
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, false, cellHasFocus);
+				return this;
+			}
+		});
 		
 		consoleScroll = new JScrollPane(txtConsole);
+		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), BorderFactory.createCompoundBorder(new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(5,5,5,5))));
 		consoleScroll.setOpaque(false);
-		consoleScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 5, 10, 10), new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 		
 		GridBagConstraints gbc_bottom = new GridBagConstraints();
 		gbc_bottom.fill = GridBagConstraints.BOTH;
@@ -835,6 +821,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				}
 			}
 		};
+		tblInput.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tblInput.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		tblInput.getTableHeader().setReorderingAllowed(false);
 		tblInput.getColumnModel().getColumn(0).setResizable(false);
@@ -879,9 +866,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		comboBox.addActionListener(actionListener);				
 		comboBox.setRenderer(new MyComboBoxRenderer()); 				
 		input = new JTextField();
-//		DefaultTableCellRenderer aligncenter = new DefaultTableCellRenderer();
-//		aligncenter.setHorizontalAlignment(JLabel.CENTER);
-//		((DefaultTableCellRenderer) tblInput.getColumnModel().getColumn(0).getCellRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		tblInput.setFillsViewportHeight(true);
 
 		for (int i = 0; i < tblInput.getColumnCount(); i++) {
@@ -1373,7 +1357,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		((TitledBorder)((CompoundBorder) yScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);	
 		accRegister.setFont(currentFont);
 		((TitledBorder)((CompoundBorder) accScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
-		((TitledBorder)((CompoundBorder) consoleScroll.getBorder()).getInsideBorder()).setTitleFont(currentFont);
+		((TitledBorder)((CompoundBorder)((CompoundBorder) consoleScroll.getBorder()).getInsideBorder()).getOutsideBorder()).setTitleFont(currentFont);
 		txtConsole.setFont(new Font("Consolas", Font.PLAIN, currentFont.getSize()));
 		((TitledBorder)((CompoundBorder) centerLeftPanel.getBorder()).getInsideBorder()).setTitleFont(currentFont);
 		tblInput.getTableHeader().setFont(currentFont);
@@ -1396,6 +1380,68 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	}
 
 	private void setupAccessibility() {
+		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language");
+		
+		menuBar.getAccessibleContext().setAccessibleName("Menu bar");
+		menuBar.getAccessibleContext().setAccessibleDescription("Press alt to focus the menu bar");
+		menuBar.setFocusable(true);
+		menuBar.setFocusTraversalKeysEnabled(true);
+		
+		fileMenu.getAccessibleContext().setAccessibleName("File");
+		fileMenu.getAccessibleContext().setAccessibleDescription("Opens the file options");
+		fileMenu.setFocusTraversalKeysEnabled(true);
+		
+		menuNew.getAccessibleContext().setAccessibleName("New");
+		menuNew.getAccessibleContext().setAccessibleDescription("Creates a new Cecil program");
+		
+		menuOpen.getAccessibleContext().setAccessibleName("Open");
+		menuOpen.getAccessibleContext().setAccessibleDescription("Opens a file chooser window");
+		
+		menuSave.getAccessibleContext().setAccessibleName("Save");
+		menuSave.getAccessibleContext().setAccessibleDescription("Opens a file saver window");
+		
+		menuExit.getAccessibleContext().setAccessibleName("Exit");
+		menuExit.getAccessibleContext().setAccessibleDescription("Exits the application");
+		
+		settingsMenu.getAccessibleContext().setAccessibleName("Settings");
+		settingsMenu.getAccessibleContext().setAccessibleDescription("Opens the settings options");
+		settingsMenu.setFocusTraversalKeysEnabled(true);
+		
+		menuPreferences.getAccessibleContext().setAccessibleName("Preferences");
+		menuPreferences.getAccessibleContext().setAccessibleDescription("Opens a preferences window");
+		
+		helpMenu.getAccessibleContext().setAccessibleName("Help");
+		helpMenu.getAccessibleContext().setAccessibleDescription("Opens the help options");
+		helpMenu.setFocusTraversalKeysEnabled(true);
+		
+		menuUserManual.getAccessibleContext().setAccessibleName("User manual");
+		menuUserManual.getAccessibleContext().setAccessibleDescription("Opens the user manual in a new window");
+		
+		menuAbout.getAccessibleContext().setAccessibleName("About CECIL");
+		menuAbout.getAccessibleContext().setAccessibleDescription("Opens the about page in a new window");
+		
+		ioMenu.getAccessibleContext().setAccessibleName("IO port checkbox");
+		ioMenu.getAccessibleContext().setAccessibleDescription("Press to allow output to physical ports (only available on Raspberry Pi");
+		ioMenu.setFocusTraversalKeysEnabled(true);
+		
+		btnCompile.getAccessibleContext().setAccessibleName("Compile");
+		btnCompile.getAccessibleContext().setAccessibleDescription("Compiles the program");
+		
+		btnRun.getAccessibleContext().setAccessibleName("Run");
+		btnRun.getAccessibleContext().setAccessibleDescription("Runs the compiled program");
+		
+		btnStepThrough.getAccessibleContext().setAccessibleName("Step through");
+		btnStepThrough.getAccessibleContext().setAccessibleDescription("Steps through one line of the compiled program at the selected line");
+		
+		xRegister.getAccessibleContext().setAccessibleName("X register");
+		xRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the x register newest to oldest");
+		
+		yRegister.getAccessibleContext().setAccessibleName("Y register");
+		yRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the y register newest to oldest");
+		
+		accRegister.getAccessibleContext().setAccessibleName("Accumulator");
+		accRegister.getAccessibleContext().setAccessibleDescription("Displays the history of values in the accumulator newest to oldest");
+		
 		lblCarry.setFocusable(true);
 		lblCarry.getAccessibleContext().setAccessibleDescription("Switches on when the value at any of the registers exceeds the max buffer size");
 		
@@ -1406,7 +1452,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		lblNegative.getAccessibleContext().setAccessibleDescription("Switches on when the value at any of the registers is less than 0");
 		
 		txtConsole.setFocusable(true);
-		txtConsole.getAccessibleContext().setAccessibleName("Results");
+		txtConsole.getAccessibleContext().setAccessibleName("Output console");
 		txtConsole.getAccessibleContext().setAccessibleDescription("Displays output results or errors");
 		
 		tblInput.getAccessibleContext().setAccessibleName("Program editor");
@@ -1439,28 +1485,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Compile button gets default focus
 		addWindowFocusListener(new WindowAdapter() {
 			public void windowGainedFocus(WindowEvent e) {
-				btnCompile.requestFocus();
+				btnCompile.requestFocusInWindow();
 			}
 		});
-		
-		//Alt focuses the file menu
-		final String MENU_ACTION_KEY = "FOCUS_FIRST_MENU";
-		getRootPane().getActionMap().put(MENU_ACTION_KEY, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				fileMenu.doClick();
-			}
-		});
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ALT, 0, true), MENU_ACTION_KEY);
-	
-		final String CONTEXT_BUTTONS_ACTION_KEY = "FOCUS_COMPILE_BUTTON";
-		ioMenu.getActionMap().put(CONTEXT_BUTTONS_ACTION_KEY, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				btnCompile.requestFocus();
-			}
-		});
-		ioMenu.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0, true), CONTEXT_BUTTONS_ACTION_KEY);
 	}
 	
 	/**
@@ -1496,7 +1523,11 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				setForeground(list.getForeground());
 			}
 			
-			getAccessibleContext().setAccessibleName("Instructions list");
+			if (value != null && !value.toString().isEmpty()) {
+				getAccessibleContext().setAccessibleName(value.toString());
+			} else {
+				getAccessibleContext().setAccessibleName("Instruction");
+			}
 			
 			setFont(list.getFont());
 			setText((value == null) ? "" : value.toString());
@@ -1625,31 +1656,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 	}
 	
-//	private class AccessibleMETableCellRenderer extends DefaultTableCellRenderer {
-//        /**
-//		 * Serial version UID to stop the warning.
-//		 */
-//		private static final long serialVersionUID = 1L;
-//
-//		public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus, int row, int column) {
-//            Component cell = super.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
-//
-//            cell.getAccessibleContext().setAccessibleName("Row "+row+", column "+column);
-//            if (obj != null && !obj.toString().isEmpty()) {
-//            	cell.getAccessibleContext().setAccessibleDescription("Value is "+obj.toString());
-//            } else {
-//            	cell.getAccessibleContext().setAccessibleDescription("Empty");
-//            }
-//            
-//            return cell;
-//        }
-//
-//		@Override
-//		public void setHorizontalAlignment(int alignment) {
-//			super.setHorizontalAlignment(JLabel.CENTER);
-//		}
-//	}
-
 	/**
 	 * Retrieves the program code from the input editor and passes it to the controller.
 	 */
