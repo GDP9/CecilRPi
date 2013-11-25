@@ -12,16 +12,26 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.peer.FontPeer;
-
-public class FontChooser extends JDialog {
+/**
+ * Preferences to change the font size and colour settings.
+ * 
+ * MIT Open Source License
+ * @author Karishma Nune (kkn1g10)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 07/11/2013
+ *
+ */
+public class Preferences extends JDialog {
 
 	Color panelcolour;
 	JComboBox fontName;
 	JComboBox fontSize;
 	JLabel sampleText;
-	String newFont;
-	String newColor;
-	JTextArea image;
+	Font newFont;
+	Color[] newColor;
+	JTextArea inputarea;
 	JComboBox colourName;
 	JPanel fontPanel;
 	JPanel fontPreview;
@@ -33,44 +43,161 @@ public class FontChooser extends JDialog {
 	Frame frame;
 	LineBorder border;
 
-	public FontChooser(Frame frame) {
+	public Preferences(Frame frame) {
 		this.frame = frame;
 		panelcolour = frame.ORANGE_THEME[0];
-		// super(parent, "Font Chooser", true);
+		newColor = frame.ORANGE_THEME;
 		setSize(350, 350);
 		setFrame();
 		setColour();
-		// setResizable(false);
-
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				cancelandclose();
 			}
 		});
+		
+		/**
+		 * Focus is on medium by default
+		 */
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowGainedFocus(WindowEvent e) {
+				medium.requestFocusInWindow();
+			}
+		});
+
 	}
+	/**
+	 * Sets all the panels, buttons, combo boxes along with the Key listeners and action listeners.
+	 * A theme consists of three colours; background, highlight, and inner panel colours.
+	 */
 
 	private void setFrame() {
 		getContentPane().setLayout(new GridBagLayout());
 		getContentPane().setBackground(panelcolour);
 		setTitle("Preferences");
-		
 		fontPanel = new JPanel();
-		 ActionListener fontsize = new ActionListener() {
-			    public void actionPerformed(ActionEvent e) {
-			    	  	updateFont(((JRadioButton) e.getSource()).getText());
-			    			    }
-			  };
-		 ButtonGroup bg = new ButtonGroup();
+		ButtonGroup bg = new ButtonGroup();
 		small = new JRadioButton("Small");
 		small.setFont(frame.FONT_SMALL);
-		small.addActionListener(fontsize);
+		small.setFocusable(true);
+		small.getAccessibleContext().setAccessibleDescription("Font size of 12");
+		small.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(small.isFocusOwner()&& arg0.getKeyCode()== KeyEvent.VK_ENTER){
+					small.setSelected(true);	
+					sampleText.setFont(frame.FONT_SMALL);
+					newFont = frame.FONT_SMALL;
+
+				}
+
+			}
+		});
+
+		small.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				sampleText.setFont(frame.FONT_SMALL);
+				newFont = frame.FONT_SMALL;
+
+			}
+		});
 		medium = new JRadioButton("Medium");
 		medium.setSelected(true);
 		medium.setFont(frame.FONT_MEDIUM);
-		medium.addActionListener(fontsize);
+		medium.setFocusable(true);
+		medium.getAccessibleContext().setAccessibleDescription("Font size of 16");
+		medium.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(medium.isFocusOwner()&& arg0.getKeyCode()== KeyEvent.VK_ENTER){
+					medium.setSelected(true);	
+					sampleText.setFont(frame.FONT_MEDIUM);
+					newFont = frame.FONT_MEDIUM;
+
+				}
+
+			}
+		});
+		medium.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				sampleText.setFont(frame.FONT_MEDIUM);
+				newFont = frame.FONT_MEDIUM;
+			}
+		});
 		large = new JRadioButton("Large");
 		large.setFont(frame.FONT_LARGE);
-		large.addActionListener(fontsize);
+		large.setFocusable(true);
+		large.getAccessibleContext().setAccessibleDescription("Font size of 24");
+		large.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(large.isFocusOwner()&& arg0.getKeyCode()== KeyEvent.VK_ENTER){
+					large.setSelected(true);	
+					sampleText.setFont(frame.FONT_LARGE);
+					newFont = frame.FONT_LARGE;
+
+				}
+
+			}
+		});
+		large.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				sampleText.setFont(frame.FONT_LARGE);
+				newFont = frame.FONT_LARGE;
+			}
+		});
 		bg.add(small);
 		bg.add(medium);
 		bg.add(large);
@@ -78,7 +205,7 @@ public class FontChooser extends JDialog {
 		fontPanel.add(small);
 		fontPanel.add(medium);
 		fontPanel.add(large);
-		
+
 		fontPreview = new JPanel(new GridBagLayout());
 		fontPreview.setBackground(panelcolour);
 		sampleText = new JLabel("The Text looks like this");
@@ -103,17 +230,19 @@ public class FontChooser extends JDialog {
 
 		colourName = new JComboBox(new String[] { "Green", "Orange", "Blue","Default" });
 		colourName.setSelectedIndex(1);
+		colourName.setFocusable(true);
+		colourName.getAccessibleContext().setAccessibleDescription("You can select different colour themes for the application");
 		colourName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				updateColour();
 			}
 		});
 		colourPreview = new JPanel(new BorderLayout());
-		image = new JTextArea();
-		image.setBackground(frame.ORANGE_THEME[2]);
-		image.setEditable(false);
+		inputarea = new JTextArea();
+		inputarea.setBackground(frame.ORANGE_THEME[2]);
+		inputarea.setEditable(false);
 		colourPreview.add(colourName, BorderLayout.NORTH);
-		colourPreview.add(image, BorderLayout.CENTER);
+		colourPreview.add(inputarea, BorderLayout.CENTER);
 		colourPreview.setOpaque(false);
 		colourPreview.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 10), new TitledBorder(null, "Colour", TitledBorder.LEADING, TitledBorder.TOP, null, null)), new EmptyBorder(10, 10, 10, 10)));
 
@@ -124,8 +253,7 @@ public class FontChooser extends JDialog {
 		gbc_font.weightx = 1;
 		gbc_font.weighty = 0.2;
 		getContentPane().add(fontPreview, gbc_font);
-
-		// colourPreview.add(image);
+		
 
 		GridBagConstraints gbc_colour = new GridBagConstraints();
 		gbc_colour.fill = GridBagConstraints.BOTH;
@@ -136,12 +264,16 @@ public class FontChooser extends JDialog {
 		getContentPane().add(colourPreview, gbc_colour);
 
 		JButton okButton = new JButton("Ok");
+		okButton.setFocusable(true);
+		okButton.getAccessibleContext().setAccessibleDescription("Updates the application with the selected font and colour");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				saveandclose();
 			}
 		});
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setFocusable(true);
+		cancelButton.getAccessibleContext().setAccessibleDescription("Cancel the preferences and go back the main application");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				cancelandclose();
@@ -161,7 +293,9 @@ public class FontChooser extends JDialog {
 		getContentPane().add(controlPanel, gbc_buttons);
 
 	}
-
+	/**
+	 * Sets the colours of the preferences.
+	 */
 	protected void setColour() {
 		getContentPane().setBackground(panelcolour);
 		fontPanel.setBackground(panelcolour);
@@ -173,91 +307,47 @@ public class FontChooser extends JDialog {
 		repaint();
 	}
 
-	/* updates the sample text to the new font */
-	protected void updateFont(String font) {
-
-		if (font == "Small") {
-			newFont = "Small";
-			sampleText.setFont(frame.FONT_SMALL);
-//			frame.tblInput.setRowHeight(70);
-//			frame.tblMemory.setRowHeight(70);
-		} 
-		
-		else if (font == "Medium") {
-			newFont = "Medium";
-			sampleText.setFont(frame.FONT_MEDIUM);
-//			frame.tblInput.setRowHeight((int) (frame.resolution.height/12.4));
-//			frame.tblMemory.setRowHeight((int) (frame.resolution.height/12.4));
-		}
-		
-		else if (font == "Large") {
-			newFont = "Large";
-			sampleText.setFont(frame.FONT_LARGE);
-//			frame.tblInput.setRowHeight(55);
-//			frame.tblMemory.setRowHeight(55);
-		}
-		
-	
-	}
+	/**
+	 * Set the colours of the Preferences to the current theme and send the selected option to the frame.
+	 * A theme consists of three colours; background, highlight, and inner panel colours.
+	 */
 
 	protected void updateColour() {
-		// Image will be shown here.
 		if (colourName.getSelectedIndex() == 1) {
-//			image.setBackground(new Color(255, 230, 214));
-//			panelcolour = new Color(255, 148, 82);
-//			newColor = "Orange";
-			
-//			LineBorder lineBorder = new LineBorder(frame.ORANGE_THEME[1], 2, true);
-			image.setBackground(frame.ORANGE_THEME[2]);
+			inputarea.setBackground(frame.ORANGE_THEME[2]);
 			panelcolour = frame.ORANGE_THEME[0];
 			UIManager.put("TitledBorder.border", new LineBorder(frame.ORANGE_THEME[1], 3, true));
-			newColor = "Orange";
+			newColor = frame.ORANGE_THEME;
 		} else if (colourName.getSelectedIndex() == 0) {
-//			image.setBackground(new Color(191, 252, 172));
-//			panelcolour = new Color(6, 209, 46);
-			
-			image.setBackground(frame.GREEN_THEME[2]);
+			inputarea.setBackground(frame.GREEN_THEME[2]);
 			panelcolour = frame.GREEN_THEME[0];
 			UIManager.put("TitledBorder.border", new LineBorder(frame.GREEN_THEME[1], 3, true));
-			newColor = "Green";
+			newColor = frame.GREEN_THEME;
 		} else if (colourName.getSelectedIndex() == 2) {
-//			image.setBackground(new Color(152, 221, 255));
-//			panelcolour = new Color(67, 178, 233);
-			
-			image.setBackground(frame.BLUE_THEME[2]);
+			inputarea.setBackground(frame.BLUE_THEME[2]);
 			panelcolour = frame.BLUE_THEME[0];
 			UIManager.put("TitledBorder.border", new LineBorder(frame.BLUE_THEME[1], 3, true));
-			newColor = "Blue";
+			newColor = frame.BLUE_THEME;
 		} else if (colourName.getSelectedIndex() == 3) {
-//			image.setBackground(new Color(224, 224, 224));
-//			panelcolour = new Color(224, 224, 224);
-			
-			image.setBackground(Color.WHITE);
+			inputarea.setBackground(Color.WHITE);
 			panelcolour = UIManager.getColor("Panel.background");
 			UIManager.put("TitledBorder.border", new EtchedBorder());
-			newColor = "Default";
+			newColor = frame.DEFAULT_THEME;
 		}
 		setColour();
 
 	}
+	/**
+	 * Send the selected options to the frame.
+	 */
 
 	public void saveandclose() {
-		// Save font & color information
 		frame.setNewFont(newFont);
 		frame.setNewColour(newColor);
-		setVisible(false);
-		// System.out.println("Test in FontChooser?"+new Frame().test);
-
+		setVisible(false);		
 	}
 
 	public void cancelandclose() {
-		// Erase any font information and then close the window
-		// newFont = null;
-		newColor = null;
 		setVisible(false);
 	}
-	/*
-	 * public static void main(String[] args) { Frame frame = new Frame(); (new
-	 * FontChooser(frame)).setVisible(true); }
-	 */
 }

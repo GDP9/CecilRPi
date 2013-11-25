@@ -16,8 +16,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -398,7 +396,8 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		menuBar.add(settingsMenu);
 
 		menuPreferences = new JMenuItem("Preferences");
-		final FontChooser fc = new FontChooser(this);
+		final Preferences fc = new Preferences(this);
+		fc.setFocusable(true);
 		menuPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				fc.setVisible(true);
@@ -428,6 +427,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		menuUserManual = new JMenuItem("User Manual");		
 		menuAbout = new JMenuItem("About CECIL");
 		final About about = new About();
+		about.setFocusable(true);
 		about.getAccessibleContext().setAccessibleName("About CECIL page");
 		about.getAccessibleContext().setAccessibleDescription("Describes the CECIL application");
 		menuAbout.addActionListener(new ActionListener() {
@@ -560,8 +560,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 
 		southPanel = new JPanel();
 		southPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 15, 10), new TitledBorder(null, "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-		//southPanel.setToolTipText("Each cell in the memory is an address."
-		//+ " Addresses between 0-905 store user input data 906-1028 store other housekeeping data like registers, ports etc");
 		southPanel.setLayout(new GridLayout(1,1));
 
 		/*
@@ -834,19 +832,19 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		for (int column = 0; column < tblInput.getColumnCount(); column++) {
 			TableColumn colNo = tblInput.getColumnModel().getColumn(column);
 			if (column == 0) {
-				tips.setToolTip(colNo, "Line Number");
+				tips.setToolTip("Line Number");
 			}
 			if (column == 1) {
-				tips.setToolTip(colNo, "Reference point to the next instruction");
+				tips.setToolTip("Reference point to the next instruction");
 			}
 			if (column == 2) {
-				tips.setToolTip(colNo, "Machine operation to be executed");
+				tips.setToolTip("Machine operation to be executed");
 			}
 			if (column == 3) {
-				tips.setToolTip(colNo, "Reference to labelfield");
+				tips.setToolTip("Reference to labelfield");
 			}
 			if (column == 4) {
-				tips.setToolTip(colNo, "Comments");
+				tips.setToolTip("Comments");
 			}
 		}
 		headerforinput.addMouseMotionListener(tips);
@@ -968,7 +966,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		centerLeftPanel.add(inputScroll, gbc_scrollPane);
 
 		/*
-		 * Memory
+		 * Displaying the memory allocation in a JTable. 
 		 */
 		DefaultTableModel mdlMemory = new DefaultTableModel();
 		for (int i = 0; i < 1024; i++) {
@@ -1008,16 +1006,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			}
 		});
 		tblMemory.setCellSelectionEnabled(false);
-		//tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMemory.setToolTipText("Each cell in the memory is an address."
 				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc");
-
-		//		JScrollPane memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
-		//		memoryScroll.setOpaque(false);
-		//		southPanel.add(memoryScroll);
-
 		memoryScroll = new JScrollPane(tblMemory, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		memoryScroll.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new BevelBorder(BevelBorder.LOWERED)));
 		memoryScroll.setOpaque(false);
@@ -1499,13 +1490,11 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 	}
 
-	//TODO Javadocing needed?
-	static private String selectedString(ItemSelectable is) {
-		Object selected[] = is.getSelectedObjects();
-		return ((selected.length == 0) ? "null" : (String)selected[0]);
-	} 
-
-	//TODO Javadocing needed
+	
+	/**
+	 * Renderer for Combo box to display the tooltips for all the items listed in the combo box.
+	 * Get the tooltip according the selected item's index.
+	 */
 	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			if (isSelected) {	
@@ -1513,7 +1502,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				setForeground(Color.BLUE);
 				if (-1 < index) {
 					if (instructions != null && instructions.get(index) != null && instructions.get(index).getDescription() != null) {
-						list.setToolTipText(instructions.get(index).getDescription());//get the tooltip according the selected item's index
+						list.setToolTipText(instructions.get(index).getDescription());
 					} else {
 						list.setToolTipText("No description available");
 					}
@@ -1522,31 +1511,34 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				setBackground(list.getBackground());
 				setForeground(list.getForeground());
 			}
-			
+
 			if (value != null && !value.toString().isEmpty()) {
 				getAccessibleContext().setAccessibleName(value.toString());
 			} else {
 				getAccessibleContext().setAccessibleName("Instruction");
 			}
-			
+
 			setFont(list.getFont());
 			setText((value == null) ? "" : value.toString());
 			setBorder(getBorder());
 			return this;
 		}
 	}
+	/**
+	 * Sets the tooltips for the JTable headers.
+	 */
 	
 	class ToolTipsforinput extends MouseMotionAdapter {
-		HashMap tooltips = new HashMap();
-		public void setToolTip(TableColumn col, String tooltip) {		    
-			tooltips.put(col, tooltip);		    
+		ArrayList tooltips = new ArrayList<>();
+		public void setToolTip(String tooltip) {		    
+			tooltips.add(tooltip);		    
 		}
 		public void mouseMoved(MouseEvent evt) {
 			JTableHeader headerInput = (JTableHeader) evt.getSource();
 			JTable inputTable = headerInput.getTable();
 			int columnIndex = inputTable.getColumnModel().getColumnIndexAtX(evt.getX());
 			if (columnIndex >= 0) {
-				headerInput.setToolTipText((String) tooltips.get(inputTable.getColumnModel().getColumn(columnIndex)));
+				headerInput.setToolTipText((String) tooltips.get(columnIndex));				
 			}
 
 		}
@@ -1880,27 +1872,19 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	 * @param font The new font.
 	 * 
 	 */
-	public void setNewFont(String font){
-		if(font == "Small"){
-			currentFont = FONT_SMALL;
-		} else if(font == "Medium"){
-			currentFont = FONT_MEDIUM;
-		} else if(font == "Large"){
-			currentFont = FONT_LARGE;
-		}
+	public void setNewFont(Font font){
+		currentFont = new FontUIResource(font);
 		setupFonts();
 	}
-
-	public void setNewColour(String color) {
-		if (color == "Default") {
-			currentTheme = DEFAULT_THEME;
-		} else if (color == "Orange") {
-			currentTheme = ORANGE_THEME;
-		} else if (color == "Blue") {
-			currentTheme = BLUE_THEME;
-		} else if (color == "Green") {
-			currentTheme = GREEN_THEME;
-		}
+	
+	/**
+	 * Change the colour of the application.
+	 * 
+	 * @param font The new font.
+	 * 
+	 */
+	public void setNewColour(Color[] colour) {
+		currentTheme = colour;
 		setupColours();
 		repaint();
 	}

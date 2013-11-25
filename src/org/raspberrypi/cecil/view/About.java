@@ -2,6 +2,8 @@ package org.raspberrypi.cecil.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -12,21 +14,30 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
-
+/**
+ * About CECIL page.
+ * 
+ * MIT Open Source License
+ * @author Karishma Nune (kkn1g10)
+ * Southampton University, United Kingdom
+ * @version 1.1
+ * 
+ * @date 07/11/2013
+ *
+ */
 public class About extends JDialog  {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
+	JTextArea info;
+	JPanel logo;
+	JPanel content;
+	BufferedImage myPicture;
 	public About() {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setSize(610, 400);
-		JPanel logo = new JPanel();
+		logo = new JPanel();
 		logo.setLayout(new BorderLayout());
-		logo.setBorder(new LineBorder(Color.GRAY, 2));
-		BufferedImage myPicture;
+		logo.setBorder(new LineBorder(Color.GRAY, 2));		
 		try {
 			myPicture = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));;
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
@@ -35,10 +46,10 @@ public class About extends JDialog  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		JPanel content = new JPanel();
+		content = new JPanel();
 		content.setLayout(new BorderLayout());
 		content.setBorder(new LineBorder(Color.GRAY, 2));
-		JTextArea info = new JTextArea("Version: SIM40\r\n"
+		info = new JTextArea("Version: SIM40\r\n"
 				+ "Copyright (c) 2013 Southampton University group GDP9\r\n" + 
 				" \r\n" + 
 				"This product was developed by Carolina Ferreira, \r\nShreeprabha Aggarwal, "
@@ -58,5 +69,10 @@ public class About extends JDialog  {
 		getContentPane().add(logo, BorderLayout.WEST);
 		getContentPane().add(content, BorderLayout.CENTER);
 		
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowGainedFocus(WindowEvent e) {
+				info.requestFocusInWindow();
+			}
+		});
 	}
 }
