@@ -406,6 +406,7 @@ public class Runner {
 
 		case 38: /* insert */
 			sim40.memory[i] = sim40.memory[++i];
+			i++;
 			break;
 
 		case 39: /* ycomp */
@@ -413,6 +414,7 @@ public class Runner {
 			negativeflagstatus(Simulator.YREG_ADDRESS, sim40.memory[++i]);
 			break;
 		}
+		
 		return i;
 	}
 

@@ -16,7 +16,7 @@ import org.raspberrypi.cecil.pojo.Program;
 /**
  * CECIL assembly language Compiler
  * Compiles CECIL Language user input programs
- * Handles compilation errors and adds them to StreamOutputError list
+ * Handles compilation errors and adds them to OutputErrorStream list
  * If successful compilation - sends a standard output message to the view
  * 
  * The MIT License (MIT)

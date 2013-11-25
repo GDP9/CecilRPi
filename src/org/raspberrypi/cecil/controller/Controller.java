@@ -33,7 +33,7 @@ public class Controller implements ControllerInterface {
 	private Model model;
 	private boolean usingRPi;
 	private boolean sendToIO;
-	private int previousLine;
+	//private int previousLine;
 
 	/**
 	 * Launches the application by creating a new CecilController.
@@ -233,6 +233,7 @@ public class Controller implements ControllerInterface {
 		//model.setToDefault();
 		model.run();
 		this.setViewOutput();
+		
 		if (sendToIO) {
 			sendOutputToGPIO();
 		}
@@ -253,86 +254,72 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	//	/**
+	//	 * Testing the method functionality
+	//	 */
+	//	public void sendOutputToGPIO() {
+	//		int val = model.getAcc().get(model.getAcc().size() - 1);
+	//		for(int i = 0; i < 10; i++) {
+	//			if((val & (1 << i)) == Math.pow(2, i))
+	//				System.out.println("port "+(i+1)+"  switch turned on");
+	//			else
+	//				System.out.println("port "+(i+1)+"  switch turned off");
+	//		}
+	//	}
+
 	/**
 	 * GPIO hook
 	 */
 	public void sendOutputToGPIO() {
+		for(int i = 0; i < 10; i++) {
+			if((model.getAcc().get(model.getAcc().size() - 1) & (1 << i)) == Math.pow(2, i))		
+				piGPIOPorts(i, PinState.HIGH);
+			else 
+				piGPIOPorts(i, PinState.LOW);
+		}
+	}
+
+	private void piGPIOPorts(int i, PinState state) {
 		/* create gpio controller */
 		GpioController gpio = GpioFactory.getInstance();
 		GpioPinDigitalOutput opin;
 
-		for(int i = 0; i < 10; i++) {
-			if((model.getAcc().get(model.getAcc().size() - 1) & (1 << i)) == 1) {
-				switch(i) {
-				case 0: /* 2^0 */
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
-					break;
-				case 1:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.HIGH);
-					break;
-				case 2:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", PinState.HIGH);
-					break;
-				case 3:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.HIGH);
-					break;
-				case 4:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED", PinState.HIGH);
-					break;
-				case 5:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.HIGH);
-					break;
-				case 6:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.HIGH);
-					break;
-				case 7:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.HIGH);
-					break;
-				case 8:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED", PinState.HIGH);
-					break;
-				case 9:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", PinState.HIGH);
-					break;
-				}
-			}
-			else {
-				switch(i) {
-				case 0: /* 2^0 */
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW);
-					break;
-				case 1:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.LOW);
-					break;
-				case 2:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", PinState.LOW);
-					break;
-				case 3:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
-					break;
-				case 4:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED", PinState.LOW);
-					break;
-				case 5:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.LOW);
-					break;
-				case 6:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.LOW);
-					break;
-				case 7:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.LOW);
-					break;
-				case 8:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED", PinState.LOW);
-					break;
-				case 9:
-					opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", PinState.LOW);
-					break;
-				}
-			}
+		switch(i) {
+		case 0: /* 2^0 */
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", state);
+			break;
+		case 1:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", state);
+			break;
+		case 2:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", state);
+			break;
+		case 3:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", state);
+			break;
+		case 4:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED", state);
+			break;
+		case 5:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", state);
+			break;
+		case 6:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", state);
+			break;
+		case 7:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", state);
+			break;
+		case 8:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED", state);
+			break;
+		case 9:
+			opin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", state);
+			break;
 		}
-	}
 
+
+
+	}
 
 	/**
 	 * 

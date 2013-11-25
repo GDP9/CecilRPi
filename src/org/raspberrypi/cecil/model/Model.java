@@ -11,8 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.antlr.grammar.v3.LeftRecursiveRuleWalker.outerAlternative_return;
-import org.antlr.gunit.swingui.parsers.StGUnitParser.output_return;
 import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
