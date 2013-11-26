@@ -1008,6 +1008,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			}
 		});
 		tblMemory.setCellSelectionEnabled(false);
+		tblMemory.setFillsViewportHeight(true);
 		tblMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMemory.setToolTipText("Each cell in the memory is an address."
 				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc");
