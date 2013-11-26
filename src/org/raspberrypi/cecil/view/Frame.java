@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.accessibility.Accessible;
 import javax.imageio.ImageIO;
@@ -252,6 +253,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		getContentPane().setLayout(gridBagLayout);
+		getContentPane().setLocale(Locale.ENGLISH);
 		
 		setTitle("CECIL");
 		if (System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm")) {
@@ -1371,7 +1373,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	}
 
 	private void setupAccessibility() {
-		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language");
+		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language (English)");
 		
 		menuBar.getAccessibleContext().setAccessibleName("Menu bar");
 		menuBar.getAccessibleContext().setAccessibleDescription("Press alt to focus the menu bar");
@@ -1447,7 +1449,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		txtConsole.getAccessibleContext().setAccessibleDescription("Displays output results or errors");
 		
 		tblInput.getAccessibleContext().setAccessibleName("Program editor");
-		tblInput.getAccessibleContext().setAccessibleDescription("A table where the program code can be entered. The instructions column consists of a dropdown list of instructions.");
+		tblInput.getAccessibleContext().setAccessibleDescription("A table where the program code can be entered. The instructions column consists of a dropdown list of instructions. Ctrl+Tab to exit the table.");
 		tblInput.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 			/**
 			 * Serial version UID to stop the warning.
@@ -1472,6 +1474,10 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	            return cell;
 	        }
 		});
+		
+		tblMemory.getAccessibleContext().setAccessibleName("Memory values");
+		tblMemory.getAccessibleContext().setAccessibleDescription("A table where each cell is a memory address."
+				+ " Addresses between 0-905 store user input data and 906-1028 store other housekeeping data like registers, ports etc. Ctrl+Tab to exit the table.");
 		
 		//Compile button gets default focus
 		addWindowFocusListener(new WindowAdapter() {

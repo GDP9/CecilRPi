@@ -33,7 +33,7 @@ public class Controller implements ControllerInterface {
 	private Model model;
 	private boolean usingRPi;
 	private boolean sendToIO;
-	
+
 	GpioController gpio;
 	ArrayList<GpioPinDigitalOutput> opin;
 
@@ -64,7 +64,7 @@ public class Controller implements ControllerInterface {
 		sendToIO = false;
 		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
 		view.setIOEnabled(usingRPi);
-		
+
 		if(usingRPi) {
 			gpio  = GpioFactory.getInstance();
 			piInitialseGPIO();
@@ -225,13 +225,17 @@ public class Controller implements ControllerInterface {
 			this.setViewOutput();
 			if(model.isCompileSuccess()){
 				view.setButtonsEnabled(model.isCompileSuccess());
-			}
-		}
+				if(sendToIO)
+					for(int i = 0; i < 10; i++) 
+						opin.get(i).low();
 
-		else { 
-			model.setViewToDefault();
-			this.setViewOutput();
-			view.setConsoleError(model.getErrorStream().getErrors());
+			}
+
+			else { 
+				model.setViewToDefault();
+				this.setViewOutput();
+				view.setConsoleError(model.getErrorStream().getErrors());
+			}
 		}
 	}
 
@@ -293,7 +297,7 @@ public class Controller implements ControllerInterface {
 
 	private void piInitialseGPIO() {
 		/* create gpio controller */
-		
+
 		opin = new ArrayList<GpioPinDigitalOutput>();
 		opin.add(gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW));
 		opin.add(gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.LOW));
