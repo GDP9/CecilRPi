@@ -64,11 +64,6 @@ public class Controller implements ControllerInterface {
 		sendToIO = false;
 		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
 		view.setIOEnabled(usingRPi);
-
-		if(usingRPi) {
-			gpio  = GpioFactory.getInstance();
-			piInitialseGPIO();
-		}
 	}
 
 	/**
@@ -470,6 +465,11 @@ public class Controller implements ControllerInterface {
 	public void ioCheckClicked(boolean ioPortsEnabled) {
 		if (ioPortsEnabled && usingRPi) {
 			sendToIO = ioPortsEnabled;
+			
+			if (gpio == null) {
+				gpio  = GpioFactory.getInstance();
+				piInitialseGPIO();
+			}
 		}
 	}
 }
