@@ -102,17 +102,17 @@ public class Controller implements ControllerInterface {
 		Thread.sleep(1000);
 		m.noteOn(64, 64);
 		Thread.sleep(500);
-		m.noteOn(66, 64);
+		m.noteOn(62, 64);
+		Thread.sleep(1000);
+		m.noteOn(64, 64);
 		Thread.sleep(500);
-		m.noteOn(68, 64);
-		Thread.sleep(500);
-		m.noteOn(72, 64);
-		Thread.sleep(500);
-		m.noteOn(74, 64);
-		Thread.sleep(500);
-		m.noteOn(76, 64);
-		Thread.sleep(500);
-		m.noteOn(78, 64);
+		m.noteOn(62, 64);
+		Thread.sleep(1000);
+		m.noteOn(64, 64);
+//		Thread.sleep(500);
+//		m.noteOn(76, 64);
+//		Thread.sleep(500);
+//		m.noteOn(78, 64);
 	}
 
 	/**
