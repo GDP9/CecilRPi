@@ -460,10 +460,7 @@ public class Controller implements ControllerInterface {
 		view.setCarryFlag(model.isCarryFlag());
 		view.setZeroFlag(model.isZeroFlag());
 		view.setNegativeFlag(model.isNegativeFlag());
-
-		if(model.isCarryFlag() || model.isNegativeFlag() || model.isZeroFlag()) 
-			m.noteOn(92, 64);
-			
+		
 		view.setMemoryAllocation(model.getMemory());
 
 		if (!model.isCompileSuccess() && model.getErrorStream() != null && model.getErrorStream().getErrors() != null) {
