@@ -71,6 +71,31 @@ public class Controller implements ControllerInterface {
 		sendToIO = false;
 		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
 		view.setIOEnabled(usingRPi);
+		
+		
+		try {
+			synthesizer = MidiSystem.getSynthesizer();
+			if (synthesizer == null) {
+				System.out.println("getSynthesizer() failed!");
+				return;
+
+			} 
+			synthesizer.open();
+		}
+
+		catch (Exception ex) {
+			ex.printStackTrace(); 
+			return; 
+		}
+
+		m = synthesizer.getChannels()[0];
+		synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
+		
+		/* Welcome note */
+		m.noteOn(90, 64);
+		m.noteOn(88, 64);
+		m.noteOn(86, 64);
+		m.noteOn(84, 64);
 	}
 
 	/**
@@ -436,6 +461,9 @@ public class Controller implements ControllerInterface {
 		view.setZeroFlag(model.isZeroFlag());
 		view.setNegativeFlag(model.isNegativeFlag());
 
+		if(model.isCarryFlag() || model.isNegativeFlag() || model.isZeroFlag()) 
+			m.noteOn(92, 64);
+			
 		view.setMemoryAllocation(model.getMemory());
 
 		if (!model.isCompileSuccess() && model.getErrorStream() != null && model.getErrorStream().getErrors() != null) {
@@ -475,24 +503,6 @@ public class Controller implements ControllerInterface {
 	public void ioCheckClicked(boolean ioPortsEnabled) {
 		if (ioPortsEnabled && usingRPi) {
 			sendToIO = ioPortsEnabled;
-
-			try {
-				synthesizer = MidiSystem.getSynthesizer();
-				if (synthesizer == null) {
-					System.out.println("getSynthesizer() failed!");
-					return;
-
-				} 
-				synthesizer.open();
-			}
-
-			catch (Exception ex) {
-				ex.printStackTrace(); 
-				return; 
-			}
-
-			m = synthesizer.getChannels()[0];
-			synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
 
 			if (gpio == null) {
 				gpio  = GpioFactory.getInstance();
