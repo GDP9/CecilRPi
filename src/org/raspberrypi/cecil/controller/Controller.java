@@ -52,7 +52,12 @@ public class Controller implements ControllerInterface {
 		//creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new Controller();
+				try {
+					new Controller();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -60,8 +65,9 @@ public class Controller implements ControllerInterface {
 
 	/**
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
+	 * @throws InterruptedException 
 	 */
-	public Controller() {
+	public Controller() throws InterruptedException {
 		view = new Frame(this);		
 		model = new Model(this);
 
@@ -92,10 +98,21 @@ public class Controller implements ControllerInterface {
 		synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
 		
 		/* Welcome note */
-		m.noteOn(90, 64);
-		m.noteOn(88, 64);
-		m.noteOn(86, 64);
-		m.noteOn(84, 64);
+		m.noteOn(62, 64);
+		Thread.sleep(1000);
+		m.noteOn(64, 64);
+		Thread.sleep(500);
+		m.noteOn(66, 64);
+		Thread.sleep(500);
+		m.noteOn(68, 64);
+		Thread.sleep(500);
+		m.noteOn(72, 64);
+		Thread.sleep(500);
+		m.noteOn(74, 64);
+		Thread.sleep(500);
+		m.noteOn(76, 64);
+		Thread.sleep(500);
+		m.noteOn(78, 64);
 	}
 
 	/**
