@@ -11,6 +11,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+
 import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
@@ -58,6 +65,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 		this.controller = controller;
 		ptr = 0;
 		linePtr = 1;
+
 	}
 
 	/**
@@ -82,6 +90,8 @@ public class Model implements ModelInterface, SimulatorInterface {
 		return -1;
 	}
 
+
+	
 	/**
 	 * Checks if a certain instruction is binary
 	 * @param instruction name

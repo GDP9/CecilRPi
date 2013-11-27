@@ -1,20 +1,15 @@
 package org.raspberrypi.cecil.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Synthesizer;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+
 
 import org.raspberrypi.cecil.model.Model;
+import org.raspberrypi.cecil.model.WelcomeMusic;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Program;
@@ -55,18 +50,9 @@ public class Controller implements ControllerInterface {
 	 * Launches the application by creating a new CecilController.
 	 */
 	public static void main(String[] args) {
-		//Schedule a job for the event-dispatching thread:
-		//creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					new Controller();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+		
+		new Controller();
+		new WelcomeMusic().music();
 	}
 
 
@@ -74,9 +60,9 @@ public class Controller implements ControllerInterface {
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
 	 * @throws InterruptedException 
 	 */
-	public Controller() throws InterruptedException {
-		view = new Frame(this);		
+	public Controller() {
 		model = new Model(this);
+		view = new Frame(this);		
 
 		view.setInstructionList(model.getInstructions());
 		view.setProgramCode(this.getDefaultInput());
@@ -104,74 +90,10 @@ public class Controller implements ControllerInterface {
 		m = synthesizer.getChannels()[0];
 		synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
 
-		File soundFile = new File("tada.wav");
-		AudioInputStream audioInputStream = null;
-		try
-		{
-			audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-		AudioFormat	audioFormat = audioInputStream.getFormat();
-		SourceDataLine	line = null;
-		DataLine.Info	info = new DataLine.Info(SourceDataLine.class, audioFormat);
-		try {
-			line = (SourceDataLine) AudioSystem.getLine(info);
-
-			/*
-			  The line is there, but it is not yet ready to
-			  receive audio data. We have to open the line.
-			 */
-			line.open(audioFormat);
-		}
-		catch (LineUnavailableException e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-		line.start();
-		int	nBytesRead = 0;
-		byte[]	abData = new byte[128000];
-		while (nBytesRead != -1)
-		{
-			try
-			{
-				nBytesRead = audioInputStream.read(abData, 0, abData.length);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			if (nBytesRead >= 0)
-			{
-				int	nBytesWritten = line.write(abData, 0, nBytesRead);
-			}
-		}
-		line.drain();
-		line.close();
-
-		/* Welcome note */
-		//		m.noteOn(62, 64);
-		//		Thread.sleep(1000);
-		//		m.noteOn(64, 64);
-		//		Thread.sleep(500);
-		//		m.noteOn(62, 64);
-		//		Thread.sleep(1000);
-		//		m.noteOn(64, 64);
-		//		Thread.sleep(500);
-		//		m.noteOn(62, 64);
-		//		Thread.sleep(1000);
-		//		m.noteOn(64, 64);
 
 	}
+
+
 
 	/**
 	 * Private method to generate default input editor program
@@ -316,6 +238,7 @@ public class Controller implements ControllerInterface {
 		line.add("5");
 		line.add(";");
 		program.add(line);
+
 
 		return program;
 	}
