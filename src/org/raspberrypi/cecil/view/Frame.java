@@ -426,7 +426,15 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		});
 		menuBar.add(helpMenu);
 
-		menuUserManual = new JMenuItem("User Manual");		
+		menuUserManual = new JMenuItem("User Manual");	
+		final UserManual um = new UserManual();
+		um.setFocusable(true);
+		um.getAccessibleContext().setAccessibleName("User Manuale");
+		menuUserManual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				um.setVisible(true);
+			}
+		});
 		menuAbout = new JMenuItem("About CECIL");
 		final About about = new About();
 		about.setFocusable(true);
