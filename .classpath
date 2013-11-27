@@ -21,9 +21,9 @@
 	<classpathentry kind="lib" path="lib/pi4j/pi4j-service-sources.jar"/>
 	<classpathentry kind="lib" path="lib/pi4j/pi4j-service.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/karishmakiran/Desktop/jmf-2_1_1e-alljava/JMF-2.1.1e/lib/customizer.jar"/>
-	<classpathentry kind="lib" path="C:/Users/karishmakiran/Desktop/jmf-2_1_1e-alljava/JMF-2.1.1e/lib/jmf.jar"/>
-	<classpathentry kind="lib" path="C:/Users/karishmakiran/Desktop/jmf-2_1_1e-alljava/JMF-2.1.1e/lib/mediaplayer.jar"/>
-	<classpathentry kind="lib" path="C:/Users/karishmakiran/Desktop/jmf-2_1_1e-alljava/JMF-2.1.1e/lib/multiplayer.jar"/>
+	<classpathentry kind="lib" path="lib/jmf/customizer.jar"/>
+	<classpathentry kind="lib" path="lib/jmf/jmf.jar"/>
+	<classpathentry kind="lib" path="lib/jmf/mediaplayer.jar"/>
+	<classpathentry kind="lib" path="lib/jmf/multiplayer.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
