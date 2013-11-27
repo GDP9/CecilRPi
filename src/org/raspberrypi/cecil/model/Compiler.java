@@ -52,10 +52,17 @@ public class Compiler {
 			this.sim40 = parser.getSimulator();
 
 			/* Parsing */
-			this.parser.program();
+			try {
+				this.parser.program();
+			}
+			catch(RecognitionException re) {
+				System.out.println("HErer" +re.line);	
+			}
+
 			this.sim40.setLineNumbers(program);
 			this.stdStream = new StandardOutputStream();
 			this.errorStream = this.parser.getErrorStream();
+
 
 			/* type checking for labels */
 			for(int i: parser.getDatafield().keySet()){
@@ -74,8 +81,11 @@ public class Compiler {
 				this.sim40.setSuccessCompile(true);
 			}
 
-		} catch (IOException | RecognitionException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.out.println("Other exception : " + e.getMessage());
 		}
 	}
 

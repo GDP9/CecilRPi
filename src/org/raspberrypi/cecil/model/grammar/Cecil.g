@@ -84,36 +84,41 @@ options {
     public HashMap<Integer, String> getDatafield () { return datafield; }
     public HashMap<String, Integer> getLabelfield () { return labelfield; }
     public HashMap<Integer, String> getInstructionfield () { return instructionfield; }  
+
+    @Override
+    public void displayRecognitionError(String[] tokenNames,
+                                        RecognitionException e) {
+        String hdr = getErrorHeader(e);
+        String msg = getErrorMessage(e, tokenNames);
+             System.out.print(System.err);  System.out.println(e.line + " : " + msg);
+    }
 }
 
 
-  
-@rulecatch {
-  /**
-  * Rulecatch implicitly invoked by the parser. The error is appended to the StreamOutputError list. 
-  */
-     catch (RecognitionException e) {
-             String hdr = getErrorHeader(e);
-             String msg = getErrorMessage(e, tokenNames);
-             System.out.println(e.line + " : " + msg);
-             this.stream.getErrors().add(new OutputError(e.line, msg));      
-     }
-     catch (Exception e) {
-     System.out.println("Other exception : " + e.getMessage());
-     } 
-      
-}
 
 /**
- * CECIL sim30 lexer rules
- * Not added to grammar: getkey, wait, pause, retfint, swapax, swapay, swapxy, swapas, intenable, intdisable, nop, halt
- * Reserved Keywords: all-instructions
- * a program contitutes labelfields, instructions (binary and unary), datafields and comments
+ * <p>CECIL sim40 LL(k) grammar</p>
+ * <p>Lexer : Tokens (Reserved Keywords) => all-instructions</p>
+ * <p>A valid program 
+ *  <ul>
+ *    <li>may begin with an optional '.start' label</li>
+ *    <li>is constituted by multiple statements followed by optional assigments</li>
+ *  </ul>
+ * </p>
  */
 program 
-  : '.start'? mnemonicdata instruction*;
+  : '.start'? mnemonicdata statement* assignment*
+  ;
 
-instruction 
+/**
+ * <p>A valid statement 
+ *  <ul>
+ *    <li>may begin with an optional label</li>
+ *    <li>is constituted by multiple mnemonicdata</li>
+ *  </ul>
+ * </p>
+ */
+statement 
   : ('.' labelfield  
   { /* filling labelfield hashmap */
     if(labelfield.containsKey($labelfield.text)) throw new RecognitionException();
@@ -121,38 +126,55 @@ instruction
   }
   )? mnemonicdata
   ;  
-  
+
+/**
+ * <p>A labelfield is a valid Name which has to begin with ay alphabet followed by any number of alphanumeric characters </p>
+ */
 labelfield 
   :  NAME
   ;
 
+/**
+ * <p>A valid assignment 
+ *  <ul>
+ *    <li>may begin with an optional label</li>
+ *    <li>is constituted by multiple 'insert' instructions followed by integer data values</li>
+ *  </ul>
+ * </p>
+ */
+assignment
+  :('.' labelfield  
+  { /* filling labelfield hashmap */
+    if(labelfield.containsKey($labelfield.text)) throw new RecognitionException();
+    else labelfield.put(($labelfield.text),pointer);
+  }
+  )? 'insert' value {
+      instructionfield.put(pointer, "insert");
+      sim40.memory[pointer++] = Integer.parseInt($value.text);
+  }
+  ;
+  
+/**
+ * <p>A valid mnemonicdata is
+ *  <ul>
+ *   <li>a binary instruction followed by a datafield</li>
+ *   <li> or a unary instruction</li>
+ *  </ul>
+ * </p>
+ */  
 mnemonicdata 
   : (binaryinstruction datafield {
-      /* If an instruction is 'insert' and data is integer then add the value directly to memory */
-         if(($binaryinstruction.text).equals("insert")) {
-          if(($datafield.text).matches("^[0-9]+$")) {
-            instructionfield.put(pointer, "insert");
-            sim40.memory[pointer++] = Integer.parseInt($datafield.text);
-          }
-          else throw new RecognitionException();
-        }
-      /* Else if instruction is not 'insert', reference to corresponding instruction and add the value to memory (from memory address)
+      /* Refer to corresponding instruction and add the value to memory (from memory address)
        * Filling in instruction hashmap with binary instructions
        */  
-        else {
-          instructionfield.put(pointer, $binaryinstruction.text);
-          
           if(instructionList.instructionToMnemonic($binaryinstruction.text) == -1)
             throw new RecognitionException();
           
-          sim40.memory[pointer++] = instructionList.instructionToMnemonic($binaryinstruction.text); 
-          
-          if(($datafield.text).matches("^[0-9]+$"))
-            sim40.memory[pointer++] = Integer.parseInt($datafield.text);
-          
-          else 
+          else {
+            instructionfield.put(pointer, $binaryinstruction.text);
+            sim40.memory[pointer++] = instructionList.instructionToMnemonic($binaryinstruction.text); 
             datafield.put(pointer++,$datafield.text);
-         } 
+          }
      }) 
        
   | unaryinstruction 
@@ -161,29 +183,51 @@ mnemonicdata
         sim40.memory[pointer++] = instructionList.instructionToMnemonic($unaryinstruction.text);
       }
   ;
-
+  
+/**
+ * <p>A Binary Instruction is followed by an instruction</p>
+ */  
 unaryinstruction
-  : ('stop'| 'print'| 'printch'|'printb'|'printd'|'cclear'|'cset'|'lshift'|'rshift'|'pull'
-  |'xdec'|'xinc'|'xpull'|'xpush'|'ydec'|'yinc'|'ypull'|'ypush'|'push')
+  : ('stop'| 'print'| 'printch' | 'printb' | 'cclear' | 'cset' | 'xdec' | 'xinc' | 'ydec' | 'yinc')
   ;
   
+/**
+ * <p>A Binary Instruction is followed by a datafield</p>
+ */  
 binaryinstruction
-  : ('add'|'sub'|'and'|'comp'|'xor'|'or'|'jineg'|'jicarry'|'jipos'|'jizero'|'jmptosr'|'jump'
-  |'load'|'xload'|'yload'|'xstore'|'ystore'|'loadmx'|'store'|'xcomp' | 'insert' | 'return'|'ycomp')
+  : ('add' | 'sub' | 'and' | 'xor' | 'or' | 'comp' | 'jineg' | 'jicarry' | 'jipos' | 'jizero' | 'jump'
+  | 'load' | 'xload' | 'yload' | 'xcomp' | 'ycomp')
   ;
   
-  
+ /**
+  * <p>A datafield is a valid name that cannot hold an integer value</p>
+  */ 
 datafield 
   : NAME
-  | DIGIT+
   ;
 
-NAME : ('a'..'z' | 'A'..'Z') ('a'..'z' |'A'..'Z'| '0'	..'9' | '_' )*;
+/**
+  * <p>A value is a non negative integer</p>
+  */ 
+value
+  :DIGIT+
+  ;
+/**
+ * <p> A name begins with any case alphabet followed by any number of alphanumeric characters</p>
+ */
+NAME : ('a'..'z' | 'A'..'Z') ('a'..'z' |'A'..'Z'| '0'	..'9')*;
 
+/**
+ * <p>A digit is a non-negaative integer</p>
+ */
 DIGIT : '0'.. '9';
 
-/* 
- * Single line comments beginning with semicolon are supported
+/**
+ * <p>Single line comments beginning with semicolon are supported</p>
  */
 COMMENT : ';' .* '\n'  {$channel=HIDDEN;} ;
+
+/**
+ * <p>White spaces are ignored</p>
+ */
 WS : (' '|'\t'|'\r'|'\n')+  {$channel=HIDDEN;} ;
