@@ -34,7 +34,7 @@ public class About extends JDialog  {
 	public About() {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);
-		setSize(610, 400);
+		setSize(610, 600);
 		logo = new JPanel();
 		logo.setLayout(new BorderLayout());
 		logo.setBorder(new LineBorder(Color.GRAY, 2));		
@@ -49,20 +49,30 @@ public class About extends JDialog  {
 		content = new JPanel();
 		content.setLayout(new BorderLayout());
 		content.setBorder(new LineBorder(Color.GRAY, 2));
+				  
 		info = new JTextArea("Version: SIM40\r\n"
-				+ "Copyright (c) 2013 Southampton University group GDP9\r\n" + 
+				+ "Copyright (c) 2013 Southampton University group GDP9" + 
 				" \r\n" + 
 				"This product was developed by Carolina Ferreira, \r\nShreeprabha Aggarwal, "
 				+ "Cathy Jin and Karishma Nune\r\n"
 				+"\r\n"
 				+"\r\n"
 				+"\r\n"
-				+"Cecil is designed to be the assembly language for a \r\nvirtual processor "
+				+"System requirements - Java 1.6 or Java 1.7."
+				+"\r\n"
+				+"This application works on Windows, Linux, Mac and Raspberry Pi."
+				+"\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"Cecil is designed to be the assembly language for a virtual processor "
 				+ "called SIM."
-				+ "Its virtual machine has \r\nits own memory and I/O ports. The virtual processor \r\nSIM has three registers,"
-				+ "three status flags and an \r\ninstruction set. This instruction set comprises simple \r\ninstructions like load,"
-				+ "add, sub, insert. These can be \r\nused to create more complicated sub-routines like \r\nloops and if-else statements."
-				+ "This is particularly \r\nuseful to understand how the machine breaks down a \r\nseemingly atomic for-loop statement into multiple \r\noperations. ");
+				+ "Its virtual machine has its own memory and I/O ports. The virtual processor SIM has three registers,"
+				+ "three status flags and an instruction set. This instruction set comprises simple instructions like load,"
+				+ "add, sub, insert. These can be used to create more complicated sub-routines like loops and if-else statements."
+				+ "This is particularly useful to understand how the machine breaks down a seemingly atomic for-loop statement into multiple operations. ");
+		info.setLineWrap(true);
+		info.setWrapStyleWord(true);
 		info.setBackground(Color.WHITE);
 		info.setEditable(false);
 		content.add(info, BorderLayout.CENTER);
