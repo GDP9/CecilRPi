@@ -3,6 +3,10 @@ package org.raspberrypi.cecil.controller;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiChannel;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Synthesizer;
+
 import org.raspberrypi.cecil.model.Model;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
@@ -36,6 +40,9 @@ public class Controller implements ControllerInterface {
 
 	GpioController gpio;
 	ArrayList<GpioPinDigitalOutput> opin;
+	
+	Synthesizer synthesizer;
+	MidiChannel m;
 
 	/**
 	 * Launches the application by creating a new CecilController.
@@ -277,14 +284,17 @@ public class Controller implements ControllerInterface {
 	 * GPIO hook
 	 */
 	public void sendOutputToGPIO() {
+
 		for(int i = 0; i < 10; i++) {
 			if((model.getAcc().get(model.getAcc().size() - 1) & (1 << i)) == Math.pow(2, i))	{	
 				opin.get(i).high();
+				m.noteOn(88+(i*2), 64);
 				System.out.println(i+"switched on");
 			}
 
 			else { 
 				opin.get(i).low();
+				m.noteOn(88+(i*2), 64);
 				System.out.println(i+"switched off");
 			}
 		}
@@ -465,10 +475,29 @@ public class Controller implements ControllerInterface {
 	public void ioCheckClicked(boolean ioPortsEnabled) {
 		if (ioPortsEnabled && usingRPi) {
 			sendToIO = ioPortsEnabled;
-			
+
+			try {
+				synthesizer = MidiSystem.getSynthesizer();
+				if (synthesizer == null) {
+					System.out.println("getSynthesizer() failed!");
+					return;
+
+				} 
+				synthesizer.open();
+			}
+
+			catch (Exception ex) {
+				ex.printStackTrace(); 
+				return; 
+			}
+
+			m = synthesizer.getChannels()[0];
+			synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
+
 			if (gpio == null) {
 				gpio  = GpioFactory.getInstance();
 				piInitialseGPIO();
+				
 			}
 		}
 	}
