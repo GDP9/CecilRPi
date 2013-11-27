@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
+import javax.accessibility.Accessible;
 /**
  * About CECIL page.
  * 
@@ -25,7 +26,7 @@ import javax.swing.border.LineBorder;
  * @date 07/11/2013
  *
  */
-public class About extends JDialog  {
+public class About extends JDialog implements Accessible  {
 	private static final long serialVersionUID = 1L;
 	JTextArea info;
 	JPanel logo;
@@ -35,6 +36,7 @@ public class About extends JDialog  {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setSize(610, 600);
+		setTitle("About");
 		logo = new JPanel();
 		logo.setLayout(new BorderLayout());
 		logo.setBorder(new LineBorder(Color.GRAY, 2));		
@@ -58,7 +60,7 @@ public class About extends JDialog  {
 				+"\r\n"
 				+"\r\n"
 				+"\r\n"
-				+"System requirements - Java 1.6 or Java 1.7."
+				+"System requirements - Java 1.7"
 				+"\r\n"
 				+"This application works on Windows, Linux, Mac and Raspberry Pi."
 				+"\r\n"
@@ -75,9 +77,11 @@ public class About extends JDialog  {
 		info.setWrapStyleWord(true);
 		info.setBackground(Color.WHITE);
 		info.setEditable(false);
+		info.setFocusable(true);
 		content.add(info, BorderLayout.CENTER);
 		getContentPane().add(logo, BorderLayout.WEST);
 		getContentPane().add(content, BorderLayout.CENTER);
+		getContentPane().setFocusable(true);
 		
 		addWindowFocusListener(new WindowAdapter() {
 			public void windowGainedFocus(WindowEvent e) {
