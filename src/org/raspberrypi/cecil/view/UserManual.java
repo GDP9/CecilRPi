@@ -35,7 +35,7 @@ public class UserManual extends JFrame {
 		setSize(400, 500);
 		setTitle("User Manual");
 		
-		Object[] data = {"Accessibility and usability functionalities", "Creating a program", "Compiling a program", "Running a program", "Stepping through a program", "Interactive LED functionality"};
+		Object[] data = {"1. Accessibility and usability functionalities", "2. Creating a program", "3. Compiling a program", "4. Running a program", "5. Stepping through a program", "6. Interactive LED functionality"};
 		list = new JList(data);
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setBorder(new BevelBorder(BevelBorder.LOWERED));
