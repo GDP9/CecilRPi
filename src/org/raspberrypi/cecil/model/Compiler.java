@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.raspberrypi.cecil.model.grammar.AssignmentException;
 import org.raspberrypi.cecil.model.grammar.CecilLexer;
 import org.raspberrypi.cecil.model.grammar.CecilParser;
 import org.raspberrypi.cecil.model.outputstream.OutputError;

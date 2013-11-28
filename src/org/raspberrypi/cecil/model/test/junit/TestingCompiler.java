@@ -32,6 +32,19 @@ import org.junit.runners.JUnit4;
 @RunWith (JUnit4.class)
 public class TestingCompiler {
 
+
+	//	/**
+	//	 * Testing the method functionality
+	//	 */
+	//	public void sendOutputToGPIO() {
+	//		int val = model.getAcc().get(model.getAcc().size() - 1);
+	//		for(int i = 0; i < 10; i++) {
+	//			if((val & (1 << i)) == Math.pow(2, i))
+	//				System.out.println("port "+(i+1)+"  switch turned on");
+	//			else
+	//				System.out.println("port "+(i+1)+"  switch turned off");
+	//		}
+	//	}
 	/**
 	 * Set of tests which compile correctly.
 	 */

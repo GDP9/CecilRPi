@@ -11,13 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-
 import org.raspberrypi.cecil.controller.Controller;
 import org.raspberrypi.cecil.model.interfaces.ModelInterface;
 import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;

@@ -7,15 +7,19 @@ import java.util.ArrayList;
  * Controller interface methods.
  * These methods are used by the view to notify the controller of user driven events.
  * 
- * MIT Open Source License
  * @author Cathy Jin (cj8g10)
- * Southampton University, United Kingdom
+ * @author Southampton University, United Kingdom
  * @version 1.1
  * 
  * @date 07/11/2013
  *
  */
 public interface ControllerInterface {
+	
+	/**
+	 * Send each bit output to the physical GPIO ports of the Raspberry Pi.
+	 */
+	public void sendOutputToGPIO();
 	
 	/**
 	 * Notify the controller that the compile button has been clicked.

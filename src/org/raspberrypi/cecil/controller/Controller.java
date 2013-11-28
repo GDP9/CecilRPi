@@ -1,3 +1,6 @@
+/**
+ * This is the main Controller of the CECIL application
+ */
 package org.raspberrypi.cecil.controller;
 
 import java.io.File;
@@ -25,9 +28,9 @@ import com.pi4j.io.gpio.RaspiPin;
  * This class creates an instance of the view (Frame) and model (Cecil) classes.
  * This class contains the main method.
  * 
- * MIT Open Source License
- * @author Cathy Jin (cj8g10), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
+ * @author Cathy Jin (cj8g10)
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
  * @version 1.2
  * 
  * @date 14/11/2013
@@ -47,6 +50,7 @@ public class Controller implements ControllerInterface {
 
 	/**
 	 * Launches the application by creating a new CecilController.
+	 * @param String[] args : command line user input has not been allowed
 	 */
 	public static void main(String[] args) {
 		//Schedule a job for the event-dispatching thread:
@@ -62,7 +66,6 @@ public class Controller implements ControllerInterface {
 
 	/**
 	 * Constructor which creates a view (Frame) and model (Cecil) object.
-	 * @throws InterruptedException 
 	 */
 	public Controller() {
 		model = new Model(this);
@@ -72,10 +75,11 @@ public class Controller implements ControllerInterface {
 		view.setProgramCode(this.getDefaultInput());
 
 		sendToIO = false;
-		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") && System.getProperty("os.arch").toLowerCase().equals("arm");
+		usingRPi = System.getProperty("os.name").toLowerCase().equals("linux") 
+				&& System.getProperty("os.arch").toLowerCase().equals("arm");
 		view.setIOEnabled(usingRPi);
 
-
+		/* Code for making sounds */
 		try {
 			synthesizer = MidiSystem.getSynthesizer();
 			if (synthesizer == null) {
@@ -93,11 +97,7 @@ public class Controller implements ControllerInterface {
 
 		m = synthesizer.getChannels()[0];
 		synthesizer.loadInstrument(synthesizer.getDefaultSoundbank().getInstruments()[0]);
-
-
 	}
-
-
 
 	/**
 	 * Private method to generate default input editor program
@@ -106,96 +106,6 @@ public class Controller implements ControllerInterface {
 	private ArrayList<ArrayList<String>> getDefaultInput() {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = new ArrayList<String>();
-
-		/*line.add(".start");
-		line.add("load");
-		line.add("num1");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("add");
-		line.add("num2");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("printch");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("printb");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("xor");
-		line.add("num2");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("printb");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("xdec");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("cset");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("jizero");
-		line.add("end");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(" ");
-		line.add("print");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(".end");
-		line.add("stop");
-		line.add(" ");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(".num1");
-		line.add("insert");
-		line.add("63");
-		line.add(";");
-		program.add(line);
-
-		line = new ArrayList<String>();
-		line.add(".num2");
-		line.add("insert");
-		line.add("2");
-		line.add(";");
-		program.add(line);*/
 
 		line.add(".start");
 		line.add("load");
@@ -247,11 +157,17 @@ public class Controller implements ControllerInterface {
 		return program;
 	}
 
+	/**
+	 * Event listener for handling the compile button click event
+	 * @param Program consisting of statements
+	 */
 	@Override
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
 		if(checkCorrectInput(code)) {
 			model.compile(new Program(code));
+			
 			this.setViewOutput();
+			
 			if(model.isCompileSuccess()){
 				view.setButtonsEnabled(model.isCompileSuccess());
 				if(sendToIO)
@@ -268,9 +184,11 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	/**
+	 * Event listener for handling the run button click event
+	 */
 	@Override
 	public void runClicked() {
-		//model.setToDefault();
 		model.run();
 		this.setViewOutput();
 
@@ -279,10 +197,10 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
-	public void setButtonsEnabled(boolean isEnabled) {
-		view.setButtonsEnabled(isEnabled);
-	}
-
+	/**
+	 * Event listener for handling the step-through button click event
+	 * @param int line : remembers the current line of program execution
+	 */
 	@Override
 	public void stepThroughClicked(int line) {
 		view.highlightStepThrough(model.stepThrough());
@@ -293,23 +211,24 @@ public class Controller implements ControllerInterface {
 			sendOutputToGPIO();
 		}
 	}
-
-	//	/**
-	//	 * Testing the method functionality
-	//	 */
-	//	public void sendOutputToGPIO() {
-	//		int val = model.getAcc().get(model.getAcc().size() - 1);
-	//		for(int i = 0; i < 10; i++) {
-	//			if((val & (1 << i)) == Math.pow(2, i))
-	//				System.out.println("port "+(i+1)+"  switch turned on");
-	//			else
-	//				System.out.println("port "+(i+1)+"  switch turned off");
-	//		}
-	//	}
+	
+	
+	/**
+	 * Setter method to enable or disable the run and step-through button
+	 * @param boolean isEnabled
+	 */
+	public void setButtonsEnabled(boolean isEnabled) {
+		view.setButtonsEnabled(isEnabled);
+	}
 
 	/**
-	 * GPIO hook
+	 * <p>
+	 * <b>GPIO</b> hook that enables the <b>interactive LED Display</b> by transmitting each bit of the
+	 * accumulator value as a binary sequence to the physical GPIO ports of the Raspberry Pi
+	 * </p>
+	 * <p>The ports in use are 1 to 10 on RPi
 	 */
+	@Override
 	public void sendOutputToGPIO() {
 
 		for(int i = 0; i < 10; i++) {
@@ -327,6 +246,9 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	/**
+	 * Intialises the GPIO ports to be linked to fixed GPIO pins
+	 */
 	private void piInitialseGPIO() {
 		/* create gpio controller */
 
@@ -344,14 +266,17 @@ public class Controller implements ControllerInterface {
 	}
 
 	/**
+	 * User input validation method before sending the input to the compiler to parse
 	 * 
-	 * @param code
-	 * @return
+	 * @param Program : Cecil program in where each line is in form of ArrayList of Strings(Columns)
+	 * @return boolean : Whether or not the user input is partially syntactically correct
+	 * 
 	 */
 	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
 		for(int i = 0; i<code.size(); i++) {
 			ArrayList<String> input = code.get(i);
 			String alphanumeric = "[a-zA-Z][a-zA-Z0-9]*";
+			
 			/* Checking for alpha-numeric labelfield*/
 			if(!input.get(0).equals(" ") && !input.get(0).substring(1).matches(alphanumeric)) {
 				addErrorToOutputstream(i+1, "Incorrectly formed label");
@@ -372,23 +297,6 @@ public class Controller implements ControllerInterface {
 					addErrorToOutputstream(i+1, "Incorrectly formed data");
 					return false;
 				}
-			}
-
-			/* Checking for empty instruction */
-			if(input.get(1).equals(" ")) {
-				/* Checking for missing instruction given datafield or labelfield */
-				if(!input.get(0).equals(" ") || !input.get(2).equals(" ")) {
-					addErrorToOutputstream(i+1, "An instruction must be provided");
-					return false;
-				}
-			}
-
-
-			/* Checking for valid instruction */
-			else if(!model.isInstruction(input.get(1))) {
-				System.out.println("gets here");
-				addErrorToOutputstream(i+1, "Invalid instruction provided");
-				return false;
 			}
 
 			else {
@@ -415,9 +323,10 @@ public class Controller implements ControllerInterface {
 	}
 
 	/**
-	 * 
-	 * @param line
-	 * @param msg
+	 * Adds the generated error to the Error OutputStream
+	 *  
+	 * @param line : line number on the input editor where the OutputError occurred
+	 * @param msg : error message
 	 */
 	private void addErrorToOutputstream (int line, String msg){
 		ErrorOutputStream e = new ErrorOutputStream();
@@ -429,55 +338,73 @@ public class Controller implements ControllerInterface {
 	 * Refreshes the View output using the current snapshot of the memory
 	 */
 	private void setViewOutput() {
+		/* Accumulator */
 		if (model.getAcc() != null) {
 			ArrayList<String> accStack = new ArrayList<String>();
 			for (int i = 0; i < model.getAcc().size(); i++) {
 				accStack.add(Integer.toString(model.getAcc().get(i)));
 			}
 			view.setAccStack(accStack);
-		} else {
+		} 
+		
+		else {
 			view.setAccStack(new ArrayList<String>());
 		}
 
+		/* X-Register */
 		if (model.getXReg() != null && model.getXReg().size() > 0) {
 			ArrayList<String> xStack = new ArrayList<String>();
 			for (int i = 0; i < model.getXReg().size(); i++) {
 				xStack.add(Integer.toString(model.getXReg().get(i)));
 			}
 			view.setXStack(xStack);
-		} else {
+		} 
+		
+		else {
 			view.setXStack(new ArrayList<String>());
 		}
 
+		/* Y-Register */
 		if (model.getYReg() != null && model.getYReg().size() > 0) {
 			ArrayList<String> yStack = new ArrayList<String>();
 			for (int i = 0; i < model.getYReg().size(); i++) {
 				yStack.add(Integer.toString(model.getYReg().get(i)));
 			}
 			view.setYStack(yStack);
-		} else {
+		} 
+		
+		else {
 			view.setYStack(new ArrayList<String>());
 		}
 
+		/* Status Flags */
 		view.setCarryFlag(model.isCarryFlag());
 		view.setZeroFlag(model.isZeroFlag());
 		view.setNegativeFlag(model.isNegativeFlag());
 
+		/* Memory Model */
 		view.setMemoryAllocation(model.getMemory());
 
+		/* Toggle between StandardOutput and OutputError Streams in console */
 		if (!model.isCompileSuccess() && model.getErrorStream() != null && model.getErrorStream().getErrors() != null) {
 			view.setConsoleError(model.getErrorStream().getErrors());
-		} else {
+		} 
+		
+		else {
 			view.setConsoleResult(model.getStdStream().getOutput());
 
 		}
-
 	}
 
-
+	/**
+	 * Loads the file into the input editor
+	 * 
+	 * @param File file : file to be opended in the input editor
+	 */
 	@Override
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
+		
 		if (program != null && program.getProgramStatements() != null) {
 			view.clearVisualisations();
 			view.setButtonsEnabled(false);
@@ -486,6 +413,12 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	/**
+	 * Saves the Cecil Program in the file
+	 * 
+	 * @param Program : Cecil Program c
+	 * @param String filename : Cecil program in where each line is in form of ArrayList of Strings(Columns)
+	 */
 	@Override
 	public void saveToFile(ArrayList<ArrayList<String>> code, String filename) {
 		if (code != null && filename != null) {
@@ -498,11 +431,21 @@ public class Controller implements ControllerInterface {
 		}
 	}
 
+	/**
+	 * <p>Checks for 
+	 * 	<ul>
+	 * 		<li>Hardware platform is Raspberry Pi</li>
+	 * 		<li>GPIO ports display checkbox is ticked</li>
+	 * 	</ul>
+	 * <p>
+	 * @param booleam ioPortsEnabled : state of the checkbox
+	 */
 	@Override
 	public void ioCheckClicked(boolean ioPortsEnabled) {
 		if (ioPortsEnabled && usingRPi) {
 			sendToIO = ioPortsEnabled;
 
+			/* Initialse the GPIO ports only once */
 			if (gpio == null) {
 				gpio  = GpioFactory.getInstance();
 				piInitialseGPIO();
