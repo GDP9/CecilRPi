@@ -24,14 +24,20 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
 /**
+ * <p>
  * Controller class for interfacing between the model and view.
+ * </p>
+ * <p>
  * This class creates an instance of the view (Frame) and model (Cecil) classes.
+ * </p>
+ * <p>
  * This class contains the main method.
+ * </p>
  * 
  * @author Cathy Jin (cj8g10)
  * @author Shreeprabha Aggarwal (sa10g10)
  * @author Southampton University, United Kingdom
- * @version 1.2
+ * @version 1.3
  * 
  * @date 14/11/2013
  *

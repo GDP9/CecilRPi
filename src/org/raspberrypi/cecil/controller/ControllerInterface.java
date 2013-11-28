@@ -1,3 +1,6 @@
+/**
+ * This is the main Controller of the CECIL application
+ */
 package org.raspberrypi.cecil.controller;
 
 import java.io.File;

@@ -1,3 +1,6 @@
+/**
+ * This is primary program execution of the CECIL application
+ */
 package org.raspberrypi.cecil.model;
 
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
@@ -5,18 +8,19 @@ import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 
 /**
+ * <p>CECIL assembly language Runner 
+ * 	<ul>
+ * 		<li>runs CECIL Language user input programs</li>
+ * 		<li>Handles running errors and adds them to StreamOutputError list</li>
+ * 		<li>Only takes place when compilation has been previously successful</li>
+ * 	</ul>
+ * </p>
+ 
+ * @author Carolina Ferreira (cf4g09)
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
  * 
- * CECIL assembly language Runner
- * runs CECIL Language user input programs
- * Handles running errors and adds them to StreamOutputError list
- * Only takes place when compilation has been previously successful
- *
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
- * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
- * @version 1.2
+ * @version 1.3
  * 
  * @date 14/11/2013
  *
@@ -30,8 +34,9 @@ public class Runner {
 	private boolean isProgramTerminated;
 
 	/**
-	 * Runner Parametric constructor
-	 * Initalises Simulator, ErrorOutputStream and StandardOutputStream
+	 * <p>Runner's Parametric constructor</p>
+	 * </p>Initialses Simulator, ErrorOutputStream and StandardOutputStream</p>
+	 * 
 	 * @param Compiler object
 	 */
 	public Runner(Compiler compiler) {
@@ -41,6 +46,24 @@ public class Runner {
 		this.sim40.lines = compiler.getSimulator().lines;
 		this.errorStream = new ErrorOutputStream();
 		this.stdStream = new StandardOutputStream();
+		this.isProgramTerminated = false;
+	}
+	
+	/**
+	 * <p>Runner's Parametric constructor</p>
+	 * <p>Initialses Simulator, ErrorOutputStream and StandardOutputStream</p>
+	 * <p>Primarily invoked during step-through functionality</p>
+	 * 
+	 * @param Compiler object
+	 * @param Simulator object
+	 * @param ErrorOutputStream object
+	 * @param StandardOutputStream object
+	 */
+	public Runner(Compiler compiler , Simulator sim40, ErrorOutputStream errorStream, StandardOutputStream stdStream) {
+		this.compiler = compiler;
+		this.sim40 = sim40;
+		this.errorStream = errorStream;
+		this.stdStream = stdStream;
 		this.isProgramTerminated = false;
 	}
 	
@@ -61,21 +84,7 @@ public class Runner {
 	}
 	
 	/**
-	 * Runner Parametric constructor
-	 * Initalises Simulator, ErrorOutputStream and StandardOutputStream
-	 * @param Simulator object
-	 */
-	public Runner(Compiler compiler , Simulator sim40, ErrorOutputStream errorStream, StandardOutputStream stdStream) {
-		this.compiler = compiler;
-		this.sim40 = sim40;
-		this.errorStream = errorStream;
-		this.stdStream = stdStream;
-		this.isProgramTerminated = false;
-	}
-
-
-	/**
-	 * gets Simulator object
+	 * Gets Simulator object
 	 * @return Simulator object
 	 */
 	public Simulator getSimulator() {
@@ -83,16 +92,16 @@ public class Runner {
 	}
 
 	/**
-	 * Executes "step through" of user input program
-	 * This execution goes according to the instructions rules
+	 * <p>Executes each line of user input program like an <b>interpreter</b></p>
+	 * <p>This execution goes according to the memory model containing the instructions and data</p>
+	 *
 	 * @param line number
 	 * @return next line number
 	 */
 	public int stepthrough(int i) {
-		//System.out.println("into runner step "+i);
 		switch(sim40.memory[i]) {
 
-		case 0: this.isProgramTerminated = true; //System.out.println("val from runner "+i);
+		case 0: this.isProgramTerminated = true; 
 		return i;
 
 		case 1: case 2: case 3: 
@@ -119,7 +128,6 @@ public class Runner {
 		
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		
-		//System.out.println("val from runner "+i);
 		return i;
 	}
 
@@ -164,8 +172,11 @@ public class Runner {
 
 
 	/**
-	 * Executes instructions "print", "printch" and "printb" existent in user input programs
-	 * This execution goes according to the instructions rules
+	 * <p>Executes instructions "print", "printch" and "printb" existent in user input programs
+	 * </p>
+	 * <p>This execution goes according to the instructions rules
+	 * </p>
+	 * 
 	 * @param addressable memory location
 	 * @return String instruction output
 	 */
@@ -186,8 +197,11 @@ public class Runner {
 	}
 
 	/**
-	 * Executes comparison instructions "jump", "comp", "jineg", "jipos", "jizero" and "jicarry" existent in user input programs
-	 * This execution goes according to the instructions rules
+	 * <p>Executes comparison instructions "jump", "comp", "jineg", "jipos", "jizero" and "jicarry" existent in user input programs
+	 * </p>
+	 * <p>This execution goes according to the instructions rules
+	 * </p>
+	 * 
 	 * @param addressable memory location
 	 * @return int next addressable memory location
 	 */
@@ -237,8 +251,11 @@ public class Runner {
 	}
 
 	/**
-	 * Executes other instructions "cclear", "cset", "(y)xinc", "(y)xdec","(x,y)load", "(x,y)store", "add", "sub", "and", "or", "xor", "loadmx" and "insert" existent in user input programs
-	 * This execution goes according to the instructions rules
+	 * <p>Executes other instructions "cclear", "cset", "(y)xinc", "(y)xdec","(x,y)load", "(x,y)store", "add", "sub", "and", "or", "xor", "loadmx" and "insert" existent in user input programs
+	 * </p>
+	 * <p>This execution goes according to the instructions rules
+	 * </p>
+	 * 
 	 * @param addressable memory location
 	 * @return int next addressable memory location
 	 */
@@ -246,7 +263,6 @@ public class Runner {
 		switch(sim40.memory[i]) {
 
 		/* Unary Instructions */
-
 		case 4: /* cclear */
 			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<2);
 			i++;
@@ -404,10 +420,10 @@ public class Runner {
 
 			break;
 
-		case 38: /* insert */
-			sim40.memory[i] = sim40.memory[++i];
-			i++;
-			break;
+//		case 38: /* insert */
+//			sim40.memory[i] = sim40.memory[++i];
+//			i++;
+//			break;
 
 		case 39: /* ycomp */
 			zeroflagstatus(Simulator.YREG_ADDRESS, sim40.memory[i+1]);		
@@ -419,8 +435,10 @@ public class Runner {
 	}
 
 	/**
-	 * Modifies status flags according to register values
-	 * Modifies carry, negative and zero flags
+	 * <p>Modifies status flags according to register values
+	 * </p>
+	 * <p>Modifies carry, negative and zero flags
+	 * </p>
 	 */
 	private void checkStatusFlags() {
 
@@ -432,24 +450,26 @@ public class Runner {
 
 	/**
 	 * Modifies status flags and register values according to register values
-	 * @param register
+	 * @param register: accumulator, x or y
 	 */
 	private void checkFlags(int register) {
-		/*register values greater than 1024*/
+		/* register values greater than 1024*/
 		if(sim40.memory[register] >= 1024) 
 			setRegToMax(register);
 
-
-		/*register values smaller than or equal to 0*/
+		/* register values smaller than or equal to 0*/
 		else if(sim40.memory[register] <= 0) {
 			setRegToMin(register);
 		}
 	}
 
 	/**
-	 * Sets the register value to max 1024
-	 * Sets the carry flag to true
-	 * @param register
+	 * <p>Sets the register value to max 1024
+	 * </p>
+	 * <p>Sets the carry flag to true
+	 * </p>
+	 * 
+	 * @param register: accumulator, x or y
 	 */
 	private void setRegToMax(int register) {
 		sim40.memory[register] = 1024;
@@ -457,9 +477,12 @@ public class Runner {
 	}
 
 	/**
-	 * Sets the register value to min 0
-	 * Sets the zero and negative flag accordingly 
-	 * @param register
+	 * <p>Sets the register value to min 0
+	 * </p>
+	 * <p>Sets the zero and negative flag accordingly 
+	 * </p>
+	 * 
+	 * @param register: accumulator, x or y
 	 */
 	private void setRegToMin(int register) {
 		if(sim40.memory[register] < 0)
@@ -470,8 +493,10 @@ public class Runner {
 	}
 
 	/**
-	 * Checks if insert instruction exists for a given load instruction.
-	 * All load instructions must have a corresponding "insert" instruction so the data field is not null
+	 * <p>Checks if insert instruction exists for a given load instruction.
+	 * </p>
+	 * <p>All load instructions must have a corresponding "insert" instruction so the data field is not null
+	 * </p>
 	 * @param addressable memory location
 	 * @return boolean
 	 */
@@ -481,6 +506,7 @@ public class Runner {
 
 	/**
 	 * Checks the registers values and sets the zero flag accordingly.
+	 * 
 	 * @param int register
 	 * @param int addressable memory location
 	 */
@@ -495,6 +521,7 @@ public class Runner {
 
 	/**
 	 * Checks the registers values and sets the negative flag accordingly.
+	 * 
 	 * @param int register
 	 * @param int addressable memory location
 	 */
@@ -508,7 +535,7 @@ public class Runner {
 	}
 
 	/**
-	 * gets ErrorOutputStream object
+	 * Gets ErrorOutputStream object
 	 * @return ErrorOutputStream object
 	 */
 	public ErrorOutputStream getErrorStream() {
@@ -516,7 +543,7 @@ public class Runner {
 	}
 
 	/**
-	 * gets StandardOutputStream object
+	 * Gets StandardOutputStream object
 	 * @return StandardOutputStream object
 	 */
 	public StandardOutputStream getStdStream() {

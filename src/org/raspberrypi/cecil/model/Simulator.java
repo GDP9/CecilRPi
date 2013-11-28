@@ -1,3 +1,6 @@
+/**
+ * This is the memory model layout of CECIL application
+ */
 package org.raspberrypi.cecil.model;
 
 import java.util.ArrayList;
@@ -6,28 +9,29 @@ import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * CECIL assembly language Simulator
- * Contains static final memory allocation variables (e.g. Accumulator address)
- * Sets all variables used in the view with values retrieved from the model (e.g. Accumulator stack)
+ * <p>CECIL assembly language Simulator</p>
+ * <p>Contains static final memory allocation variables (e.g. Accumulator address)</p>
+ * <p>Sets all variables used in the view with values retrieved from the model (e.g. Accumulator stack)</p>
+ * <p>Memory Model :
+ *  <ul>
+ *  	<li>Accumulator address : 1026</li>
+ *  	<li>X-reg address: 1027</li>
+ *  	<li>Y-reg address: 1028</li>
+ *  	<li>Status address (flags): 1025</li>
+ *  	<li>Memory length address: 1029</li>
+ *  	<li>Stack pointers : 908,1006,1007</li>
+ *  	<li>Program counter (used to track user input program): 1024 </li>
+ *  </ul>
+ * </p>
  * 
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
+ * @author Carolina Ferreira (cf4g09)
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
  * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
  * @version 1.2
  * 
  * @date 14/11/2013
  *
- *  Memory Model :
- *  	accumulator address : 1026
- *  	x-reg address: 1027
- *  	y-reg address: 1028
- *  	status address (flags): 1025
- *  	memory length address: 1029
- *  	stack pointers : 908,1006,1007
- *  	program counter (used to track user input program): 1024 
- *  
  */
 public class Simulator {
 
@@ -56,14 +60,15 @@ public class Simulator {
 	static final int STACK_PTR = 1007;
 
 	/*
+	 * Public for ease of use
 	 * Memory allocation addresses and user input program lines
 	 */ 
 	public int[] memory = new int[MEMORY_LENGTH]; 
 	public int[] lines = new int[MEMORY_LENGTH];
 
 	/**
-	 * Simulator constructor
-	 * Initializes all variables to default values and memory to store -1
+	 * <p>Simulator constructor</p>
+	 * <p>Initializes all variables to default values and memory to store -1</p>
 	 */
 	public Simulator() {
 		for(int i = 0 ; i < MEMORY_LENGTH; i++)
@@ -89,10 +94,13 @@ public class Simulator {
 	}
 
 	/**
-	 * Updates flag variables used in the view:
-	 * 	- Carry flag (2nd bit in STATUS_ADDRESS) - boolean carryFlag
-	 *  - Negative flag (1st bit in STATUS_ADDRESS) - boolean negativeFlag
-	 *  - Zero flag (0th bit in STATUS_ADDRESS) - boolean zeroFlag
+	 * <p>Updates flag variables used in the view:
+	 * 	<ul>
+	 * 		<li>Carry flag (2nd bit in STATUS_ADDRESS) - boolean carryFlag</li>
+	 *  	<li>Negative flag (1st bit in STATUS_ADDRESS) - boolean negativeFlag</li>
+	 *  	<li>Zero flag (0th bit in STATUS_ADDRESS) - boolean zeroFlag</li>
+	 *  </ul>
+	 * </p>
 	 */
 	public void updateViewFlags() {
 
@@ -124,7 +132,6 @@ public class Simulator {
 		if(memory[ACCUMULATOR_ADDRESS]!= acc.get(acc.size() - 1)) 
 			acc.add(memory[ACCUMULATOR_ADDRESS]);
 
-
 	}
 
 	/**
@@ -137,6 +144,7 @@ public class Simulator {
 
 	/**
 	 * Gets the line numbers of user input program and stores them in lines[]
+	 * 
 	 * @param Program object
 	 */
 	public void setLineNumbers(Program program) {
@@ -145,8 +153,8 @@ public class Simulator {
 				if(program.getProgramStatements().get(line).get(j) != null 
 						&& !program.getProgramStatements().get(line).get(j).equals(" ")
 						&& InstructionList.instructionToMnemonic(program.getProgramStatements().get(line).get(j)) == memory[ctr]) {
+		
 					lines[ctr++] = line+1;
-					//System.out.println("i "+(ctr-1)+"  mem val "+memory[ctr-1]+ "  line "+lines[ctr-1]);
 				}
 			}
 		}

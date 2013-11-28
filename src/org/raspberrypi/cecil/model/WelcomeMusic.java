@@ -1,5 +1,5 @@
 /**
- * 
+ * This is the Welcome Music file 
  */
 package org.raspberrypi.cecil.model;
 
@@ -14,12 +14,21 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 /**
- * @author Shreeprabha
+ * CECIL application welcome page music file player class
+ * 
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
+ * 
+ * @version 1.2
+ * 
+ * @date 14/11/2013
  *
  */
 public class WelcomeMusic {
 
-
+	/**
+	 * Plays the 'tada' themed music
+	 */
 	public void music() {
 		File soundFile = new File("tada.wav");
 		AudioInputStream audioInputStream = null;
@@ -66,10 +75,6 @@ public class WelcomeMusic {
 			catch (IOException e)
 			{
 				e.printStackTrace();
-			}
-			if (nBytesRead >= 0)
-			{
-				int	nBytesWritten = line.write(abData, 0, nBytesRead);
 			}
 		}
 		line.drain();

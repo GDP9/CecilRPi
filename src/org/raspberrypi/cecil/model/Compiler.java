@@ -14,22 +14,19 @@ import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
- * CECIL assembly language Compiler
- * Compiles CECIL Language user input programs
- * Handles compilation errors and adds them to OutputErrorStream list
- * If successful compilation - sends a standard output message to the view
+ * <p>CECIL assembly language Compiler</p>
+ * <p>Compiles CECIL Language user input programs</p>
+ * <p>Handles compilation errors and adds them to OutputErrorStream list</p>
+ * <p>If successful compilation - sends a standard output message to the view</p>
  * 
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
+ * @author Carolina Ferreira (cf4g09)
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
+ * @version 1.3
  * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
- * @version 1.2
- * 
- * @date 14/11/2013
+ * @date 28/11/2013
  * 
  */
-
 public class Compiler {
 
 	private CecilParser parser;
@@ -38,12 +35,14 @@ public class Compiler {
 	private ErrorOutputStream errorStream;
 
 	/**
-	 * Compiler parametric constructor
-	 * Calls in the parser and lexer to act upon user input
-	 * Checks if all data fields have corresponding label fields
-	 * Sending standard output on successful compilation
-	 * @param filepath of user input
-	 * @param Program object
+	 * <p>Compiler's parametric constructor</p>
+	 * <p>Syntactic checking: Calls in the CecilParser and CeciLexer to act upon user input</p>
+	 * <p>Semantic checking: Checks if all data fields have corresponding label fields</p>
+	 * <p>Sending standard output on successful compilation</p>
+	 * <p>Meaningful Error Handling</p>
+	 * 
+	 * @param filepath of user input temp.cecil file
+	 * @param Program : Cecil program in where each line is in form of ArrayList of Strings(Columns)
 	 */
 	public Compiler(String filepath, Program program) {
 
@@ -63,11 +62,7 @@ public class Compiler {
 
 			catch(RecognitionException e) {
 				this.errorStream.getErrors().add(new OutputError(e.line, e.getLocalizedMessage()));    
-
-				System.out.println(e.line + " : " + e.getLocalizedMessage());  	
 			}
-
-			
 
 			/* If no parser errors exist, then proceed for type checking */
 			if(this.errorStream.getErrors().size() == 0) {
@@ -96,17 +91,16 @@ public class Compiler {
 		} 
 		
 		catch (IOException e) {
-			this.errorStream.getErrors().add(new OutputError(1, "IOException: cannot read user input"));
-			
+			this.errorStream.getErrors().add(new OutputError(1, "IOException: cannot read user input"));			
 		}
 	}
 
 	/**
-	 * Gets instruction HashMap <int memory adress, String instruction name> from parser
+	 * Gets instruction HashMap <int memory address, String instruction name> from CecilParser
 	 * @return HashMap<int, String> instructions
 	 */
 	public HashMap<Integer, String> getInstructionField() {
-		return parser.getInstructionfield();
+		return this.parser.getInstructionfield();
 	}
 
 	/**
@@ -118,17 +112,18 @@ public class Compiler {
 	}
 
 	/**
-	 * gets Parser object
+	 * Gets Parser object
 	 * @return Parser object
 	 */
 	public CecilParser getParser() {
-		return parser;
+		return this.parser;
 	}
 
 
 	/**
-	 * Looks up all related instructions recursively.
-	 * Not in use at the moment.
+	 * <p>Looks up all related instructions recursively</p>
+	 * <p>Not in use at the moment</p>
+	 * 
 	 * @param int[] memory
 	 * @param int key in memory of instruction, data field
 	 * @return memory address related to argument
@@ -143,18 +138,18 @@ public class Compiler {
 	}
 
 	/**
-	 * gets StandardOutputStream object
+	 * Gets StandardOutputStream object
 	 * @return StandardOutputStream object
 	 */
 	public StandardOutputStream getStdStream() {
-		return stdStream;
+		return this.stdStream;
 	}
 
 	/**
-	 * gets the ErrorOutputStream object
+	 * Gets the ErrorOutputStream object
 	 * @return ErrorOutputStream object
 	 */
 	public ErrorOutputStream getErrorStream() {
-		return errorStream;
+		return this.errorStream;
 	}
 }

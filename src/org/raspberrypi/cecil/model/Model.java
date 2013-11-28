@@ -1,5 +1,5 @@
 /**
- * 
+ * This is main model of this CECIL application
  */
 package org.raspberrypi.cecil.model;
 
@@ -22,16 +22,21 @@ import org.raspberrypi.cecil.pojo.InstructionList;
 import org.raspberrypi.cecil.pojo.Program;
 
 /**
+ *<p> 
  * CECIL Application Model
- * Implements two interfaces: ModelInterface and SimulatorInterface
- * Calls on the Compiler and Runner for functionality of the application
- * Gets all standard output and error messages from Compiler and Runner
+ *</p>
+ *<p> 
+ * <ul>
+ * 	<li>Implements two interfaces: ModelInterface and SimulatorInterface</li>
+ * 	<li>Calls on the Compiler and Runner for functionality of the application</li>
+ * 	<li>Gets all standard output and error messages from Compiler and Runner</li>
+ * </ul>
+ *</p>
  * 
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
+ * @author Carolina Ferreira (cf4g09)
+ * @author Shreeprabha Aggarwal (sa10g10)
+ * @author Southampton University, United Kingdom
  * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
  * @version 1.2
  * 
  * @date 14/11/2013
@@ -44,21 +49,24 @@ public class Model implements ModelInterface, SimulatorInterface {
 	private Simulator sim40;
 	private Compiler compiler;
 	private Runner runner;
-	private boolean compileClicked = false;
+	private boolean compileClicked;
 	private Controller controller;
 
 	private static int ptr;
 	private static int linePtr;
 
 	/**
-	 * Default model constructor
-	 * Sets the starting location (addressable memory location) for running and stepping through the program to 0
+	 * <p>Default model constructor</p>
+	 * <p>
+	 * 	Sets the starting location (addressable memory location) 
+	 * 	for running and stepping through the program to 0
+	 * </p>
 	 */
 	public Model(Controller controller) {
 		this.controller = controller;
 		ptr = 0;
 		linePtr = 1;
-
+		compileClicked = false;
 	}
 
 	/**
@@ -71,7 +79,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * Returns the machine code of the given instruction.
+	 * Returns the machine code of the given instruction
 	 * @param instruction name
 	 * @return instruction mnemonic
 	 */
@@ -191,6 +199,9 @@ public class Model implements ModelInterface, SimulatorInterface {
 	/**
 	 * Calls in the method compile in Compiler
 	 * Compiles the user input program and updates the view accordingly
+	 * 
+	 * @param Program : Cecil program in where each line is in form of ArrayList of Strings(Columns)
+	 *
 	 */
 	@Override
 	public void compile(Program program) {	
@@ -198,6 +209,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 		ptr = 0;
 		linePtr = 1;
 		File file = programToFile(program, "temp.cecil");
+		
 		this.compiler = new Compiler(file.getAbsolutePath(), program);
 		this.sim40 = this.compiler.getSimulator();
 		this.errorStream = this.compiler.getErrorStream();
@@ -205,7 +217,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * sets the global boolean variable compileClicked according to if the last user action was compiling their input program
+	 * Sets the global boolean variable compileClicked according to if the last user action was compiling their input program
 	 * @param boolean compile clicking has occurred
 	 */
 	private void setCompileClicked (boolean hasOccurred){
@@ -213,7 +225,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the global boolean according to if the last user action was compiling their input program 
+	 * Gets the global boolean according to if the last user action was compiling their input program 
 	 * @return boolean compile clicking has occurred
 	 */
 	private boolean isCompileClicked (){
@@ -232,8 +244,10 @@ public class Model implements ModelInterface, SimulatorInterface {
 
 	/**
 	 * Saves the input editor program into a .cecil file
+	 * 
 	 * @param input : Program statements from the input editor
 	 * @param fileName : name of file (assuming a .cecil extension)
+	 
 	 */
 	public File programToFile(Program program, String fileName) {
 		/* Formatted program input to be saved */
@@ -269,9 +283,11 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * Converts the program input from a .cecil file to Program object
+	 * Converts the program input from a .cecil file to Program
+	 *
 	 * @param user input file
-	 * @return Program object
+	 * @return Program : Cecil program in where each line is in form of ArrayList of Strings(Columns)
+	 *
 	 */
 	public Program fileToProgram(File file) {
 		ArrayList<ArrayList<String>> program = new ArrayList<ArrayList<String>>();
@@ -342,7 +358,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets boolean isCarryFlag
+	 * Gets boolean isCarryFlag
 	 * @return boolean
 	 */
 	@Override
@@ -351,7 +367,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets boolean isZeroFlag
+	 * Gets boolean isZeroFlag
 	 * @return boolean
 	 */
 	@Override
@@ -360,7 +376,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets boolean isNegativeFlag
+	 * Gets boolean isNegativeFlag
 	 * @return boolean
 	 */
 	@Override
@@ -369,7 +385,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets boolean isCompileSuccess
+	 * Gets boolean isCompileSuccess
 	 * @return boolean
 	 */
 	@Override
@@ -378,7 +394,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the stack for the X register 
+	 * Gets the stack for the X register 
 	 * @return ArrayList<Integer> X register values
 	 */
 	@Override
@@ -387,7 +403,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the stack for the Y register 
+	 * Gets the stack for the Y register 
 	 * @return ArrayList<Integer> Y register values
 	 */
 	@Override
@@ -396,7 +412,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the stack for the Accumulator register 
+	 * Gets the stack for the Accumulator register 
 	 * @return ArrayList<Integer> Accumulator register values
 	 */
 	@Override
@@ -405,7 +421,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the CECIL memory manipulated by the user input program
+	 * Gets the CECIL memory manipulated by the user input program
 	 * @return int[] memory
 	 */
 	@Override
@@ -414,7 +430,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * sets the ErrorOutpurStream object
+	 * Sets the ErrorOutpurStream object
 	 * @param ErrorOutputStream object
 	 */
 	public void setErrorStream(ErrorOutputStream stream){
@@ -422,18 +438,19 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets the ErrorOutputStream object
+	 * Sets the ErrorOutputStream object
 	 * @return ErrorOutputStream object
 	 */
 	@Override
 	public ErrorOutputStream getErrorStream() {
 		if(this.errorStream==null)
 			return new ErrorOutputStream();
+		
 		return this.errorStream;
 	}
 
 	/**
-	 * gets the StandardOutputStream object
+	 * Gets the StandardOutputStream object
 	 * @return StandardOutputStream object
 	 */
 	@Override
@@ -444,7 +461,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	}
 
 	/**
-	 * gets boolean isProgramEnabled
+	 * Gets boolean isProgramEnabled
 	 * @return boolean isProgramEnabled
 	 */
 	@Override
