@@ -431,8 +431,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 //		final UserManual um = new UserManual(this);
 		um.setColours(currentTheme);
 		um.setFont(currentFont);
-		um.setFocusable(true);
-		um.getAccessibleContext().setAccessibleName("User Manuale");
 		menuUserManual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				um.setVisible(true);

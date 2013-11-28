@@ -6,6 +6,10 @@ import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,6 +36,8 @@ public class UserManual extends JFrame {
 		this.frame = frame;
 		
 		getContentPane().setLayout(new BorderLayout());
+		getContentPane().getAccessibleContext().setAccessibleName("User manual resources");
+		
 		setSize(400, 500);
 		setTitle("User Manual");
 		
@@ -39,15 +45,37 @@ public class UserManual extends JFrame {
 		list = new JList(data);
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		list.getAccessibleContext().setAccessibleName("Video tutorials");
+		list.getAccessibleContext().setAccessibleDescription("Contains links to all video tutorials for using CECIL");
+		list.setToolTipText("Choose an accompanying video resource to view. (Note: The videos must be in the same folder as the CECIL application)");
+		
+		addWindowFocusListener(new WindowAdapter() {
+			public void windowGainedFocus(WindowEvent e) {
+				list.requestFocusInWindow();
+			}
+		});
 		
 		listScroller = new JScrollPane(list);
-		listScroller.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), BorderFactory.createCompoundBorder(new TitledBorder(null, "How-To Videos", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(5, 5, 5, 5))));
+		listScroller.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), BorderFactory.createCompoundBorder(new TitledBorder(null, "Tutorial videos", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(5, 5, 5, 5))));
 		listScroller.setOpaque(false);
 		
 		JPanel bottomPanel = new JPanel();
 		btnOpen = new JButton("Open");
+		btnOpen.getAccessibleContext().setAccessibleName("Open");
+		btnOpen.getAccessibleContext().setAccessibleDescription("Opens the video");
+		btnOpen.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+			@Override
+			public void keyReleased(KeyEvent arg0) {}
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnOpen.doClick();
+				}
+			}
+		});
 		btnOpen.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				switch (list.getSelectedIndex()){
@@ -55,48 +83,42 @@ public class UserManual extends JFrame {
 					try {
 						Desktop.getDesktop().open(new File("accessibility_and_usability_functionalities.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the accessibility_and_usability_functionalities.mp4 video file");
 					}
 					break;
 				case 1:
 					try {
 						Desktop.getDesktop().open(new File("creating_a_program.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the creating_a_program.mp4 video file.");
 					}
 					break;
 				case 2:
 					try {
 						Desktop.getDesktop().open(new File("compiling_program.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the compiling_program.mp4 video file.");
 					}
 					break;
 				case 3:
 					try {
 						Desktop.getDesktop().open(new File("running_program.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the running_program.mp4 video file.");
 					}
 					break;
 				case 4:
 					try {
 						Desktop.getDesktop().open(new File("step_through_program.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the step_through_program.mp4 video file.");
 					}
 					break;
 				case 5:
 					try {
 						Desktop.getDesktop().open(new File("interactive_LED_functionality.mp4"));
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("ERROR: Could not find the interactive_LED_functionality.mp4 video file.");
 					}
 					break;
 				}
