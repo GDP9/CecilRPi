@@ -179,6 +179,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	private boolean ioPortsEnabled;
 	private int scaleType;
 	Dimension resolution;
+	private final UserManual um = new UserManual(this);
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
@@ -427,7 +428,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		menuBar.add(helpMenu);
 
 		menuUserManual = new JMenuItem("User Manual");	
-		final UserManual um = new UserManual();
+//		final UserManual um = new UserManual(this);
+		um.setColours(currentTheme);
+		um.setFont(currentFont);
 		um.setFocusable(true);
 		um.getAccessibleContext().setAccessibleName("User Manuale");
 		menuUserManual.addActionListener(new ActionListener() {
@@ -1102,6 +1105,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			tblInput.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 			tblMemory.setBackground(Color.WHITE);
 		}
+		um.setColours(currentTheme);
 	}
 
 	/**
@@ -1379,6 +1383,8 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			tblInput.setRowHeight(50);
 			tblMemory.setRowHeight(50);
 		}
+		
+		um.setFonts(currentFont);
 	}
 
 	private void setupAccessibility() {
