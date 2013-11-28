@@ -1,6 +1,8 @@
 .start load num1 ;
   add num2 ;
   printch   ;
-  stop   ;
+  print   ;
 .num1 insert 60 ;
 .num2 insert 5 ;
+  stop   ;
+      ;

@@ -21,6 +21,7 @@ grammar Cecil;
 
 options {
     language = Java;
+
 }
 
 /*Header with package and import declaration for parser*/
@@ -32,6 +33,7 @@ options {
   import org.raspberrypi.cecil.pojo.*;
   import org.raspberrypi.cecil.model.outputstream.OutputError;
   import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
+  import org.raspberrypi.cecil.model.grammar.AssignmentException;
 }
 
 /*Header with package and import declaration for lexer*/
@@ -85,16 +87,32 @@ options {
     public HashMap<String, Integer> getLabelfield () { return labelfield; }
     public HashMap<Integer, String> getInstructionfield () { return instructionfield; }  
 
-    @Override
-    public void displayRecognitionError(String[] tokenNames,
-                                        RecognitionException e) {
-        String hdr = getErrorHeader(e);
+ @Override
+  public void reportError(RecognitionException e) {
         String msg = getErrorMessage(e, tokenNames);
-             System.out.print(System.err);  System.out.println(e.line + " : " + msg);
-    }
+        this.stream.getErrors().add(new OutputError(e.line, msg));    
+             
+  }
+  
+  @Override
+  public void displayRecognitionError(String[] tokenNames, RecognitionException e)  {
+        String msg = getErrorMessage(e, tokenNames);
+        this.stream.getErrors().add(new OutputError(e.line, msg));     
+  }
 }
 
 
+@rulecatch {
+  /**
+  * Rulecatch implicitly invoked by the parser. The error is appended to the StreamOutputError list. 
+  */
+     catch (RecognitionException e) {  
+             String msg = getErrorMessage(e, tokenNames);
+             this.stream.getErrors().add(new OutputError(e.line, msg));    
+           
+             System.out.println(e.line + " : " + msg);  
+     } 
+}
 
 /**
  * <p>CECIL sim40 LL(k) grammar</p>
@@ -149,11 +167,12 @@ assignment
     else labelfield.put(($labelfield.text),pointer);
   }
   )? 'insert' value {
-      instructionfield.put(pointer, "insert");
-      sim40.memory[pointer++] = Integer.parseInt($value.text);
+        instructionfield.put(pointer, "insert");
+        sim40.memory[pointer++] = Integer.parseInt($value.text);
+    
   }
   ;
-  
+ 
 /**
  * <p>A valid mnemonicdata is
  *  <ul>

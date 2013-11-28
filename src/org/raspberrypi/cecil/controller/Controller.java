@@ -9,7 +9,6 @@ import javax.sound.midi.Synthesizer;
 
 
 import org.raspberrypi.cecil.model.Model;
-import org.raspberrypi.cecil.model.WelcomeMusic;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Program;
@@ -50,9 +49,14 @@ public class Controller implements ControllerInterface {
 	 * Launches the application by creating a new CecilController.
 	 */
 	public static void main(String[] args) {
-		
-		new Controller();
-		new WelcomeMusic().music();
+		//Schedule a job for the event-dispatching thread:
+		//creating and showing this application's GUI.
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new Controller();
+				//new WelcomeMusic().music();
+			}
+		});
 	}
 
 

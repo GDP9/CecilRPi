@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.raspberrypi.cecil.model.grammar.AssignmentException;
 import org.raspberrypi.cecil.model.grammar.CecilLexer;
 import org.raspberrypi.cecil.model.grammar.CecilParser;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
@@ -46,33 +47,45 @@ public class Compiler {
 	 * @param Program object
 	 */
 	public Compiler(String filepath, Program program) {
+
 		try {
 			this.parser = new CecilParser(new CommonTokenStream(new CecilLexer(new ANTLRFileStream(filepath))));
+
 			this.parser.initialise();
 			this.sim40 = parser.getSimulator();
 
 			/* Parsing */
 			try {
 				this.parser.program();
+				this.sim40.setLineNumbers(program);
+				this.stdStream = new StandardOutputStream();
+				this.errorStream = this.parser.getErrorStream();
 			}
-			catch(RecognitionException re) {
-				System.out.println("HErer" +re.line);	
+
+			catch(RecognitionException e) {
+				this.errorStream.getErrors().add(new OutputError(e.line, e.getLocalizedMessage()));    
+
+				System.out.println(e.line + " : " + e.getLocalizedMessage());  	
 			}
 
-			this.sim40.setLineNumbers(program);
-			this.stdStream = new StandardOutputStream();
-			this.errorStream = this.parser.getErrorStream();
+			
 
+			/* If no parser errors exist, then proceed for type checking */
+			if(this.errorStream.getErrors().size() == 0) {
+				/* type checking for labels */
+				for(int i: parser.getDatafield().keySet()){
+					if(parser.getLabelfield().keySet().contains(parser.getDatafield().get(i))) 
+						this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
 
-			/* type checking for labels */
-			for(int i: parser.getDatafield().keySet()){
-				if(parser.getLabelfield().keySet().contains(parser.getDatafield().get(i))) 
-					this.sim40.memory[i] = this.parser.getLabelfield().get(this.parser.getDatafield().get(i));
-
-				else { 
-					this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
-					this.sim40.setSuccessCompile(false);
+					else { 
+						this.errorStream.getErrors().add(new OutputError(program.getDataLine(parser.getDatafield().get(i)), "Data " + parser.getDatafield().get(i) + " has no labelfield"));
+						this.sim40.setSuccessCompile(false);
+					}
 				}
+			}
+
+			else {
+				this.sim40.setSuccessCompile(false);
 			}
 
 			/* Writing successful compilation to StandardOutputStream */
@@ -81,11 +94,11 @@ public class Compiler {
 				this.sim40.setSuccessCompile(true);
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			System.out.println("Other exception : " + e.getMessage());
+		} 
+		
+		catch (IOException e) {
+			this.errorStream.getErrors().add(new OutputError(1, "IOException: cannot read user input"));
+			
 		}
 	}
 
