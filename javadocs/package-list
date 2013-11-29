@@ -1,1 +1,9 @@
+org.raspberrypi.cecil.controller
+org.raspberrypi.cecil.model
+org.raspberrypi.cecil.model.grammar
 org.raspberrypi.cecil.model.interfaces
+org.raspberrypi.cecil.model.outputstream
+org.raspberrypi.cecil.model.test.junit
+org.raspberrypi.cecil.model.test.manual
+org.raspberrypi.cecil.pojo
+org.raspberrypi.cecil.view
