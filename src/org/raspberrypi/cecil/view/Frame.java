@@ -869,7 +869,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				actionEvent.getSource();
+				//actionEvent.getSource();
 			}
 		};
 		comboBox.addActionListener(actionListener);				

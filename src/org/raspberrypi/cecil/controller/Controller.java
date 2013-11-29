@@ -171,9 +171,9 @@ public class Controller implements ControllerInterface {
 	public void compileClicked(ArrayList<ArrayList<String>> code) {
 		if(checkCorrectInput(code)) {
 			model.compile(new Program(code));
-			
+
 			this.setViewOutput();
-			
+
 			if(model.isCompileSuccess()){
 				view.setButtonsEnabled(model.isCompileSuccess());
 				if(sendToIO)
@@ -181,14 +181,16 @@ public class Controller implements ControllerInterface {
 						opin.get(i).low();
 
 			}
-
-			else { 
-				model.setViewToDefault();
-				this.setViewOutput();
-				view.setConsoleError(model.getErrorStream().getErrors());
-			}
+		}
+		
+		else { 
+			model.setViewToDefault();
+			this.setViewOutput();
+			System.out.println(model.getErrorStream().getErrors().size());
+			view.setConsoleError(model.getErrorStream().getErrors());
 		}
 	}
+
 
 	/**
 	 * Event listener for handling the run button click event
@@ -217,8 +219,8 @@ public class Controller implements ControllerInterface {
 			sendOutputToGPIO();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Setter method to enable or disable the run and step-through button
 	 * @param boolean isEnabled
@@ -279,10 +281,21 @@ public class Controller implements ControllerInterface {
 	 * 
 	 */
 	public boolean checkCorrectInput(ArrayList<ArrayList<String>> code){
-		for(int i = 0; i<code.size(); i++) {
+		for(int i = 0; i < code.size(); i++) {
 			ArrayList<String> input = code.get(i);
 			String alphanumeric = "[a-zA-Z][a-zA-Z0-9]*";
 			
+			/* Checking for any instruction following an insert */
+			if(input.get(1).equals("insert")) {
+				for(int j = i + 1; j < code.size(); j++) {	
+					ArrayList<String> lookup = code.get(j);
+					if(!(lookup.get(1).equals(" ") || lookup.get(1).equals("insert"))) {
+						addErrorToOutputstream((j+1), "Incorrect assingment syntax: Only insert can follow insert");
+						return false;
+					}
+				}
+			}
+
 			/* Checking for alpha-numeric labelfield*/
 			if(!input.get(0).equals(" ") && !input.get(0).substring(1).matches(alphanumeric)) {
 				addErrorToOutputstream(i+1, "Incorrectly formed label");
@@ -323,6 +336,8 @@ public class Controller implements ControllerInterface {
 					}
 				}
 			}
+
+
 		}
 
 		return true;
@@ -352,7 +367,7 @@ public class Controller implements ControllerInterface {
 			}
 			view.setAccStack(accStack);
 		} 
-		
+
 		else {
 			view.setAccStack(new ArrayList<String>());
 		}
@@ -365,7 +380,7 @@ public class Controller implements ControllerInterface {
 			}
 			view.setXStack(xStack);
 		} 
-		
+
 		else {
 			view.setXStack(new ArrayList<String>());
 		}
@@ -378,7 +393,7 @@ public class Controller implements ControllerInterface {
 			}
 			view.setYStack(yStack);
 		} 
-		
+
 		else {
 			view.setYStack(new ArrayList<String>());
 		}
@@ -395,7 +410,7 @@ public class Controller implements ControllerInterface {
 		if (!model.isCompileSuccess() && model.getErrorStream() != null && model.getErrorStream().getErrors() != null) {
 			view.setConsoleError(model.getErrorStream().getErrors());
 		} 
-		
+
 		else {
 			view.setConsoleResult(model.getStdStream().getOutput());
 
@@ -410,7 +425,7 @@ public class Controller implements ControllerInterface {
 	@Override
 	public void fileOpened(File file) {
 		Program program = model.fileToProgram(file);
-		
+
 		if (program != null && program.getProgramStatements() != null) {
 			view.clearVisualisations();
 			view.setButtonsEnabled(false);
