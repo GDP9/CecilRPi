@@ -45,6 +45,7 @@ public class Preferences extends JDialog {
 
 	public Preferences(Frame frame) {
 		this.frame = frame;
+		newFont = frame.FONT_MEDIUM;
 		panelcolour = frame.ORANGE_THEME[0];
 		newColor = frame.ORANGE_THEME;
 		setSize(350, 350);
