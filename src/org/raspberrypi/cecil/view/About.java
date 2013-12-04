@@ -72,12 +72,33 @@ public class About extends JDialog implements Accessible  {
 				+ "Its virtual machine has its own memory and I/O ports. The virtual processor SIM has three registers,"
 				+ "three status flags and an instruction set. This instruction set comprises simple instructions like load,"
 				+ "add, sub, insert. These can be used to create more complicated sub-routines like loops and if-else statements."
-				+ "This is particularly useful to understand how the machine breaks down a seemingly atomic for-loop statement into multiple operations. ");
+				+ "This is particularly useful to understand how the machine breaks down a seemingly atomic for-loop statement into multiple operations.");
 		info.setLineWrap(true);
 		info.setWrapStyleWord(true);
 		info.setBackground(Color.WHITE);
 		info.setEditable(false);
 		info.setFocusable(true);
+		info.getAccessibleContext().setAccessibleDescription("Version: SIM40\r\n"
+				+ "Copyright (c) 2013 Southampton University group GDP9" + 
+				" \r\n" + 
+				"This product was developed by Carolina Ferreira, \r\nShreeprabha Aggarwal, "
+				+ "Cathy Jin and Karishma Nune\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"System requirements - Java 1.7"
+				+"\r\n"
+				+"This application works on Windows, Linux, Mac and Raspberry Pi."
+				+"\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"\r\n"
+				+"Cecil is designed to be the assembly language for a virtual processor "
+				+ "called SIM."
+				+ "Its virtual machine has its own memory and I/O ports. The virtual processor SIM has three registers,"
+				+ "three status flags and an instruction set. This instruction set comprises simple instructions like load,"
+				+ "add, sub, insert. These can be used to create more complicated sub-routines like loops and if-else statements."
+				+ "This is particularly useful to understand how the machine breaks down a seemingly atomic for-loop statement into multiple operations.");
 		content.add(info, BorderLayout.CENTER);
 		getContentPane().add(logo, BorderLayout.WEST);
 		getContentPane().add(content, BorderLayout.CENTER);

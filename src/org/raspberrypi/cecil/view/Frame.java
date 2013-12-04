@@ -11,7 +11,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.ItemSelectable;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -27,10 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
 
-import javax.accessibility.Accessible;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -67,7 +64,6 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -80,32 +76,58 @@ import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.pojo.Instruction;
 
 /**
- * View class for creating and displaying the GUI and handling user inputs.
+ * View class for creating and displaying the main GUI and handling user inputs.
  * 
  * MIT Open Source License
  * @author Karishma Nune (kkn1g10), Cathy Jin (cj8g10)
  * Southampton University, United Kingdom
  * @version 1.1
  * 
- * @date 07/11/2013
+ * @date 04/12/2013
  *
  */
-public class Frame extends JFrame implements ViewInterface, Accessible {
+public class Frame extends JFrame implements ViewInterface {
 	/**
-	 * 
+	 * Serial version UID to stop the warning.
 	 */
 	private static final long serialVersionUID = 1L;
-	private static int WIDTH;
-	private static int HEIGHT;
-
-	private static final Dimension ICON_MEDIUM = new Dimension(32, 32);
+	private static final int TOOLTIP_DELAY = 20000;
+	
+	//Screen resolutions used to determine window size, font size, icon sizes, table row heights, etc
+	private static final Dimension SCREEN_RESOLUTION_HIGH = new Dimension(1600, 900);
+	private static final Dimension SCREEN_RESOLUTION_MEDIUM = new Dimension(1280, 720);
+	private static final Dimension SCREEN_RESOLUTION_LOW = new Dimension(800, 600);
+	
+	private static final Dimension CECIL_RESOLUTION_HIGH = new Dimension(1200, 900);
+	private static final Dimension CECIL_RESOLUTION_MEDIUM = new Dimension(1000, 750);
+	private static final Dimension CECIL_RESOLUTION_LOW = new Dimension(800, 650);
+	
+//	private static final Dimension ICON_MEDIUM = new Dimension(32, 32);
 	private static final Dimension ICON_SMALL = new Dimension(24, 24);
-
+	
+	private static final int FONT_SMALL_LOW = 12;
+	private static final int FONT_MEDIUM_LOW = 14;
+	private static final int FONT_LARGE_LOW = 18;
+	
+	private static final int FONT_SMALL_MEDIUM = 12;
+	private static final int FONT_MEDIUM_MEDIUM = 16;
+	private static final int FONT_LARGE_MEDIUM = 22;
+	
+	private static final int FONT_SMALL_HIGH = 14;
+	private static final int FONT_MEDIUM_HIGH = 18;
+	private static final int FONT_LARGE_HIGH = 24;
+	
+	private static final int ROW_HEIGHT_HIGH = 50;
+	private static final int ROW_HEIGHT_MEDIUM = 40;
+	private static final int ROW_HEIGHT_LOW = 30;
+	
+	private static Dimension CECIL_RESOLUTION;
+	
 	public static final Color[] ORANGE_THEME = {new Color(255, 230, 214), new Color(255, 148, 82), new Color(255, 255, 255)};
 	public static final Color[] BLUE_THEME = {new Color(152, 221, 255), new Color(67, 178, 233), new Color(255, 255, 255)};
-	public static final Color[] GREEN_THEME = {new Color(191, 252, 172),new Color(6, 209, 46),new Color(255, 255, 255)};
+	public static final Color[] GREEN_THEME = {new Color(191, 252, 172), new Color(6, 209, 46), new Color(255, 255, 255)};
 	public static final Color[] DEFAULT_THEME = null;
-
+	
 	public FontUIResource FONT_SMALL;
 	public FontUIResource FONT_MEDIUM;
 	public FontUIResource FONT_LARGE;
@@ -177,43 +199,46 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	private Color[] currentTheme;
 	private ArrayList<OutputError> errors;
 	private boolean ioPortsEnabled;
-	private int scaleType;
-	Dimension resolution;
-	private final UserManual um = new UserManual(this);
+	private final UserManual userManual = new UserManual();
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
+	 * A Controller object is passed in for callback handling.
+	 * 
+	 * @param controller The controller where the Frame is created.
 	 */
 	public Frame(Controller controller) {
 		this.controller = controller;
 		currentTheme = ORANGE_THEME;
 
+		//Get the screen resolution
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		resolution = new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight());
-//		System.out.println(resolution.height);
-		if (resolution.width <= 1280 || resolution.height <= 720) {
-			scaleType = 0;
-			WIDTH = 800;
-			HEIGHT = 650;
-			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
-			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 14);
-			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 18);
-		} 
-		else if (resolution.width <= 1600 || resolution.height <= 900) {
-			scaleType = 1;
-			WIDTH = 1000;
-			HEIGHT = 750;
-			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 12);
-			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 16);
-			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 22);
-		}
-		else {
-			scaleType = 2;
-			WIDTH = 1200;
-			HEIGHT = 900;
-			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, 14);
-			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, 18);
-			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, 24);
+		Dimension resolution = new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight());
+		
+		//Change the CECIL window size and font size depending on screen resolution
+		//<= 1280x720 is low
+		//> 1280x720 & <= 1600x900 is medium
+		//> 1600x900 is high
+		if (resolution.width <= SCREEN_RESOLUTION_LOW.width || resolution.height <= SCREEN_RESOLUTION_LOW.height) {
+			CECIL_RESOLUTION = CECIL_RESOLUTION_LOW;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, FONT_SMALL_LOW);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, FONT_MEDIUM_LOW);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, FONT_LARGE_LOW);
+		} else if (resolution.width <= SCREEN_RESOLUTION_MEDIUM.width || resolution.height <= SCREEN_RESOLUTION_MEDIUM.height) {
+			CECIL_RESOLUTION = CECIL_RESOLUTION_LOW;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, FONT_SMALL_LOW);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, FONT_MEDIUM_LOW);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, FONT_LARGE_LOW);
+		} else if (resolution.width <= SCREEN_RESOLUTION_HIGH.width || resolution.height <= SCREEN_RESOLUTION_HIGH.height) {
+			CECIL_RESOLUTION = CECIL_RESOLUTION_MEDIUM;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, FONT_SMALL_MEDIUM);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, FONT_MEDIUM_MEDIUM);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, FONT_LARGE_MEDIUM);
+		} else {
+			CECIL_RESOLUTION = CECIL_RESOLUTION_HIGH;
+			FONT_SMALL = new FontUIResource("Arial", Font.PLAIN, FONT_SMALL_HIGH);
+			FONT_MEDIUM = new FontUIResource("Arial", Font.PLAIN, FONT_MEDIUM_HIGH);
+			FONT_LARGE = new FontUIResource("Arial", Font.PLAIN, FONT_LARGE_HIGH);
 		}
 		currentFont = FONT_MEDIUM;
 		drawFrame();
@@ -243,9 +268,9 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 */
 		getContentPane().removeAll();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setMinimumSize(new Dimension(CECIL_RESOLUTION.width, CECIL_RESOLUTION.height));
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		ToolTipManager.sharedInstance().setDismissDelay(20000);
+		ToolTipManager.sharedInstance().setDismissDelay(TOOLTIP_DELAY);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(this);
@@ -277,7 +302,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		menuBar = new BackgroundMenuBar();
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/cecil_title.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(100, 30, Image.SCALE_SMOOTH);
 			}
 			ImageIcon icon = new ImageIcon(img);
@@ -317,24 +342,14 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			}
 		});
 		fileMenu.addKeyListener(new KeyListener() {
-			
 			@Override
-			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+			public void keyTyped(KeyEvent arg0) {}
 			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+			public void keyReleased(KeyEvent arg0) {}
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					fileMenu.doClick();
-					System.out.println("Opening file menu");
 				}
 			}
 		});
@@ -396,6 +411,18 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				settingsMenu.requestFocus();
 			}
 		});
+		settingsMenu.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+			@Override
+			public void keyReleased(KeyEvent arg0) {}
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					settingsMenu.doClick();
+				}
+			}
+		});
 		menuBar.add(settingsMenu);
 
 		menuPreferences = new JMenuItem("Preferences");
@@ -425,15 +452,26 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				helpMenu.requestFocus();
 			}
 		});
+		helpMenu.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+			@Override
+			public void keyReleased(KeyEvent arg0) {}
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					helpMenu.doClick();
+				}
+			}
+		});
 		menuBar.add(helpMenu);
 
 		menuUserManual = new JMenuItem("User Manual");	
-//		final UserManual um = new UserManual(this);
-		um.setColours(currentTheme);
-		um.setFont(currentFont);
+		userManual.setColours(currentTheme);
+		userManual.setFont(currentFont);
 		menuUserManual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				um.setVisible(true);
+				userManual.setVisible(true);
 			}
 		});
 		menuAbout = new JMenuItem("About CECIL");
@@ -459,7 +497,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		ioPortsEnabled = false;
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			ImageIcon icon = new ImageIcon(img);
@@ -485,7 +523,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 						ioPortsEnabled = !ioPortsEnabled;
 						if (ioPortsEnabled) {
 							Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
-							if (scaleType < 2) {
+							if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 							}
 							ImageIcon icon = new ImageIcon(img);
@@ -493,7 +531,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 							ioMenu.setIcon(icon);
 						} else {
 							Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
-							if (scaleType < 2) {
+							if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 								img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 							}
 							ImageIcon icon = new ImageIcon(img);
@@ -521,7 +559,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 							ioPortsEnabled = !ioPortsEnabled;
 							if (ioPortsEnabled) {
 								Image img = ImageIO.read(getClass().getResource("/resources/vdk-checked.png"));
-								if (scaleType < 2) {
+								if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 									img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 								}
 								ImageIcon icon = new ImageIcon(img);
@@ -529,7 +567,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 								ioMenu.setIcon(icon);
 							} else {
 								Image img = ImageIO.read(getClass().getResource("/resources/vdk-unchecked.png"));
-								if (scaleType < 2) {
+								if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 									img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 								}
 								ImageIcon icon = new ImageIcon(img);
@@ -591,7 +629,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		gbc_centre.gridx = 0;
 		gbc_centre.gridy = 1;
 		gbc_centre.weightx = 1;
-		if (resolution.width <= 800 || resolution.height <= 600) {
+		if (CECIL_RESOLUTION.equals(CECIL_RESOLUTION_LOW)) {
 			gbc_centre.weighty = 0.55;
 		} else {
 			gbc_centre.weighty = 0.7;
@@ -606,7 +644,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		gbc_south.gridx = 0;
 		gbc_south.gridy = 2;
 		gbc_south.weightx = 1;
-		if (resolution.width <= 800 || resolution.height <= 600) {
+		if (CECIL_RESOLUTION.equals(CECIL_RESOLUTION_LOW)) {
 			gbc_south.weighty = 0.45;
 		} else {
 			gbc_south.weighty = 0.3;
@@ -784,7 +822,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			 */
 			private static final long serialVersionUID = 1L;
 
-			public Component getListCellRendererComponent(JList list,
+			public Component getListCellRendererComponent(JList<?> list,
 					Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				super.getListCellRendererComponent(list, value, index, false, cellHasFocus);
@@ -841,7 +879,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 
 		ToolTipsforinput tips = new ToolTipsforinput();
 		for (int column = 0; column < tblInput.getColumnCount(); column++) {
-			TableColumn colNo = tblInput.getColumnModel().getColumn(column);
 			if (column == 0) {
 				tips.setToolTip("Line Number");
 			}
@@ -862,18 +899,47 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 
 		String[] temp = new String[instructionList.size()];
 		instructionList.toArray(temp);
-		comboBox = new JComboBox(temp);
+		comboBox = new JComboBox<String>(temp);
 		comboBox.getAccessibleContext().setAccessibleName("Instruction");
 		comboBox.setEditable(false);
 		AutoCompleteDecorator.decorate(comboBox);
 
-		ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				//actionEvent.getSource();
+		//Originally used a custom DefaultComboBoxRenderer, now using DefaultListCellRenderer.
+//		MyComboBoxRenderer comboRenderer = new MyComboBoxRenderer();
+		comboBox.setRenderer(new DefaultListCellRenderer(){
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				if (isSelected) {	
+					setBackground(list.getSelectionBackground());
+					setForeground(Color.BLUE);
+					if (-1 < index) {
+						if (instructions != null && instructions.get(index) != null && instructions.get(index).getDescription() != null) {
+							list.setToolTipText(instructions.get(index).getDescription());
+						} else {
+							list.setToolTipText("No description available");
+						}
+					}
+				} else {
+					setBackground(list.getBackground());
+					setForeground(list.getForeground());
+				}
+
+				if (value != null && !value.toString().isEmpty()) {
+					getAccessibleContext().setAccessibleName(value.toString());
+				} else {
+					getAccessibleContext().setAccessibleName("Instruction");
+				}
+
+				setFont(list.getFont());
+				setText((value == null) ? "" : value.toString());
+				setBorder(getBorder());
+				return this;
 			}
-		};
-		comboBox.addActionListener(actionListener);				
-		comboBox.setRenderer(new MyComboBoxRenderer()); 				
+		}); 				
 		input = new JTextField();
 		tblInput.setFillsViewportHeight(true);
 
@@ -882,7 +948,12 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 
 			if (i != 2) {
 				column.setCellEditor(new DefaultCellEditor(input) {
-			        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			        /**
+					 * Serial version UID to stop the warning.
+					 */
+					private static final long serialVersionUID = 1L;
+
+					public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 			        	Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 			        	
 			        	cell.getAccessibleContext().setAccessibleName("Editor");
@@ -893,7 +964,12 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				});
 			} else {
 				column.setCellEditor(new ComboBoxCellEditor(comboBox) {
-			        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			        /**
+					 * Serial version UID to stop the warning.
+					 */
+					private static final long serialVersionUID = 1L;
+
+					public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 			        	Component cell = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 			        	
 			        	cell.getAccessibleContext().setAccessibleName("Instructions list");
@@ -985,6 +1061,11 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 
 		tblMemory = new JTable(mdlMemory) {
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -1095,7 +1176,6 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			lblZero.setBackground(Color.WHITE);
 			lblNegative.setBackground(Color.WHITE);
 
-//			consoleScroll.setBackground(UIManager.getColor("Panel.background"));
 			txtConsole.setBackground(Color.WHITE);
 			txtConsole.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 
@@ -1103,7 +1183,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			tblInput.setSelectionBackground(UIManager.getColor("List.selectionBackground"));
 			tblMemory.setBackground(Color.WHITE);
 		}
-		um.setColours(currentTheme);
+		userManual.setColours(currentTheme);
 	}
 
 	/**
@@ -1114,13 +1194,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Compile
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-build.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnCompile.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-build-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnCompile.setRolloverIcon(new ImageIcon(img));
@@ -1131,13 +1211,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Run
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-play.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnRun.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-play-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnRun.setRolloverIcon(new ImageIcon(img));
@@ -1148,13 +1228,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Step through
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-step.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnStepThrough.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-step-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			btnStepThrough.setRolloverIcon(new ImageIcon(img));
@@ -1165,13 +1245,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//File
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			fileMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			fileMenu.setRolloverIcon(new ImageIcon(img));
@@ -1186,7 +1266,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory-colour.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					fileMenu.setIcon(new ImageIcon(img));
@@ -1198,7 +1278,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-directory.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					fileMenu.setIcon(new ImageIcon(img));
@@ -1215,13 +1295,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Settings
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			settingsMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			settingsMenu.setRolloverIcon(new ImageIcon(img));
@@ -1236,7 +1316,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings-colour.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					settingsMenu.setIcon(new ImageIcon(img));
@@ -1248,7 +1328,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-settings.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					settingsMenu.setIcon(new ImageIcon(img));
@@ -1265,13 +1345,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		//Help
 		try {
 			Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			helpMenu.setIcon(new ImageIcon(img));
 
 			img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
-			if (scaleType < 2) {
+			if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 				img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 			}
 			helpMenu.setRolloverIcon(new ImageIcon(img));
@@ -1286,7 +1366,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseEntered(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help-colour.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					helpMenu.setIcon(new ImageIcon(img));
@@ -1298,7 +1378,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			public void mouseExited(MouseEvent e) {
 				try {
 					Image img = ImageIO.read(getClass().getResource("/resources/vdk-help.png"));
-					if (scaleType < 2) {
+					if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 						img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 					}
 					helpMenu.setIcon(new ImageIcon(img));
@@ -1371,25 +1451,25 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		tblMemory.getTableHeader().setFont(currentFont);
 		tblMemory.setFont(currentFont);
 
-		if (scaleType == 0) {
-			tblInput.setRowHeight(30);
-			tblMemory.setRowHeight(30);
-		} else if (scaleType == 1) {
-			tblInput.setRowHeight(40);
-			tblMemory.setRowHeight(40);
-		} else if (scaleType == 2) {
-			tblInput.setRowHeight(50);
-			tblMemory.setRowHeight(50);
+		if (CECIL_RESOLUTION.equals(CECIL_RESOLUTION_LOW)) {
+			tblInput.setRowHeight(ROW_HEIGHT_LOW);
+			tblMemory.setRowHeight(ROW_HEIGHT_LOW);
+		} else if (CECIL_RESOLUTION.equals(CECIL_RESOLUTION_MEDIUM)) {
+			tblInput.setRowHeight(ROW_HEIGHT_MEDIUM);
+			tblMemory.setRowHeight(ROW_HEIGHT_MEDIUM);
+		} else if (CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
+			tblInput.setRowHeight(ROW_HEIGHT_HIGH);
+			tblMemory.setRowHeight(ROW_HEIGHT_HIGH);
 		}
 		
-		um.setFonts(currentFont);
+		userManual.setFonts(currentFont);
 	}
 
 	private void setupAccessibility() {
-		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language (English)");
+		getAccessibleContext().setAccessibleDescription("Application for learning the CECIL machine language (English). Press ALT to tab between the menu bar and the main application.");
 		
 		menuBar.getAccessibleContext().setAccessibleName("Menu bar");
-		menuBar.getAccessibleContext().setAccessibleDescription("Press alt to focus the menu bar");
+		menuBar.getAccessibleContext().setAccessibleDescription("Press ALT to focus the menu bar");
 		menuBar.setFocusable(true);
 		menuBar.setFocusTraversalKeysEnabled(true);
 		
@@ -1509,46 +1589,51 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		}
 	}
 
+	//Using a custom DefaultListCellRenderer instead to stop a warning.
+//	/**
+//	 * Renderer for Combo box to display the tooltips for all the items listed in the combo box.
+//	 * Get the tooltip according the selected item's index.
+//	 */
+//	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
+//		/**
+//		 * Serial version UID to stop the warning.
+//		 */
+//		private static final long serialVersionUID = 1L;
+//
+//		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+//			if (isSelected) {	
+//				setBackground(list.getSelectionBackground());
+//				setForeground(Color.BLUE);
+//				if (-1 < index) {
+//					if (instructions != null && instructions.get(index) != null && instructions.get(index).getDescription() != null) {
+//						list.setToolTipText(instructions.get(index).getDescription());
+//					} else {
+//						list.setToolTipText("No description available");
+//					}
+//				}
+//			} else {
+//				setBackground(list.getBackground());
+//				setForeground(list.getForeground());
+//			}
+//
+//			if (value != null && !value.toString().isEmpty()) {
+//				getAccessibleContext().setAccessibleName(value.toString());
+//			} else {
+//				getAccessibleContext().setAccessibleName("Instruction");
+//			}
+//
+//			setFont(list.getFont());
+//			setText((value == null) ? "" : value.toString());
+//			setBorder(getBorder());
+//			return this;
+//		}
+//	}
 	
-	/**
-	 * Renderer for Combo box to display the tooltips for all the items listed in the combo box.
-	 * Get the tooltip according the selected item's index.
-	 */
-	private class MyComboBoxRenderer extends BasicComboBoxRenderer {
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			if (isSelected) {	
-				setBackground(list.getSelectionBackground());
-				setForeground(Color.BLUE);
-				if (-1 < index) {
-					if (instructions != null && instructions.get(index) != null && instructions.get(index).getDescription() != null) {
-						list.setToolTipText(instructions.get(index).getDescription());
-					} else {
-						list.setToolTipText("No description available");
-					}
-				}
-			} else {
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-
-			if (value != null && !value.toString().isEmpty()) {
-				getAccessibleContext().setAccessibleName(value.toString());
-			} else {
-				getAccessibleContext().setAccessibleName("Instruction");
-			}
-
-			setFont(list.getFont());
-			setText((value == null) ? "" : value.toString());
-			setBorder(getBorder());
-			return this;
-		}
-	}
 	/**
 	 * Sets the tooltips for the JTable headers.
 	 */
-	
-	class ToolTipsforinput extends MouseMotionAdapter {
-		ArrayList tooltips = new ArrayList<>();
+	private class ToolTipsforinput extends MouseMotionAdapter {
+		private ArrayList<String> tooltips = new ArrayList<String>();
 		public void setToolTip(String tooltip) {		    
 			tooltips.add(tooltip);		    
 		}
@@ -1651,7 +1736,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Component getListCellRendererComponent(JList list,
+		public Component getListCellRendererComponent(JList<?> list,
 				Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
 			if (index == 0) {
@@ -1692,7 +1777,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 				if (value != null && !value.isEmpty()) {
 					line.add((String) value);
 				} else {
-					line.add(" ");
+					line.add(" "); //Empty cells must be represented as a space to be parsed by the model.
 				}
 			}
 			code.add(line);
@@ -1782,6 +1867,11 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	private void onSaveClicked() {
 		ArrayList<ArrayList<String>> code = getProgramCode();
 		JFileChooser fileChooser = new JFileChooser(){
+			/**
+			 * Serial version UID to stop the warning.
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void approveSelection(){
 				File f = getSelectedFile();
@@ -1836,7 +1926,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	/**
 	 * Loads a program into the input editor.
 	 * 
-	 * @param program An ArrayList of instruction lines. Each instruction is an ArrayList composed of three Strings.
+	 * @param program An ArrayList of program lines. Each program line is an ArrayList composed of three Strings.
 	 */
 	private void loadProgramCode(ArrayList<ArrayList<String>> program) {
 		InputTableModel model = (InputTableModel) tblInput.getModel();
@@ -1876,13 +1966,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 	}
 
 	/**
-	 * 
+	 * Highlight a line in the input table for the step through functionality.
 	 */
-	public void highlightStepThrough(int currNo) {
+	public void highlightStepThrough(int lineNo) {
 		tblInput.clearSelection();
 
-		tblInput.setRowSelectionInterval(currNo-1, currNo-1);
-		tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(currNo-1, 0, true)));
+		tblInput.setRowSelectionInterval(lineNo-1, lineNo-1);
+		tblInput.scrollRectToVisible(new Rectangle(tblInput.getCellRect(lineNo-1, 0, true)));
 	}
 
 	/**
@@ -1957,13 +2047,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblCarry.getAccessibleContext().setAccessibleName("Carry flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblCarry.getAccessibleContext().setAccessibleName("Carry flag off");
@@ -1980,13 +2070,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblZero.getAccessibleContext().setAccessibleName("Zero flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblZero.getAccessibleContext().setAccessibleName("Zero flag off");
@@ -2003,13 +2093,13 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 			Image img;
 			if (flagIsOn) {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light-colour.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblNegative.getAccessibleContext().setAccessibleName("Negative flag on");
 			} else {
 				img = ImageIO.read(getClass().getResource("/resources/vdk-light.png"));
-				if (scaleType < 2) {
+				if (!CECIL_RESOLUTION.equals(CECIL_RESOLUTION_HIGH)) {
 					img = img.getScaledInstance(ICON_SMALL.width, ICON_SMALL.height, Image.SCALE_SMOOTH);
 				}
 				lblNegative.getAccessibleContext().setAccessibleName("Negative flag off");
@@ -2051,7 +2141,7 @@ public class Frame extends JFrame implements ViewInterface, Accessible {
 		DefaultTableModel mdlMemory = new DefaultTableModel();
 		if (memory != null && memory.length > 0) {
 			for(int i = 0; i < memory.length; i++) {
-				if (memory[i] > -1) {
+				if (memory[i] > -1) { //If value is -1 then leave it blank
 					mdlMemory.addColumn(i, new Object[]{memory[i]});
 				} else {
 					mdlMemory.addColumn(i, new Object[]{""});
