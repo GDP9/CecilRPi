@@ -1,6 +1,13 @@
-.start load num1 ;
-  add num2 ;
+.start cclear   ;
+  add num ;
   printch   ;
-  stop   ;
-.num1 insert 60 ;
-.num2 insert 5 ;
+  printb   ;
+  xor num2 ;
+  printb   ;
+  xdec   ;
+  cset   ;
+  jizero end ;
+  print   ;
+.end stop   ;
+.num1 insert 63 ;
+.num2 insert 2 ;

@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.raspberrypi.cecil.controller.Controller;
-import org.raspberrypi.cecil.model.interfaces.ModelInterface;
-import org.raspberrypi.cecil.model.interfaces.SimulatorInterface;
 import org.raspberrypi.cecil.model.outputstream.ErrorOutputStream;
 import org.raspberrypi.cecil.model.outputstream.OutputError;
 import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
@@ -39,10 +37,8 @@ import org.raspberrypi.cecil.pojo.Program;
  * 
  * @version 1.2
  * 
- * @date 14/11/2013
- * 
  */
-public class Model implements ModelInterface, SimulatorInterface {
+public class Model implements ModelInterface {
 
 	private StandardOutputStream stdStream;
 	private ErrorOutputStream errorStream;
@@ -99,7 +95,7 @@ public class Model implements ModelInterface, SimulatorInterface {
 	 * @return boolean
 	 */
 	public boolean isBinaryInstruction(String name){
-		if(instructionToMnemonic(name) >= 18)
+		if(instructionToMnemonic(name) >= 10)
 			return true;
 
 		return false;

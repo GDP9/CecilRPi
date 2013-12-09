@@ -3,18 +3,12 @@ package org.raspberrypi.cecil.model.outputstream;
 import java.util.ArrayList;
 
 /**
- * CECIL Application StandardOutputStream
- * Constitutes the stream of standard messages collected by the Compiler and Runner
- * Supplies an ArrayList<string> output
- * 
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
- * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
+ * <p>CECIL Application StandardOutputStream</p>
+ * <p>Constitutes the stream of standard messages collected by the Compiler and Runner</p>
+ * <p>Supplies an ArrayList<string> output</p>
+ *
+ * @author Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10), Southampton University, United Kingdom
  * @version 1.2
- * 
- * @date 14/11/2013
  * 
  */
 public class StandardOutputStream {

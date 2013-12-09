@@ -1,17 +1,14 @@
 package org.raspberrypi.cecil.view;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.colorchooser.*;
-import javax.swing.text.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.peer.FontPeer;
+
 /**
  * Preferences to change the font size and colour settings.
  * 
@@ -25,6 +22,10 @@ import java.awt.peer.FontPeer;
  */
 public class Preferences extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Color panelcolour;
 	JComboBox fontName;
 	JComboBox fontSize;

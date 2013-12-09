@@ -13,24 +13,19 @@ import org.raspberrypi.cecil.pojo.Program;
 
 /**
 *
-* CECIL ProgramFileConverter model manual tests
-* Tests to the Program File Converter functionality
-*
-* The MIT License (MIT)
-* Copyright (c) 2013 Southampton University group GDP9
-* 
-* @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
-* Southampton University, United Kingdom
+* <p>CECIL ProgramFileConverter model manual tests</p>
+* <p>Tests to the Program File Converter functionality</p>
+
+* @author Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10), Southampton University, United Kingdom
 * @version 1.2
-* 
-* @date 14/11/2013
 *
 */
 public class ProgramFileConverter {
 
 	/**
-	 * Main method to execute manual test
-	 * Takes in incorrect and correct program input from TestInput.java
+	 * <p>Main method to execute manual test</p>
+	 * <p>Takes in incorrect and correct program input from TestInput.java</p>
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {

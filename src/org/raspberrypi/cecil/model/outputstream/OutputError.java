@@ -1,20 +1,15 @@
 package org.raspberrypi.cecil.model.outputstream;
 
 /**
- * CECIL Application OutputError
- * Constitutes CECIL error associated with 
- * 	- line number of the input editor
- * 	- error message collected from Compiler, Runner, Lexer and Parser
+ * <p>CECIL Application OutputError
+ * <p>Constitutes CECIL error associated with<ul>
+ * 	<li>line number of the input editor</li>
+ * 	<li>error message collected from Compiler, Runner, Lexer and Parser</li><ul>
+ * </p>
  *  
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
- * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
+ * @author Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10), Southampton University, United Kingdom
  * @version 1.2
- * 
- * @date 14/11/2013
- * 
+ *  
  */
 public class OutputError {
 

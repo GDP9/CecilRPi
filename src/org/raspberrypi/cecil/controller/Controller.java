@@ -182,11 +182,10 @@ public class Controller implements ControllerInterface {
 
 			}
 		}
-		
+
 		else { 
 			model.setViewToDefault();
 			this.setViewOutput();
-			System.out.println(model.getErrorStream().getErrors().size());
 			view.setConsoleError(model.getErrorStream().getErrors());
 		}
 	}
@@ -284,7 +283,7 @@ public class Controller implements ControllerInterface {
 		for(int i = 0; i < code.size(); i++) {
 			ArrayList<String> input = code.get(i);
 			String alphanumeric = "[a-zA-Z][a-zA-Z0-9]*";
-			
+
 			/* Checking for any instruction following an insert */
 			if(input.get(1).equals("insert")) {
 				for(int j = i + 1; j < code.size(); j++) {	
@@ -303,7 +302,7 @@ public class Controller implements ControllerInterface {
 			}
 
 			/* Checking for alpha-numeric datafield */
-			else if(!input.get(2).equals(" ")) {
+			if(!input.get(2).equals(" ")) {
 				if(input.get(1).equals("insert")) {
 					if(!input.get(2).matches("[0-9]*")) {
 						addErrorToOutputstream(i+1, "Data should be numeric only");
@@ -318,24 +317,23 @@ public class Controller implements ControllerInterface {
 				}
 			}
 
-			else {
-				/* Checking for missing datafield following binary instruction */
-				if(model.isBinaryInstruction(input.get(1))) {
-					if(input.get(2).equals(" ")) {
-						addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
-						return false;
-					}
-					continue;
+			/* Checking for missing datafield following binary instruction */
+			if(model.isBinaryInstruction(input.get(1))) {
+				if(input.get(2).equals(" ")) {
+					addErrorToOutputstream(i+1, "A binary instruction must be succeeded by a datafield");
+					return false;
 				}
+				continue;
+			}
 
-				/* Checking for existing datafield following unary instruction */
-				else if(!model.isBinaryInstruction(input.get(1))) {
-					if(!input.get(2).equals(" ")){
-						addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
-						return false;
-					}
+			/* Checking for existing datafield following unary instruction */
+			else if(!model.isBinaryInstruction(input.get(1))) {
+				if(!input.get(2).equals(" ")){
+					addErrorToOutputstream(i+1, "A unary instruction must not be succeeded by a datafield");
+					return false;
 				}
 			}
+
 
 
 		}

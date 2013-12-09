@@ -15,7 +15,7 @@ import org.raspberrypi.cecil.model.outputstream.StandardOutputStream;
  * 		<li>Only takes place when compilation has been previously successful</li>
  * 	</ul>
  * </p>
- 
+
  * @author Carolina Ferreira (cf4g09)
  * @author Shreeprabha Aggarwal (sa10g10)
  * @author Southampton University, United Kingdom
@@ -48,7 +48,7 @@ public class Runner {
 		this.stdStream = new StandardOutputStream();
 		this.isProgramTerminated = false;
 	}
-	
+
 	/**
 	 * <p>Runner's Parametric constructor</p>
 	 * <p>Initialses Simulator, ErrorOutputStream and StandardOutputStream</p>
@@ -66,7 +66,7 @@ public class Runner {
 		this.stdStream = stdStream;
 		this.isProgramTerminated = false;
 	}
-	
+
 	/**
 	 * Gets boolean isProgramTerminated
 	 * @return boolean isProgramTerminated
@@ -82,7 +82,7 @@ public class Runner {
 	public void setIsProgramTerminated(boolean isEnabled) {
 		this.isProgramTerminated = isEnabled;
 	}
-	
+
 	/**
 	 * Gets Simulator object
 	 * @return Simulator object
@@ -95,76 +95,74 @@ public class Runner {
 	 * <p>Executes each line of user input program like an <b>interpreter</b></p>
 	 * <p>This execution goes according to the memory model containing the instructions and data</p>
 	 *
-	 * @param line number
-	 * @return next line number
+	 * @param program counter
+	 * @return next line number for highlighting in input editor
 	 */
 	public int stepthrough(int i) {
 		switch(sim40.memory[i]) {
 
+		/* stop */
 		case 0: this.isProgramTerminated = true; 
 		return i;
 
+		/* print, printb, printch */
 		case 1: case 2: case 3: 
 			this.stdStream.getOutput().add(result(i));
 			++i;
 			break;
 
 		default:
-			if(sim40.memory[i] >=25 && sim40.memory[i]<=31)
+			/* jump, comp, xcomp, ycomp, jineg, jipos, jizero, jicarry */
+			if(sim40.memory[i] >= 19 && sim40.memory[i] <= 26)
 				i = compareExecute(i);
-			
-			else if(sim40.memory[i] == 4 || sim40.memory[i] == 5) {
-				i = restExecute(i);
-				checkStatusFlags();
-				sim40.updateViewFlags();
-			}
-			
-			else {
-				i = restExecute(i);
-				checkStatusFlags();
-				sim40.updateViewVars();
-			}
+
+			else if(sim40.memory[i] >= 4 && sim40.memory[i] <= 9) 
+				i = unaryExecute(i);
+
+			else 
+				i = binaryExecute(i);		
+
 		}
-		
+
+		sim40.updateViewVars();
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
-		
+
 		return i;
 	}
 
 	/**
-	 * Executes "run" of user input program
-	 * This execution goes according to the instructions rules
-	 * @param line number
-	 * @return next line number
+	 * <p>Executes &quote;run&quote; of user input program</p>
+	 * <p>This execution goes according to the instructions rules<p>
+	 * 
+	 * @param program counter
 	 */
 	public void run(int i) {
 		while(sim40.memory[i] != -1) {	
 			switch(sim40.memory[i]) {
 
+			/* stop */
 			case 0: return;
 
+			/* print, printb, printch */
 			case 1: case 2: case 3: 
 				this.stdStream.getOutput().add(result(i));
 				++i;
 				break;
 
 			default:
-				if(sim40.memory[i] >=25 && sim40.memory[i]<=31)
+				/* jump, comp, xcomp, ycomp, jineg, jipos, jizero, jicarry */
+				if(sim40.memory[i] >= 19 && sim40.memory[i] <= 26)
 					i = compareExecute(i);
-				
-				else if(sim40.memory[i] == 4 || sim40.memory[i] == 5) {
-					i = restExecute(i);
-					checkStatusFlags();
-					sim40.updateViewFlags();
-				}
-				
-				else {
-					i = restExecute(i);
-					checkStatusFlags();
-					sim40.updateViewVars();
-				}
+
+				else if(sim40.memory[i] >= 4 && sim40.memory[i] <= 9) 
+					i = unaryExecute(i);
+
+				else 
+					i = binaryExecute(i);		
+
 			}
 
+			sim40.updateViewVars();
 			sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		}
 
@@ -197,7 +195,7 @@ public class Runner {
 	}
 
 	/**
-	 * <p>Executes comparison instructions "jump", "comp", "jineg", "jipos", "jizero" and "jicarry" existent in user input programs
+	 * <p>Executes comparison instructions &quot;jump&quot;, &quot;comp&quot;, &quot;xcomp&quot;, &quot;ycomp&quot;, &quot;jineg&quot;, &quot;jipos&quot;, &quot;jizero&quot; and &quot;jicarry&quot; existent in user input programs
 	 * </p>
 	 * <p>This execution goes according to the instructions rules
 	 * </p>
@@ -208,50 +206,105 @@ public class Runner {
 	private int compareExecute(int i) {
 		switch(sim40.memory[i]) {
 
-		case 25: /* jump */
+		case 19: /* jump */
 			i = sim40.memory[i+1];
 			break;
 
-		case 26: /* comp */
-			zeroflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[i+1]);
-			negativeflagstatus(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
+		case 20: /* comp */
+			updateZeroFlagOnComp(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[i+1]);
+			updateNegativeFlagOnComp(Simulator.ACCUMULATOR_ADDRESS, sim40.memory[++i]);
 			break;
 
-		case 27: /* jineg */
+		case 21: /* xcomp */
+			updateZeroFlagOnComp(Simulator.XREG_ADDRESS, sim40.memory[i+1]);		
+			updateNegativeFlagOnComp(Simulator.XREG_ADDRESS, sim40.memory[++i]);
+			break;
+
+		case 22: /* ycomp */
+			updateZeroFlagOnComp(Simulator.YREG_ADDRESS, sim40.memory[i+1]);		
+			updateNegativeFlagOnComp(Simulator.YREG_ADDRESS, sim40.memory[++i]);
+			break;
+
+		case 23: /* jineg */
 			if((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 2) {
 				i = sim40.memory[i+1];
-				
 			}
+
 			else 
-				i = i+2;
+				i = i + 2;
 			break;
 
-		case 28 : /* jipos */
-			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
+		case 24 : /* jipos */
+			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 0) && ((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<1)) == 0))	
 				i = sim40.memory[i+1];
 			else 
-				i = i+2;
+				i = i + 2;
 			break;
 
-		case 29: /* jizero */
+		case 25: /* jizero */
 			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<0)) == 1))
 				i = sim40.memory[i+1];
 			else 
-				i = i+2;
+				i = i + 2;
 			break;
 
-		case 31: /* jicarry */
+		case 26: /* jicarry */
 			if(((sim40.memory[Simulator.STATUS_ADDRESS] & (1<<2)) == 4))
 				i = sim40.memory[i+1];
 			else 
-				i = i+2;
+				i = i + 2;
 			break;
+
 		}
+
 		return i;
 	}
 
 	/**
-	 * <p>Executes other instructions "cclear", "cset", "(y)xinc", "(y)xdec","(x,y)load", "(x,y)store", "add", "sub", "and", "or", "xor", "loadmx" and "insert" existent in user input programs
+	 * <p>Executes unary instruction</p>
+	 * 
+	 * @param i
+	 * @return program counter
+	 */
+	private int unaryExecute(int i) {
+		switch(sim40.memory[i]) {
+
+		/* Unary Instructions */
+		case 4: /* cclear */
+			switchOffFlag(2);
+			break;
+
+		case 5: /* cset */
+			switchOnFlag(2);
+			break;
+
+		case 6: /* xinc */
+			sim40.memory[Simulator.XREG_ADDRESS]++;
+			checkResetOverflow(Simulator.XREG_ADDRESS);
+			break;
+
+		case 7: /* xdec */
+			sim40.memory[Simulator.XREG_ADDRESS]--;
+			checkResetUnderflow(Simulator.YREG_ADDRESS);
+			break;
+
+		case 8: /* yinc */
+			sim40.memory[Simulator.YREG_ADDRESS]++;
+			checkResetOverflow(Simulator.YREG_ADDRESS);
+			break;
+
+		case 9: /* ydec */
+			sim40.memory[Simulator.YREG_ADDRESS]--;
+			checkResetUnderflow(Simulator.YREG_ADDRESS);
+			break;
+
+		}
+
+		return ++i;
+	}
+
+	/**
+	 * <p>Executes other instructions "(x,y)load", "add", "sub", "and", "or", "xor" existent in user input programs
 	 * </p>
 	 * <p>This execution goes according to the instructions rules
 	 * </p>
@@ -259,208 +312,91 @@ public class Runner {
 	 * @param addressable memory location
 	 * @return int next addressable memory location
 	 */
-	private int restExecute(int i) {
-		switch(sim40.memory[i]) {
+	private int binaryExecute(int i) {
+		if(!(compiler.getInstructionField().containsKey(sim40.memory[i+1]) && compiler.getInstructionField().get(sim40.memory[i+1]).equals("insert")))
+			this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
 
-		/* Unary Instructions */
-		case 4: /* cclear */
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<2);
-			i++;
-			break;
+		else {		
+			switch(sim40.memory[i]) {
 
-		case 5: /* cset */
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
-			i++;
-			break;
-
-		case 9: /* xinc */
-			sim40.memory[Simulator.XREG_ADDRESS]++;
-			i++;
-			break;
-
-		case 10: /* xdec */
-			sim40.memory[Simulator.XREG_ADDRESS]--;
-			i++;
-			break;
-
-		case 16: /* yinc */
-			sim40.memory[Simulator.YREG_ADDRESS]++;
-			i++;
-			break;
-
-		case 17: /* ydec */
-			sim40.memory[Simulator.YREG_ADDRESS]--;
-			i++;
-			break;
+			/* insert is 10 but is already performed during compilation */
 
 			/* Binary Instructions */	
-		case 18: /* load */
-			if(checkInsert(i))	{
+			case 11: /* load */
 				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[sim40.memory[++i]];
-				i++;
-			}
+				break;
 
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-		case 19: /* store */
-			if(checkInsert(i))	{
-				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.ACCUMULATOR_ADDRESS];
-				i++;
-			}
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-		case 20: /* add */
-			if(checkInsert(i))	{
-				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] += sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-
-			else
-			{
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-			}
-
-			break;
-
-		case 21: /* sub */
-			if(checkInsert(i)) {	
-				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] -= sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-			else
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-		case 22: /* and */
-			if(checkInsert(i)) {	
-				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] &= sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-		case 23: /* or */
-			if(checkInsert(i)) {	
-				//sim40.memory[sim40.memory[i+1]] = sim40.memory[sim40.memory[i+1] + 1];
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] |= sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-		case 24: /* xor */
-			if(checkInsert(i)) {	
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] ^= sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-		case 32: /* xload */
-			
-			if(checkInsert(i))	{
+			case 12: /* xload */
 				sim40.memory[Simulator.XREG_ADDRESS] = sim40.memory[sim40.memory[++i]];
-				i++;
-			}
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-			break;
+				break;
 
-		case 33: /* xstore */
-			if(checkInsert(i))	
-				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.XREG_ADDRESS];
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-			break;
-
-		case 34: /* loadmx */
-			if(checkInsert(i))	
-				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] = sim40.memory[sim40.memory[++i]] + sim40.memory[Simulator.XREG_ADDRESS];
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-			break;
-
-		case 35: /* xcomp */
-			zeroflagstatus(Simulator.XREG_ADDRESS, sim40.memory[i+1]);		
-			negativeflagstatus(Simulator.XREG_ADDRESS, sim40.memory[++i]);
-			break;
-
-		case 36: /* yload */
-			if(checkInsert(i))	{
+			case 13: /* yload */
 				sim40.memory[Simulator.YREG_ADDRESS] = sim40.memory[sim40.memory[++i]]; 
-				i++;
+				break;
+
+			case 14: /* add */
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] += sim40.memory[sim40.memory[++i]];
+				break;
+
+			case 15: /* sub */
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] -= sim40.memory[sim40.memory[++i]];
+				break;
+
+			case 16: /* and */
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] &= sim40.memory[sim40.memory[++i]];
+				break;
+
+			case 17: /* or */
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] |= sim40.memory[sim40.memory[++i]];
+				break;
+
+			case 18: /* xor */
+				sim40.memory[Simulator.ACCUMULATOR_ADDRESS] ^= sim40.memory[sim40.memory[++i]];
+				break;
 			}
-			else 
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-		case 37: /* ystore */
-			if(checkInsert(i))	
-				sim40.memory[sim40.memory[++i]] = sim40.memory[Simulator.YREG_ADDRESS];
-			else
-				this.errorStream.getErrors().add(new OutputError(this.sim40.lines[sim40.memory[i+1]],"Must have a matching 'insert' instruction"));
-
-			break;
-
-//		case 38: /* insert */
-//			sim40.memory[i] = sim40.memory[++i];
-//			i++;
-//			break;
-
-		case 39: /* ycomp */
-			zeroflagstatus(Simulator.YREG_ADDRESS, sim40.memory[i+1]);		
-			negativeflagstatus(Simulator.YREG_ADDRESS, sim40.memory[++i]);
-			break;
 		}
-		
-		return i;
+
+		checkResetAllRegsAndFlags();
+		return ++i;
 	}
 
 	/**
-	 * <p>Modifies status flags according to register values
-	 * </p>
-	 * <p>Modifies carry, negative and zero flags
-	 * </p>
+	 * <p>Checks for buffer overflow and underflow for all registers and resets them and flags accordingly</p>
 	 */
-	private void checkStatusFlags() {
-
-		this.checkFlags(Simulator.ACCUMULATOR_ADDRESS);
-		this.checkFlags(Simulator.XREG_ADDRESS);
-		this.checkFlags(Simulator.YREG_ADDRESS);
+	private void checkResetAllRegsAndFlags() {
+		for(int i = 1026; i <= 1028; i++ )
+			checkResetRegisterFlag(i);
 	}
 
-
 	/**
-	 * Modifies status flags and register values according to register values
+	 * <p>Modifies status flags and register values according to register values</p>
 	 * @param register: accumulator, x or y
 	 */
-	private void checkFlags(int register) {
+	private void checkResetRegisterFlag(int register) {
+		checkResetOverflow(register);
+		checkResetUnderflow(register);
+
+	}
+
+	/**
+	 * <p>Checks for buffer overflow and resets the register and flags</p>
+	 * @param int register: accumulator, x or y
+	 */
+	private void checkResetOverflow(int register) {
 		/* register values greater than 1024*/
 		if(sim40.memory[register] >= 1024) 
 			setRegToMax(register);
+	}
 
+	/**
+	 * <p>Checks for buffer underflow and resets the register and flags</p>
+	 * @param int register: accumulator, x or y
+	 */
+	private void checkResetUnderflow(int register) {
 		/* register values smaller than or equal to 0*/
-		else if(sim40.memory[register] <= 0) {
+		if(sim40.memory[register] <= 0) 
 			setRegToMin(register);
-		}
+
 	}
 
 	/**
@@ -473,7 +409,7 @@ public class Runner {
 	 */
 	private void setRegToMax(int register) {
 		sim40.memory[register] = 1024;
-		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<2);
+		switchOnFlag(2);
 	}
 
 	/**
@@ -486,23 +422,30 @@ public class Runner {
 	 */
 	private void setRegToMin(int register) {
 		if(sim40.memory[register] < 0)
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
+			switchOnFlag(1);
 
-		sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
+		else 
+			switchOnFlag(0);
+
 		sim40.memory[register] = 0;
 	}
 
 	/**
-	 * <p>Checks if insert instruction exists for a given load instruction.
-	 * </p>
-	 * <p>All load instructions must have a corresponding "insert" instruction so the data field is not null
-	 * </p>
-	 * @param addressable memory location
-	 * @return boolean
+	 * <p>Turns the flag on</p>
+	 * @param flag
 	 */
-	private boolean checkInsert(int i) {
-		return (compiler.getInstructionField().containsKey(sim40.memory[i+1]) && compiler.getInstructionField().get(sim40.memory[i+1]).equals("insert"));
+	private void switchOnFlag(int flag) {
+		sim40.memory[Simulator.STATUS_ADDRESS]|= (1<<flag);
 	}
+
+	/**
+	 * <p>Turns the flag off</p>
+	 * @param flag
+	 */
+	private void switchOffFlag(int flag) {
+		sim40.memory[Simulator.STATUS_ADDRESS] = ~(~sim40.memory[Simulator.STATUS_ADDRESS] | (1<<flag));
+	}
+
 
 	/**
 	 * Checks the registers values and sets the zero flag accordingly.
@@ -510,12 +453,13 @@ public class Runner {
 	 * @param int register
 	 * @param int addressable memory location
 	 */
-	private void zeroflagstatus(int register, int address){
+	private void updateZeroFlagOnComp(int register, int address){
 		if(sim40.memory[register] == sim40.memory[address]){
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<0);
+			switchOnFlag(0);
 		}
+
 		else {
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<0);
+			switchOffFlag(0);
 		}
 	}
 
@@ -525,14 +469,16 @@ public class Runner {
 	 * @param int register
 	 * @param int addressable memory location
 	 */
-	private void negativeflagstatus(int register, int address){
+	private void updateNegativeFlagOnComp(int register, int address){
 		if(sim40.memory[register] <= sim40.memory[address]){
-			sim40.memory[Simulator.STATUS_ADDRESS] |= (1<<1);
+			switchOnFlag(1);
 		}
+
 		else {
-			sim40.memory[Simulator.STATUS_ADDRESS] &= (0<<1);
+			switchOffFlag(1);
 		}
 	}
+
 
 	/**
 	 * Gets ErrorOutputStream object

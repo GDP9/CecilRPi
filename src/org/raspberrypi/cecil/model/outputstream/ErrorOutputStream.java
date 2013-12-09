@@ -3,18 +3,12 @@ package org.raspberrypi.cecil.model.outputstream;
 import java.util.ArrayList;
 
 /**
- * CECIL Application ErrorOutputStream
- * Constitutes the stream of error messages collected by the Compiler, Runner, Lexer and Parser
- * Supplies an ArrayList<OutputError> errors
+ * <p>CECIL Application ErrorOutputStream</p>
+ * <p>Constitutes the stream of error messages collected by the Compiler, Runner, Lexer and Parser</p>
+ * <p>Supplies an ArrayList<OutputError> errors</p>
  * 
- * The MIT License (MIT)
- * Copyright (c) 2013 Southampton University group GDP9
- * 
- * @authors Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10)
- * Southampton University, United Kingdom
+ * @author Carolina Ferreira (cf4g09), Shreeprabha Aggarwal (sa10g10), Southampton University, United Kingdom
  * @version 1.2
- * 
- * @date 14/11/2013
  * 
  */
 public class ErrorOutputStream {
