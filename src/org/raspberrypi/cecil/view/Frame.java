@@ -200,6 +200,7 @@ public class Frame extends JFrame implements ViewInterface {
 	private ArrayList<OutputError> errors;
 	private boolean ioPortsEnabled;
 	private final UserManual userManual = new UserManual();
+	private final About  about = new About();
 	
 	/**
 	 * Creates the view with default fonts, colours, and values.
@@ -474,11 +475,12 @@ public class Frame extends JFrame implements ViewInterface {
 				userManual.setVisible(true);
 			}
 		});
-		menuAbout = new JMenuItem("About CECIL");
-		final About about = new About();
+		menuAbout = new JMenuItem("About CECIL");		
 		about.setFocusable(true);
 		about.getAccessibleContext().setAccessibleName("About CECIL page");
 		about.getAccessibleContext().setAccessibleDescription("Describes the CECIL application");
+		about.setColours(currentTheme);
+		about.setFont(currentFont);
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				about.setVisible(true);
@@ -1184,6 +1186,7 @@ public class Frame extends JFrame implements ViewInterface {
 			tblMemory.setBackground(Color.WHITE);
 		}
 		userManual.setColours(currentTheme);
+		about.setColours(currentTheme);
 	}
 
 	/**
@@ -1463,6 +1466,7 @@ public class Frame extends JFrame implements ViewInterface {
 		}
 		
 		userManual.setFonts(currentFont);
+		about.setFonts(currentFont);
 	}
 
 	private void setupAccessibility() {

@@ -1,6 +1,7 @@
 package org.raspberrypi.cecil.view;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -105,6 +106,7 @@ public class Preferences extends JDialog {
 					small.setSelected(true);	
 					sampleText.setFont(frame.FONT_SMALL);
 					newFont = frame.FONT_SMALL;
+					updateFont(newFont);
 
 				}
 
@@ -118,6 +120,7 @@ public class Preferences extends JDialog {
 				// TODO Auto-generated method stub
 				sampleText.setFont(frame.FONT_SMALL);
 				newFont = frame.FONT_SMALL;
+				updateFont(newFont);
 
 			}
 		});
@@ -147,6 +150,7 @@ public class Preferences extends JDialog {
 					medium.setSelected(true);	
 					sampleText.setFont(frame.FONT_MEDIUM);
 					newFont = frame.FONT_MEDIUM;
+					updateFont(newFont);
 
 				}
 
@@ -159,6 +163,7 @@ public class Preferences extends JDialog {
 				// TODO Auto-generated method stub
 				sampleText.setFont(frame.FONT_MEDIUM);
 				newFont = frame.FONT_MEDIUM;
+				updateFont(newFont);
 			}
 		});
 		large = new JRadioButton("Large");
@@ -186,6 +191,7 @@ public class Preferences extends JDialog {
 					large.setSelected(true);	
 					sampleText.setFont(frame.FONT_LARGE);
 					newFont = frame.FONT_LARGE;
+					updateFont(newFont);
 
 				}
 
@@ -198,6 +204,7 @@ public class Preferences extends JDialog {
 				// TODO Auto-generated method stub
 				sampleText.setFont(frame.FONT_LARGE);
 				newFont = frame.FONT_LARGE;
+				updateFont(newFont);
 			}
 		});
 		bg.add(small);
@@ -228,9 +235,9 @@ public class Preferences extends JDialog {
 		gbc_fontlabel.weighty = 0;
 		fontPreview.add(sampleText, gbc_fontlabel);
 		border = new LineBorder(frame.ORANGE_THEME[0], 3, true);
-		fontPreview.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), new TitledBorder(null, "Font", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
-
+		fontPreview.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), BorderFactory.createCompoundBorder(new TitledBorder(null, "Font", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(5, 5, 5, 5))));
 		colourName = new JComboBox(new String[] { "Green", "Orange", "Blue","Default" });
+		colourName.setFont(newFont);
 		colourName.setSelectedIndex(1);
 		colourName.setFocusable(true);
 		colourName.getAccessibleContext().setAccessibleDescription("You can select different colour themes for the application");
@@ -246,8 +253,7 @@ public class Preferences extends JDialog {
 		colourPreview.add(colourName, BorderLayout.NORTH);
 		colourPreview.add(inputarea, BorderLayout.CENTER);
 		colourPreview.setOpaque(false);
-		colourPreview.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 10, 10, 10), new TitledBorder(null, "Colour", TitledBorder.LEADING, TitledBorder.TOP, null, null)), new EmptyBorder(10, 10, 10, 10)));
-
+		colourPreview.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), BorderFactory.createCompoundBorder(new TitledBorder(null, "Colour", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(5, 5, 5, 5))));
 		GridBagConstraints gbc_font = new GridBagConstraints();
 		gbc_font.fill = GridBagConstraints.BOTH;
 		gbc_font.gridx = 0;
@@ -307,6 +313,14 @@ public class Preferences extends JDialog {
 		medium.setBackground(panelcolour);
 		large.setBackground(panelcolour);
 		repaint();
+	}
+	/**
+	 * Sets the font of the preferences.
+	 */
+	protected void updateFont(Font font) {
+		((TitledBorder)((CompoundBorder)((CompoundBorder)fontPreview.getBorder()).getInsideBorder()).getOutsideBorder()).setTitleFont(font);
+		((TitledBorder)((CompoundBorder)((CompoundBorder)colourPreview.getBorder()).getInsideBorder()).getOutsideBorder()).setTitleFont(font);
+		colourName.setFont(font);
 	}
 
 	/**
