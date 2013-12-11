@@ -123,7 +123,8 @@ public class Runner {
 				i = binaryExecute(i);		
 
 		}
-
+		
+		checkResetAllRegsAndFlags();
 		sim40.updateViewVars();
 		sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 
@@ -161,7 +162,8 @@ public class Runner {
 					i = binaryExecute(i);		
 
 			}
-
+			
+			checkResetAllRegsAndFlags();
 			sim40.updateViewVars();
 			sim40.memory[Simulator.PROGRAM_COUNTER] = i;
 		}
@@ -356,7 +358,7 @@ public class Runner {
 			}
 		}
 
-		checkResetAllRegsAndFlags();
+		
 		return ++i;
 	}
 
@@ -364,8 +366,15 @@ public class Runner {
 	 * <p>Checks for buffer overflow and underflow for all registers and resets them and flags accordingly</p>
 	 */
 	private void checkResetAllRegsAndFlags() {
-		for(int i = 1026; i <= 1028; i++ )
-			checkResetRegisterFlag(i);
+		//for(int i = 1026; i <= 1028; i++ ) {
+		System.out.println("Checking x val"+sim40.memory[Simulator.XREG_ADDRESS]);
+		
+		checkResetRegisterFlag(Simulator.ACCUMULATOR_ADDRESS);
+			checkResetRegisterFlag(Simulator.XREG_ADDRESS);
+			checkResetRegisterFlag(Simulator.YREG_ADDRESS);
+			
+			
+		//}
 	}
 
 	/**
@@ -394,9 +403,10 @@ public class Runner {
 	 */
 	private void checkResetUnderflow(int register) {
 		/* register values smaller than or equal to 0*/
-		if(sim40.memory[register] <= 0) 
+		if(sim40.memory[register] <= 0) {
 			setRegToMin(register);
-
+		
+		}
 	}
 
 	/**
@@ -424,9 +434,7 @@ public class Runner {
 		if(sim40.memory[register] < 0)
 			switchOnFlag(1);
 
-		else 
-			switchOnFlag(0);
-
+		switchOnFlag(0);
 		sim40.memory[register] = 0;
 	}
 
