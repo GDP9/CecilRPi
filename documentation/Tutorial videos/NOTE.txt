@@ -1,0 +1,3 @@
+NOTE: 
+- These videos must be manually placed in the same folder as Cecil.jar if they are to be opened from within the application. The names of the video files must also remain the same for this method to work. They can, of course, also be treated as normal video files and opened with the media player of your choice.
+- Please also do not include these videos (and the documentation in general) in the packaging of the .jar file as they will greatly reduce the performance of the application, especially on Raspberry Pi.
